@@ -1,0 +1,263 @@
+import streamlit as st
+from profile_engine import compute_profile, get_compatibility
+
+
+st.set_page_config(
+    page_title="Psychotyp",
+    page_icon="🧠",
+    layout="centered",
+)
+
+
+def t(lang: str, en: str, ru: str) -> str:
+    return ru if lang == "RU" else en
+
+
+def init_state():
+    defaults = {
+        "screen": "home",
+        "mode": "Personal Profile",
+        "lang": "EN",
+        "personal_result": None,
+        "compat_result": None,
+        "compat_p1": None,
+        "compat_p2": None,
+    }
+    for k, v in defaults.items():
+        if k not in st.session_state:
+            st.session_state[k] = v
+
+
+def progress_bar(label: str, value):
+    try:
+        v = float(value)
+    except Exception:
+        v = 0.0
+
+    # Streamlit progress expects 0..1
+    if v > 1:
+        v = v / 100.0
+
+    v = max(0.0, min(1.0, v))
+    st.write(f"**{label}: {int(round(v * 100))}%**")
+    st.progress(v)
+
+
+def show_profile_card(profile: dict, lang: str):
+    st.subheader(profile.get("type_name", "Profile"))
+    st.caption(profile.get("tagline", ""))
+
+    st.markdown("### " + t(lang, "Resonance scores", "Резонансные показатели"))
+
+    progress_bar("RS1 Rhythm", profile.get("rs1", 0))
+    progress_bar("RS2 Synchrony", profile.get("rs2", 0))
+    progress_bar("RS3 Segregation", profile.get("rs3", 0))
+    progress_bar("RS4 Integration", profile.get("rs4", 0))
+
+    st.markdown("### " + t(lang, "Key insights", "Ключевые выводы"))
+    for item in profile.get("insights", []):
+        st.info(item)
+
+    st.markdown("### " + t(lang, "Recommendations", "Рекомендации"))
+    for item in profile.get("recommendations", []):
+        st.success(item)
+
+
+def personal_input(lang: str):
+    st.header(t(lang, "Personal Profile", "Индивидуальный профиль"))
+
+    with st.form("personal_form"):
+        name = st.text_input(t(lang, "Name", "Имя"))
+        sex = st.selectbox(
+            t(lang, "Sex", "Пол"),
+            options=["Female", "Male", "Other"],
+            format_func=lambda x: {
+                "Female": t(lang, "Female", "Женский"),
+                "Male": t(lang, "Male", "Мужской"),
+                "Other": t(lang, "Other", "Другое"),
+            }[x],
+        )
+        dob = st.date_input(
+            t(lang, "Date of birth", "Дата рождения"),
+            value=None,
+            min_value=None,
+            max_value=None,
+        )
+
+        submitted = st.form_submit_button(t(lang, "Calculate profile", "Рассчитать профиль"))
+
+    if submitted:
+        if not name or dob is None:
+            st.warning(t(lang, "Please enter name and date of birth.", "Введите имя и дату рождения."))
+            return
+
+        with st.spinner(t(lang, "Calculating...", "Расчёт...")):
+            profile = compute_profile(
+                dob=dob.isoformat(),
+                sex=sex,
+                name=name,
+                lang=lang,
+            )
+
+        st.session_state.personal_result = profile
+        st.session_state.screen = "personal_result"
+        st.rerun()
+
+
+def personal_result(lang: str):
+    st.header(t(lang, "Your Profile", "Ваш профиль"))
+
+    profile = st.session_state.get("personal_result")
+    if not profile:
+        st.session_state.screen = "home"
+        st.rerun()
+
+    show_profile_card(profile, lang)
+
+    if st.button(t(lang, "Back", "Назад")):
+        st.session_state.screen = "home"
+        st.rerun()
+
+
+def compatibility_input(lang: str):
+    st.header(t(lang, "Compatibility", "Совместимость"))
+
+    with st.form("compatibility_form"):
+        st.markdown("### " + t(lang, "Person 1", "Человек 1"))
+        name1 = st.text_input(t(lang, "Name", "Имя"), key="name1")
+        sex1 = st.selectbox(
+            t(lang, "Sex", "Пол"),
+            options=["Female", "Male", "Other"],
+            key="sex1",
+            format_func=lambda x: {
+                "Female": t(lang, "Female", "Женский"),
+                "Male": t(lang, "Male", "Мужской"),
+                "Other": t(lang, "Other", "Другое"),
+            }[x],
+        )
+        dob1 = st.date_input(
+            t(lang, "Date of birth", "Дата рождения"),
+            value=None,
+            key="dob1",
+        )
+
+        st.markdown("### " + t(lang, "Person 2", "Человек 2"))
+        name2 = st.text_input(t(lang, "Name", "Имя"), key="name2")
+        sex2 = st.selectbox(
+            t(lang, "Sex", "Пол"),
+            options=["Female", "Male", "Other"],
+            key="sex2",
+            format_func=lambda x: {
+                "Female": t(lang, "Female", "Женский"),
+                "Male": t(lang, "Male", "Мужской"),
+                "Other": t(lang, "Other", "Другое"),
+            }[x],
+        )
+        dob2 = st.date_input(
+            t(lang, "Date of birth", "Дата рождения"),
+            value=None,
+            key="dob2",
+        )
+
+        submitted = st.form_submit_button(t(lang, "Calculate compatibility", "Рассчитать совместимость"))
+
+    if submitted:
+        if not name1 or not name2 or dob1 is None or dob2 is None:
+            st.warning(t(lang, "Please enter both names and dates of birth.", "Введите оба имени и обе даты рождения."))
+            return
+
+        with st.spinner(t(lang, "Calculating...", "Расчёт...")):
+            p1 = compute_profile(dob=dob1.isoformat(), sex=sex1, name=name1, lang=lang)
+            p2 = compute_profile(dob=dob2.isoformat(), sex=sex2, name=name2, lang=lang)
+            compat = get_compatibility(p1, p2)
+
+        st.session_state.compat_p1 = p1
+        st.session_state.compat_p2 = p2
+        st.session_state.compat_result = compat
+        st.session_state.screen = "compat_result"
+        st.rerun()
+
+
+def compatibility_result(lang: str):
+    st.header(t(lang, "Compatibility Result", "Результат совместимости"))
+
+    p1 = st.session_state.get("compat_p1")
+    p2 = st.session_state.get("compat_p2")
+    compat = st.session_state.get("compat_result")
+
+    if not p1 or not p2 or not compat:
+        st.session_state.screen = "home"
+        st.rerun()
+
+    st.metric(
+        label=t(lang, "Compatibility score", "Индекс совместимости"),
+        value=f"{compat.get('score', 0)} / 100",
+    )
+
+    st.subheader(t(lang, "Summary", "Краткий вывод"))
+    st.write(compat.get("summary", ""))
+
+    st.subheader(t(lang, "Relationship dynamics", "Динамика взаимодействия"))
+    for item in compat.get("dynamics", []):
+        st.info(item)
+
+    st.markdown("---")
+    st.subheader(t(lang, "Side-by-side profiles", "Профили рядом"))
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown(f"### {p1.get('name', 'Person 1')}")
+        show_profile_card(p1, lang)
+
+    with col2:
+        st.markdown(f"### {p2.get('name', 'Person 2')}")
+        show_profile_card(p2, lang)
+
+    if st.button(t(lang, "Back", "Назад")):
+        st.session_state.screen = "home"
+        st.rerun()
+
+
+def main():
+    init_state()
+
+    st.title("Psychotyp")
+
+    lang = st.sidebar.radio(
+        "Language / Язык",
+        options=["EN", "RU"],
+        index=0 if st.session_state.lang == "EN" else 1,
+        horizontal=True,
+    )
+    st.session_state.lang = lang
+
+    mode = st.sidebar.radio(
+        t(lang, "Mode", "Режим"),
+        options=["Personal Profile", "Compatibility"],
+        format_func=lambda x: {
+            "Personal Profile": t(lang, "Personal Profile", "Индивидуальный профиль"),
+            "Compatibility": t(lang, "Compatibility", "Совместимость"),
+        }[x],
+    )
+
+    if mode != st.session_state.mode and st.session_state.screen == "home":
+        st.session_state.mode = mode
+
+    if st.session_state.screen == "home":
+        st.session_state.mode = mode
+        if mode == "Personal Profile":
+            personal_input(lang)
+        else:
+            compatibility_input(lang)
+
+    elif st.session_state.screen == "personal_result":
+        personal_result(lang)
+
+    elif st.session_state.screen == "compat_result":
+        compatibility_result(lang)
+
+
+if __name__ == "__main__":
+    main()
+
