@@ -1,0 +1,1430 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Archviq — Cognitive Assessment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 0;
+      line-height: 1.55;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 18px 80px;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid #374151;
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    h1, h2 {
+      color: white;
+      margin-top: 0;
+    }
+    .muted {
+      color: #9ca3af;
+    }
+    .warn {
+      color: #fcd34d;
+      border-left: 4px solid #f59e0b;
+      padding-left: 14px;
+    }
+    label {
+      display: block;
+      margin: 16px 0 6px;
+      font-weight: 700;
+    }
+    input, select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: white;
+      font-size: 16px;
+    }
+    button {
+      padding: 14px 20px;
+      border: 0;
+      border-radius: 12px;
+      background: #2563eb;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 16px;
+      margin-right: 10px;
+    }
+    button.secondary {
+      background: #059669;
+    }
+    .testbox {
+      min-height: 380px;
+      border: 1px solid #374151;
+      border-radius: 18px;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      margin-top: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .big {
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .medium {
+      font-size: 30px;
+      font-weight: 700;
+    }
+    .dot {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #22c55e;
+      margin: 0 auto 20px;
+    }
+    .leftpos, .rightpos {
+      position: absolute;
+      top: 45%;
+      transform: translateY(-50%);
+      font-size: 80px;
+      font-weight: 800;
+    }
+    .leftpos {
+      left: 18%;
+    }
+    .rightpos {
+      right: 18%;
+    }
+    .progress {
+      margin-top: 12px;
+      color: #93c5fd;
+      font-weight: 700;
+    }
+    .resultline {
+      border-top: 1px solid #374151;
+      padding-top: 10px;
+      margin-top: 14px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      color: #d1d5db;
+    }
+
+    .rulebox {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .ruleline {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 10px 0;
+    }
+    .keyhint {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .keyhint div {
+      border: 1px solid #475569;
+      background: #0b1220;
+      border-radius: 14px;
+      padding: 14px;
+      font-weight: 800;
+    }
+    .yeskey { color: #86efac; }
+    .nokey { color: #fca5a5; }
+    .explain {
+      color: #d1d5db;
+      font-size: 18px;
+      margin-top: 14px;
+    }
+
+    .small {
+      font-size: 18px;
+    }
+    .timer {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      color: #fca5a5;
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .keys {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    .key {
+      background: #111827;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .ok { color: #86efac; }
+    .bad { color: #fca5a5; }
+    .blue { color: #93c5fd; }
+
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>🧠 Archviq — Cognitive Assessment</h1>
+    <p>
+      Cognitive assessment battery. Data stays local — a CSV file will be downloaded after completion.
+    </p>
+    <p class="warn">
+      Please use a desktop or laptop computer for accurate results.
+    </p>
+  </div>
+
+  <div class="card" id="introCard">
+    <h2>Participant Information</h2>
+
+    <label>Name</label>
+    <input id="clientName" required placeholder="Your name">
+
+    <label>Date of Birth</label>
+    <input id="dob" type="date" required>
+
+    <label>Email</label>
+    <input id="email" required placeholder="email">
+
+    <label>Age</label>
+    <input id="age" required placeholder="Age">
+
+    <label>Sex</label>
+    <select id="sex" required>
+      <option value="">Select</option>
+      <option>Female</option>
+      <option>Male</option>
+      <option>Other / prefer not to say</option>
+    </select>
+
+    <label>Device</label>
+    <select id="device" required>
+      <option value="">Select</option>
+      <option>Desktop / Laptop</option>
+      <option>Tablet</option>
+      <option>Phone</option>
+    </select>
+
+
+    <button onclick="startAll()">Start Tests</button>
+  </div>
+
+  <div class="card" id="testCard" style="display:none;">
+    <h2 id="testTitle">Test</h2>
+    <p id="testInstruction" class="muted"></p>
+    <div class="progress" id="progress"></div>
+    <div class="testbox" id="screen"></div>
+  </div>
+
+  <div class="card" id="finalCard" style="display:none;">
+    <h2>Tests Complete</h2>
+    <p>Your results are ready. Click below to download the CSV file.</p>
+    <div id="summaryText" class="resultline"></div>
+    <button class="secondary" onclick="downloadResults()">Download Results (CSV)</button>
+  </div>
+</div>
+
+<script>
+const app = {
+  client: {},
+  results: {},
+  currentTest: null,
+  keyHandler: null,
+  pauseShownAt: null
+};
+
+document.addEventListener("keydown", function(e) {
+  if (["Space", "ArrowLeft", "ArrowRight"].includes(e.code)) {
+    e.preventDefault();
+  }
+  if (app.keyHandler) {
+    app.keyHandler(e);
+  }
+});
+
+function byId(id) {
+  return document.getElementById(id);
+}
+
+function showIntro(show) {
+  byId("introCard").style.display = show ? "block" : "none";
+}
+
+function showTest(show) {
+  byId("testCard").style.display = show ? "block" : "none";
+}
+
+function showFinal(show) {
+  byId("finalCard").style.display = show ? "block" : "none";
+}
+
+function setScreen(html) {
+  byId("screen").innerHTML = html;
+}
+
+function setTitle(title, instruction) {
+  byId("testTitle").textContent = title;
+  byId("testInstruction").textContent = instruction;
+}
+
+function setProgress(text) {
+  byId("progress").textContent = text;
+}
+
+function showStartScreen(title, instruction, buttonText, startFunctionName, extraHtml) {
+  app.currentTest = null;
+  app.keyHandler = null;
+  app.pauseShownAt = performance.now();
+
+  showIntro(false);
+  showFinal(false);
+  showTest(true);
+
+  setTitle(title, instruction);
+  setProgress("Ready to begin. Press the button when you are ready.");
+
+  setScreen(
+    '<div>' +
+      '<div class="medium">' + title + '</div>' +
+      '<p class="muted">' + instruction + '</p>' +
+      (extraHtml || '') +
+      '<button class="secondary" onclick="' + startFunctionName + '()">' + buttonText + '</button>' +
+    '</div>'
+  );
+}
+
+function markTestStart(code) {
+  app.results[code + "_started_at"] = new Date().toISOString();
+  if (app.pauseShownAt !== null) {
+    app.results[code + "_pause_before_ms"] = round(performance.now() - app.pauseShownAt);
+  }
+}
+
+function markTestEnd(code) {
+  app.results[code + "_ended_at"] = new Date().toISOString();
+}
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function mean(arr) {
+  if (!arr.length) return "";
+  return arr.reduce((a, b) => a + b, 0) / arr.length;
+}
+
+function median(arr) {
+  if (!arr.length) return "";
+  const a = arr.slice().sort((x, y) => x - y);
+  const mid = Math.floor(a.length / 2);
+  return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
+}
+
+function sd(arr) {
+  if (arr.length < 2) return "";
+  const m = mean(arr);
+  const v = mean(arr.map(x => Math.pow(x - m, 2)));
+  return Math.sqrt(v);
+}
+
+function round(x) {
+  if (x === "" || x === null || x === undefined || Number.isNaN(x)) return "";
+  return Math.round(x * 100) / 100;
+}
+
+function csvEscape(value) {
+  const s = String(value === undefined || value === null ? "" : value);
+  return '"' + s.replace(/"/g, '""') + '"';
+}
+
+function collectClient() {
+  const clientName = byId("clientName").value.trim();
+  const dob = byId("dob").value.trim();
+  const email = byId("email").value.trim();
+  const age = byId("age").value.trim();
+  const sex = byId("sex").value;
+  const device = byId("device").value;
+
+  if (!clientName || !dob || !email || !age || !sex || !device) {
+    alert("Please fill in name, date of birth, email, age, sex, and device.");
+    return false;
+  }
+
+  app.client = {
+    NAME: clientName,
+    DOB: dob,
+    EMAIL: email,
+    AGE: age,
+    SEX: sex,
+    DEVICE_TYPE: device,
+    TIMESTAMP_LOCAL: new Date().toISOString()
+  };
+
+  return true;
+}
+
+function startAll() {
+  if (!collectClient()) return;
+
+  showStartScreen(
+    "Test 1. Simple Reaction Time",
+    "Wait for the green circle to appear. Press SPACE as soon as it appears. Do not press early.",
+    "Start Test 1",
+    "startSimpleRT"
+  );
+}
+
+/* ===========================
+   TEST 1. SIMPLE REACTION TIME
+   =========================== */
+
+function startSimpleRT() {
+  app.currentTest = "simple_rt";
+  markTestStart("SRT");
+
+  setTitle(
+    "Test 1. Simple Reaction Time",
+    "Wait for the green circle to appear. Press SPACE as soon as it appears. Do not press early."
+  );
+
+  const total = 20;
+  const trials = [];
+  let i = 0;
+  let waiting = false;
+  let active = false;
+  let timer = null;
+  let stimTime = 0;
+
+  app.keyHandler = function(e) {
+    if (e.code !== "Space") return;
+
+    if (waiting) {
+      clearTimeout(timer);
+      waiting = false;
+      active = false;
+      trials.push({
+        trial: i + 1,
+        false_start: 1,
+        rt: ""
+      });
+      i++;
+      setScreen('<div><div class="medium">Too early</div><p class="muted">Wait for the circle to appear.</p></div>');
+      setTimeout(nextTrial, 650);
+      return;
+    }
+
+    if (active) {
+      const rt = performance.now() - stimTime;
+      active = false;
+      trials.push({
+        trial: i + 1,
+        false_start: 0,
+        rt: rt
+      });
+      i++;
+      setScreen('<div><div class="medium">Response recorded</div><p class="muted">RT: ' + Math.round(rt) + ' ms</p></div>');
+      setTimeout(nextTrial, 450);
+    }
+  };
+
+  function nextTrial() {
+    if (i >= total) {
+      finishSimpleRT(trials);
+      return;
+    }
+
+    setProgress("Trial " + (i + 1) + " of " + total);
+    waiting = true;
+    active = false;
+    setScreen('<div><div class="medium">Wait...</div><p class="muted">Do not press early.</p></div>');
+
+    const delay = randomInt(900, 2200);
+    timer = setTimeout(function() {
+      waiting = false;
+      active = true;
+      stimTime = performance.now();
+      setScreen('<div><div class="dot"></div><div class="medium">Space!</div></div>');
+    }, delay);
+  }
+
+  nextTrial();
+}
+
+function finishSimpleRT(trials) {
+  markTestEnd("SRT");
+
+  const valid = trials
+    .filter(t => t.false_start === 0 && t.rt !== "" && t.rt >= 100 && t.rt <= 1500)
+    .map(t => t.rt);
+
+  const falseStarts = trials.filter(t => t.false_start === 1).length;
+  const tooFast = trials.filter(t => t.false_start === 0 && t.rt !== "" && t.rt < 100).length;
+
+  app.results.SRT_trials = trials.length;
+  app.results.SRT_valid_trials = valid.length;
+  app.results.SRT_false_starts = falseStarts;
+  app.results.SRT_too_fast = tooFast;
+  app.results.SRT_mean_rt = round(mean(valid));
+  app.results.SRT_median_rt = round(median(valid));
+  app.results.SRT_sd_rt = round(sd(valid));
+
+  showStartScreen(
+    "Break. Test 2 — Left / Right Choice",
+    "Take a short break. In the next test: if the arrow points left — press ←, if right — press →.",
+    "Start Test 2",
+    "startChoiceRT",
+    '<div class="resultline">Test 1 complete\nSRT median RT: ' + app.results.SRT_median_rt + ' ms</div>'
+  );
+}
+
+/* ===========================
+   TEST 2. CHOICE REACTION TIME
+   =========================== */
+
+function startChoiceRT() {
+  app.currentTest = "choice_rt";
+  markTestStart("CHOICE");
+
+  setTitle(
+    "Test 2. Left / Right Choice",
+    "If the arrow points left — press ←. If right — press →. Work fast and accurately."
+  );
+
+  const total = 28;
+  const trials = [];
+  const seq = Array.from({length: total}, () => Math.random() < 0.5 ? "left" : "right");
+
+  let i = 0;
+  let stimTime = 0;
+  let responded = false;
+  let timeout = null;
+
+  app.keyHandler = function(e) {
+    if (!["ArrowLeft", "ArrowRight"].includes(e.code)) return;
+    if (responded) return;
+
+    const response = e.code === "ArrowLeft" ? "left" : "right";
+    finishTrial(response);
+  };
+
+  function nextTrial() {
+    if (i >= total) {
+      finishChoiceRT(trials);
+      return;
+    }
+
+    responded = false;
+    const dir = seq[i];
+    const arrow = dir === "left" ? "←" : "→";
+
+    setProgress("Trial " + (i + 1) + " of " + total);
+    setScreen('<div><div class="big">' + arrow + '</div><p class="muted">Press the matching arrow key on the keyboard</p></div>');
+
+    stimTime = performance.now();
+
+    timeout = setTimeout(function() {
+      if (!responded) {
+        responded = true;
+        trials.push({
+          trial: i + 1,
+          stimulus: dir,
+          response: "",
+          correct: 0,
+          omission: 1,
+          rt: ""
+        });
+        i++;
+        setScreen('<div><div class="medium">No response</div></div>');
+        setTimeout(nextTrial, 450);
+      }
+    }, 2500);
+  }
+
+  function finishTrial(response) {
+    clearTimeout(timeout);
+    responded = true;
+
+    const dir = seq[i];
+    const rt = performance.now() - stimTime;
+    const correct = response === dir ? 1 : 0;
+
+    trials.push({
+      trial: i + 1,
+      stimulus: dir,
+      response: response,
+      correct: correct,
+      omission: 0,
+      rt: rt
+    });
+
+    i++;
+    setScreen('<div><div class="medium">' + (correct ? "Correct" : "Error") + '</div><p class="muted">RT: ' + Math.round(rt) + ' ms</p></div>');
+    setTimeout(nextTrial, 350);
+  }
+
+  nextTrial();
+}
+
+function finishChoiceRT(trials) {
+  markTestEnd("CHOICE");
+
+  const correctTrials = trials.filter(t => t.correct === 1 && t.rt !== "");
+  const rts = correctTrials.map(t => t.rt);
+  const errors = trials.filter(t => t.correct === 0 && t.omission === 0).length;
+  const omissions = trials.filter(t => t.omission === 1).length;
+  const accuracy = correctTrials.length / trials.length;
+
+  app.results.CHOICE_trials = trials.length;
+  app.results.CHOICE_correct = correctTrials.length;
+  app.results.CHOICE_errors = errors;
+  app.results.CHOICE_omissions = omissions;
+  app.results.CHOICE_accuracy = round(accuracy);
+  app.results.CHOICE_mean_correct_rt = round(mean(rts));
+  app.results.CHOICE_median_correct_rt = round(median(rts));
+  app.results.CHOICE_sd_correct_rt = round(sd(rts));
+
+  showStartScreen(
+    "Break. Test 3 — 2-Back Memory",
+    "Take a break. In the next test, press SPACE only if the current digit matches the digit from two positions ago. There will be a short practice first.",
+    "Start Test 3",
+    "startNBackPractice",
+    '<div class="resultline">Test 2 complete\nChoice accuracy: ' + app.results.CHOICE_accuracy + '\nChoice median RT: ' + app.results.CHOICE_median_correct_rt + ' ms</div>'
+  );
+}
+
+/* ===========================
+   TEST 3. 2-BACK
+   =========================== */
+
+function startNBackPractice() {
+  app.currentTest = "nback_practice";
+  markTestStart("NBACK");
+
+  setTitle(
+    "Test 3. 2-Back — Practice",
+    "Press SPACE only if the current digit matches the digit from two positions ago. Practice results are not saved."
+  );
+
+  const seq = [4, 7, 4, 2, 9, 2, 5, 1, 5, 8];
+  const total = seq.length;
+
+  let i = 0;
+  let stimTime = 0;
+  let pressed = false;
+  let responseWindow = null;
+
+  app.keyHandler = function(e) {
+    if (e.code !== "Space") return;
+    if (app.currentTest !== "nback_practice") return;
+    if (pressed) return;
+    if (!responseWindow) return;
+
+    pressed = true;
+  };
+
+  function nextPracticeTrial() {
+    if (i >= total) {
+      app.keyHandler = null;
+      setProgress("Practice complete. Starting main test.");
+      setScreen(
+        '<div>' +
+          '<div class="medium">Main 2-Back Test</div>' +
+          '<p class="muted">Responses will now be recorded.</p>' +
+          '<p class="muted">Same rule: press SPACE only if the current digit matches the one two positions ago.</p>' +
+          '<button class="secondary" onclick="startNBackMain()">Start Main Test 3</button>' +
+        '</div>'
+      );
+      return;
+    }
+
+    pressed = false;
+    responseWindow = true;
+
+    const digit = seq[i];
+    const hasTwoBack = i >= 2;
+    const twoBack = hasTwoBack ? seq[i - 2] : "";
+    const target = hasTwoBack && digit === twoBack ? 1 : 0;
+
+    setProgress("Practice: trial " + (i + 1) + " of " + total + ". Not recorded.");
+    setScreen(
+      '<div>' +
+        '<div class="big">' + digit + '</div>' +
+        '<p class="muted">SPACE only if this digit matches the digit 2 positions back</p>' +
+      '</div>'
+    );
+
+    stimTime = performance.now();
+
+    setTimeout(function() {
+      responseWindow = false;
+      const correct = target ? pressed : !pressed;
+      showNBackPracticeFeedback(digit, twoBack, hasTwoBack, target, pressed, correct);
+    }, 1800);
+  }
+
+  function showNBackPracticeFeedback(digit, twoBack, hasTwoBack, target, pressed, correct) {
+    let ruleLine = "";
+    if (!hasTwoBack) {
+      ruleLine = "For the first two digits there is no comparison yet. Do not press SPACE.";
+    } else {
+      ruleLine =
+        "Current digit: <b>" + digit + "</b><br>" +
+        "Digit 2 positions ago: <b>" + twoBack + "</b><br>" +
+        "Correct action: <b>" + (target ? "press SPACE" : "do not press") + "</b>";
+    }
+
+    setScreen(
+      '<div>' +
+        '<div class="medium">' + (correct ? "Correct" : "Error") + '</div>' +
+        '<p class="muted">' + ruleLine + '</p>' +
+        '<p class="muted">Your response: ' + (pressed ? "SPACE" : "no press") + '</p>' +
+      '</div>'
+    );
+
+    i++;
+    setTimeout(nextPracticeTrial, 1900);
+  }
+
+  nextPracticeTrial();
+}
+
+function startNBackMain() {
+  app.currentTest = "nback";
+
+  setTitle(
+    "Test 3. 2-Back Memory",
+    "Digits will appear on screen. Press SPACE if the current digit matches the one from two positions ago."
+  );
+
+  const total = 36;
+  const seq = generateNBackSequence(total);
+  const trials = [];
+
+  let i = 0;
+  let stimTime = 0;
+  let pressed = false;
+  let pressRT = "";
+  let responseWindow = null;
+
+  app.keyHandler = function(e) {
+    if (e.code !== "Space") return;
+    if (app.currentTest !== "nback") return;
+    if (pressed) return;
+    if (!responseWindow) return;
+
+    pressed = true;
+    pressRT = performance.now() - stimTime;
+  };
+
+  function nextTrial() {
+    if (i >= total) {
+      finishNBack(trials);
+      return;
+    }
+
+    pressed = false;
+    pressRT = "";
+    responseWindow = true;
+
+    const digit = seq[i];
+    const target = i >= 2 && seq[i] === seq[i - 2] ? 1 : 0;
+
+    setProgress("Trial " + (i + 1) + " of " + total);
+    setScreen('<div><div class="big">' + digit + '</div><p class="muted">SPACE only when it matches the digit 2 positions back</p></div>');
+    stimTime = performance.now();
+
+    setTimeout(function() {
+      responseWindow = false;
+
+      let outcome = "";
+      if (target === 1 && pressed) outcome = "hit";
+      if (target === 1 && !pressed) outcome = "miss";
+      if (target === 0 && pressed) outcome = "false_alarm";
+      if (target === 0 && !pressed) outcome = "correct_rejection";
+
+      trials.push({
+        trial: i + 1,
+        digit: digit,
+        target: target,
+        pressed: pressed ? 1 : 0,
+        outcome: outcome,
+        rt: pressRT
+      });
+
+      i++;
+      setScreen('<div><div class="medium">+</div></div>');
+      setTimeout(nextTrial, 300);
+    }, 1500);
+  }
+
+  nextTrial();
+}
+
+function generateNBackSequence(total) {
+  const seq = [];
+
+  for (let i = 0; i < total; i++) {
+    if (i >= 2 && Math.random() < 0.32) {
+      seq.push(seq[i - 2]);
+    } else {
+      let d = randomInt(1, 9);
+      if (i >= 2) {
+        while (d === seq[i - 2]) {
+          d = randomInt(1, 9);
+        }
+      }
+      seq.push(d);
+    }
+  }
+
+  return seq;
+}
+
+function finishNBack(trials) {
+  markTestEnd("NBACK");
+
+  const hits = trials.filter(t => t.outcome === "hit").length;
+  const misses = trials.filter(t => t.outcome === "miss").length;
+  const fa = trials.filter(t => t.outcome === "false_alarm").length;
+  const cr = trials.filter(t => t.outcome === "correct_rejection").length;
+  const targets = hits + misses;
+  const nonTargets = fa + cr;
+
+  const accuracy = (hits + cr) / trials.length;
+  const hitRate = targets ? hits / targets : "";
+  const faRate = nonTargets ? fa / nonTargets : "";
+
+  const rts = trials
+    .filter(t => t.outcome === "hit" && t.rt !== "")
+    .map(t => t.rt);
+
+  app.results.NBACK_trials = trials.length;
+  app.results.NBACK_targets = targets;
+  app.results.NBACK_hits = hits;
+  app.results.NBACK_misses = misses;
+  app.results.NBACK_false_alarms = fa;
+  app.results.NBACK_correct_rejections = cr;
+  app.results.NBACK_accuracy = round(accuracy);
+  app.results.NBACK_hit_rate = round(hitRate);
+  app.results.NBACK_false_alarm_rate = round(faRate);
+  app.results.NBACK_median_hit_rt = round(median(rts));
+  app.results.NBACK_mean_hit_rt = round(mean(rts));
+
+  showStartScreen(
+    "Break. Test 4 — Simon Task",
+    "Take a break. In the next test, an arrow may appear on the left or right. Press according to the DIRECTION of the arrow, not where it appears.",
+    "Start Test 4",
+    "startSimon",
+    '<div class="resultline">Test 3 complete\nN-back accuracy: ' + app.results.NBACK_accuracy + '\nN-back hit rate: ' + app.results.NBACK_hit_rate + '</div>'
+  );
+}
+
+/* ===========================
+   TEST 4. SIMON / INCOMPATIBILITY
+   =========================== */
+
+function startSimon() {
+  app.currentTest = "simon";
+  markTestStart("SIMON");
+
+  setTitle(
+    "Test 4. Simon Task",
+    "The arrow may appear on either side. Press according to the arrow's DIRECTION, not its position."
+  );
+
+  const total = 36;
+  const trials = [];
+
+  let i = 0;
+  let stimTime = 0;
+  let responded = false;
+  let timeout = null;
+  let current = null;
+
+  app.keyHandler = function(e) {
+    if (!["ArrowLeft", "ArrowRight"].includes(e.code)) return;
+    if (responded) return;
+
+    const response = e.code === "ArrowLeft" ? "left" : "right";
+    finishTrial(response);
+  };
+
+  function makeTrial() {
+    const dir = Math.random() < 0.5 ? "left" : "right";
+    const pos = Math.random() < 0.5 ? "left" : "right";
+    return {
+      direction: dir,
+      position: pos,
+      compatible: dir === pos ? 1 : 0
+    };
+  }
+
+  function nextTrial() {
+    if (i >= total) {
+      finishSimon(trials);
+      return;
+    }
+
+    responded = false;
+    current = makeTrial();
+
+    const arrow = current.direction === "left" ? "←" : "→";
+    const cls = current.position === "left" ? "leftpos" : "rightpos";
+
+    setProgress("Trial " + (i + 1) + " of " + total);
+    setScreen('<div class="' + cls + '">' + arrow + '</div><div class="muted" style="position:absolute;bottom:24px;width:100%;left:0;">Press in the direction of the arrow</div>');
+
+    stimTime = performance.now();
+
+    timeout = setTimeout(function() {
+      if (!responded) {
+        responded = true;
+        trials.push({
+          trial: i + 1,
+          direction: current.direction,
+          position: current.position,
+          compatible: current.compatible,
+          response: "",
+          correct: 0,
+          omission: 1,
+          rt: ""
+        });
+        i++;
+        setScreen('<div><div class="medium">No response</div></div>');
+        setTimeout(nextTrial, 450);
+      }
+    }, 2500);
+  }
+
+  function finishTrial(response) {
+    clearTimeout(timeout);
+    responded = true;
+
+    const rt = performance.now() - stimTime;
+    const correct = response === current.direction ? 1 : 0;
+
+    trials.push({
+      trial: i + 1,
+      direction: current.direction,
+      position: current.position,
+      compatible: current.compatible,
+      response: response,
+      correct: correct,
+      omission: 0,
+      rt: rt
+    });
+
+    i++;
+    setScreen('<div><div class="medium">' + (correct ? "Correct" : "Error") + '</div><p class="muted">RT: ' + Math.round(rt) + ' ms</p></div>');
+    setTimeout(nextTrial, 350);
+  }
+
+  nextTrial();
+}
+
+function finishSimon(trials) {
+  markTestEnd("SIMON");
+
+  const compCorrect = trials.filter(t => t.compatible === 1 && t.correct === 1 && t.rt !== "").map(t => t.rt);
+  const incompCorrect = trials.filter(t => t.compatible === 0 && t.correct === 1 && t.rt !== "").map(t => t.rt);
+
+  const compErrors = trials.filter(t => t.compatible === 1 && t.correct === 0).length;
+  const incompErrors = trials.filter(t => t.compatible === 0 && t.correct === 0).length;
+
+  const correct = trials.filter(t => t.correct === 1).length;
+  const accuracy = correct / trials.length;
+
+  const compMed = median(compCorrect);
+  const incompMed = median(incompCorrect);
+  const cost = compMed !== "" && incompMed !== "" ? incompMed - compMed : "";
+
+  app.results.SIMON_trials = trials.length;
+  app.results.SIMON_accuracy = round(accuracy);
+  app.results.SIMON_compatible_median_rt = round(compMed);
+  app.results.SIMON_incompatible_median_rt = round(incompMed);
+  app.results.SIMON_interference_cost = round(cost);
+  app.results.SIMON_compatible_errors = compErrors;
+  app.results.SIMON_incompatible_errors = incompErrors;
+  app.results.SIMON_total_errors = compErrors + incompErrors;
+
+  showStartScreen(
+    "Break. Test 5 — Complex Rule",
+    "Take a break. First there will be short practice for the rule: Is A + C greater than B? Then the main test in two parts.",
+    "Start Test 5",
+    "startComplexDiagnostic",
+    '<div class="resultline">Test 4 complete\nSimon accuracy: ' + app.results.SIMON_accuracy + '\nSimon interference cost: ' + app.results.SIMON_interference_cost + ' ms</div>'
+  );
+}
+
+/* ===========================
+   TEST 5. COMPLEX RULE
+   =========================== */
+
+function startComplexDiagnostic() {
+  app.currentTest = "complex_diagnostic";
+  app.deadlineTimer = null;
+  app.timerInterval = null;
+  markTestStart("COMPLEX");
+
+  setTitle(
+    "Test 5. Complex Rule",
+    "One rule: Is A + C greater than B? ← YES, → NO. Practice first, then main test."
+  );
+
+  startComplexPractice();
+}
+
+function makeComplexTrial(wantYes, targetDifficulty) {
+  for (let attempt = 0; attempt < 500; attempt++) {
+    const A = randomInt(1, 9);
+    const C = randomInt(1, 9);
+    const sum = A + C;
+    let delta;
+
+    if (targetDifficulty === "hard") {
+      delta = Math.random() < 0.5 ? 1 : 2;
+    } else if (targetDifficulty === "medium") {
+      delta = randomInt(3, 5);
+    } else {
+      delta = randomInt(6, 9);
+    }
+
+    const B = wantYes ? sum - delta : sum + delta;
+    if (B < 2 || B > 18 || B === sum) continue;
+
+    const diff = sum - B;
+    const yes = diff > 0;
+    const absDiff = Math.abs(diff);
+    const difficulty = absDiff <= 2 ? "hard" : (absDiff <= 5 ? "medium" : "easy");
+
+    return {
+      A: A,
+      B: B,
+      C: C,
+      sum: sum,
+      diff: diff,
+      yes: yes,
+      correctKey: yes ? "left" : "right",
+      difficulty: difficulty
+    };
+  }
+
+  return {
+    A: 4,
+    B: wantYes ? 6 : 9,
+    C: 3,
+    sum: 7,
+    diff: wantYes ? 1 : -2,
+    yes: wantYes,
+    correctKey: wantYes ? "left" : "right",
+    difficulty: "hard"
+  };
+}
+
+function makeBalancedComplexTrials(total) {
+  const trials = [];
+  const pattern = ["hard", "hard", "medium", "easy"];
+
+  for (let i = 0; i < total; i++) {
+    const wantYes = i % 2 === 0;
+    const difficulty = pattern[i % pattern.length];
+    trials.push(makeComplexTrial(wantYes, difficulty));
+  }
+
+  for (let i = trials.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [trials[i], trials[j]] = [trials[j], trials[i]];
+  }
+
+  return trials;
+}
+
+function complexTrialHTML(t, showTimer) {
+  return '<div>' +
+    (showTimer ? '<div class="timer" id="timerBox"></div>' : '') +
+    '<div class="big">A = ' + t.A + '&nbsp;&nbsp; B = ' + t.B + '&nbsp;&nbsp; C = ' + t.C + '</div>' +
+    '<div class="medium" style="margin-top:26px;">Is A + C greater than B?</div>' +
+    '<div class="keys"><div class="key yeskey">← YES</div><div class="key nokey">→ NO</div></div>' +
+    '<p class="muted">Add A + C and compare with B.</p>' +
+    '</div>';
+}
+
+function complexFeedbackHTML(t, response, rt, isPractice) {
+  const respText = response === '' ? 'no response' : (response === 'left' ? '\u2190 YES' : '\u2192 NO');
+  const correctText = t.correctKey === 'left' ? '← YES' : '→ NO';
+  const ok = response === t.correctKey;
+
+  return '<div>' +
+    '<div class="medium ' + (ok ? 'ok' : 'bad') + '">' + (ok ? 'Correct' : 'Error') + '</div>' +
+    '<div class="small" style="margin-top:14px;">' +
+      'A + C = ' + t.A + ' + ' + t.C + ' = <b>' + t.sum + '</b><br>' +
+      'B = <b>' + t.B + '</b><br>' +
+      (t.yes ? 'Sum is greater than B' : 'Sum is NOT greater than B') + '<br>' +
+      'Correct answer: <b>' + correctText + '</b><br>' +
+      'Your response: <b>' + respText + '</b>' +
+      (rt !== '' ? '<br>RT: ' + Math.round(rt) + ' ms' : '') +
+    '</div>' +
+    (isPractice ? '<p class="muted">Press SPACE for the next practice trial.</p>' : '') +
+    '</div>';
+}
+
+function startComplexPractice() {
+  app.results.COMPLEX_PRACTICE_started_at = new Date().toISOString();
+
+  const trials = makeBalancedComplexTrials(10);
+  let i = 0;
+  let active = false;
+  let current = null;
+  let stimTime = 0;
+  let waitingNext = false;
+
+  setTitle(
+    "Test 5. Practice",
+    "Is A + C greater than B? ← YES, → NO. Practice trials are not included in the final result. After the explanation, press SPACE for the next trial."
+  );
+
+  app.keyHandler = function(e) {
+    if (waitingNext && e.code === 'Space') {
+      waitingNext = false;
+      i++;
+      nextPracticeTrial();
+      return;
+    }
+
+    if (!active) return;
+    if (!['ArrowLeft', 'ArrowRight'].includes(e.code)) return;
+
+    const response = e.code === 'ArrowLeft' ? 'left' : 'right';
+    const rt = performance.now() - stimTime;
+    active = false;
+    waitingNext = true;
+    setScreen(complexFeedbackHTML(current, response, rt, true));
+  };
+
+  function nextPracticeTrial() {
+    if (i >= trials.length) {
+      app.results.COMPLEX_PRACTICE_ended_at = new Date().toISOString();
+      showComplexAccuracyPause();
+      return;
+    }
+
+    current = trials[i];
+    setProgress('Practice: trial ' + (i + 1) + ' of ' + trials.length + '. Not recorded.');
+    setScreen(complexTrialHTML(current, false));
+    stimTime = performance.now();
+    active = true;
+  }
+
+  nextPracticeTrial();
+}
+
+function showComplexBlockPause(title, instruction, buttonText, startFunctionName, extraHtml) {
+  app.currentTest = "complex_diagnostic_pause";
+  app.keyHandler = null;
+  app.pauseShownAt = performance.now();
+
+  setTitle(title, instruction);
+  setProgress("Ready for the next part. Press when ready.");
+
+  setScreen(
+    '<div>' +
+      '<div class="medium">' + title + '</div>' +
+      '<p class="muted">' + instruction + '</p>' +
+      (extraHtml || '') +
+      '<button class="secondary" onclick="' + startFunctionName + '()">' + buttonText + '</button>' +
+    '</div>'
+  );
+}
+
+function showComplexAccuracyPause() {
+  showComplexBlockPause(
+    "Test 5. Part 1",
+    "Respond carefully and accurately. Time limit: 4 seconds.",
+    "Start Part 1",
+    "startComplexAccuracyBlock"
+  );
+}
+
+function showComplexSpeedPause(extraHtml) {
+  showComplexBlockPause(
+    "Test 5. Part 2",
+    "Respond faster. Time limit: 1.5 seconds. ← YES, → NO.",
+    "Start Part 2",
+    "startComplexSpeedBlock",
+    extraHtml || ''
+  );
+}
+
+function startComplexAccuracyBlock() {
+  startComplexDiagnosticBlock("COMPLEX_ACC", 24, 4000, false);
+}
+
+function startComplexSpeedBlock() {
+  startComplexDiagnosticBlock("COMPLEX_SPD", 24, 1500, true);
+}
+
+function startComplexDiagnosticBlock(code, total, deadlineMs, showTimer) {
+  app.currentTest = code;
+  app.results[code + '_started_at'] = new Date().toISOString();
+  if (app.pauseShownAt !== null) {
+    app.results[code + '_pause_before_ms'] = round(performance.now() - app.pauseShownAt);
+  }
+
+  const trials = makeBalancedComplexTrials(total);
+  const rows = [];
+  let i = 0;
+  let active = false;
+  let current = null;
+  let stimTime = 0;
+
+  setTitle(
+    code === 'COMPLEX_ACC' ? 'Test 5. Part 1' : 'Test 5. Part 2',
+    code === 'COMPLEX_ACC' ? 'Answer accurately. Do not rush.' : 'Respond within 1.5 seconds. Be fast, even if not fully certain.'
+  );
+
+  app.keyHandler = function(e) {
+    if (!active) return;
+    if (!['ArrowLeft', 'ArrowRight'].includes(e.code)) return;
+    const response = e.code === 'ArrowLeft' ? 'left' : 'right';
+    finishTrial(response, false);
+  };
+
+  function nextTrial() {
+    clearTimeout(app.deadlineTimer);
+    clearInterval(app.timerInterval);
+
+    if (i >= trials.length) {
+      finishComplexDiagnosticBlock(code, rows);
+      return;
+    }
+
+    current = trials[i];
+    active = true;
+    setProgress('Trial ' + (i + 1) + ' of ' + total);
+    setScreen(complexTrialHTML(current, showTimer));
+    stimTime = performance.now();
+
+    if (showTimer) {
+      app.timerInterval = setInterval(function() {
+        const left = Math.max(0, deadlineMs - (performance.now() - stimTime));
+        const box = byId('timerBox');
+        if (box) box.textContent = (left / 1000).toFixed(1) + ' c';
+      }, 50);
+    }
+
+    app.deadlineTimer = setTimeout(function() {
+      if (active) finishTrial('', true);
+    }, deadlineMs);
+  }
+
+  function finishTrial(response, timeout) {
+    clearTimeout(app.deadlineTimer);
+    clearInterval(app.timerInterval);
+    if (!active) return;
+    active = false;
+
+    const rt = response === '' ? '' : performance.now() - stimTime;
+    const correct = response !== '' && response === current.correctKey ? 1 : 0;
+
+    rows.push({
+      trial: i + 1,
+      A: current.A,
+      B: current.B,
+      C: current.C,
+      sum: current.sum,
+      diff: current.diff,
+      difficulty: current.difficulty,
+      yes: current.yes ? 1 : 0,
+      correct_response: current.correctKey,
+      response: response,
+      correct: correct,
+      omission: response === '' ? 1 : 0,
+      timeout: timeout ? 1 : 0,
+      rt: rt
+    });
+
+    if (code === 'COMPLEX_ACC') {
+      setScreen('<div><div class="medium ' + (correct ? 'ok' : 'bad') + '">' + (correct ? 'Correct' : 'Error') + '</div><p class="muted">RT: ' + (rt === '' ? 'no response' : Math.round(rt) + ' ms') + '</p></div>');
+      setTimeout(function() { i++; nextTrial(); }, 350);
+    } else {
+      setScreen('<div><div class="medium ' + (correct ? 'ok' : 'bad') + '">' + (correct ? 'Correct' : 'Error / late') + '</div><p class="muted">' + (rt === '' ? 'no response within 1.5 s' : 'RT: ' + Math.round(rt) + ' ms') + '</p></div>');
+      setTimeout(function() { i++; nextTrial(); }, 300);
+    }
+  }
+
+  nextTrial();
+}
+
+function finishComplexDiagnosticBlock(code, rows) {
+  app.results[code + '_ended_at'] = new Date().toISOString();
+
+  const correctRows = rows.filter(r => r.correct === 1 && r.rt !== '');
+  const rtCorrect = correctRows.map(r => r.rt);
+  const errors = rows.filter(r => r.correct === 0 && r.omission === 0).length;
+  const omissions = rows.filter(r => r.omission === 1).length;
+  const late = rows.filter(r => r.timeout === 1).length;
+  const accuracy = rows.length ? correctRows.length / rows.length : '';
+  const hard = rows.filter(r => r.difficulty === 'hard');
+  const hardCorrect = hard.filter(r => r.correct === 1).length;
+
+  app.results[code + '_trials'] = rows.length;
+  app.results[code + '_correct'] = correctRows.length;
+  app.results[code + '_errors'] = errors;
+  app.results[code + '_omissions'] = omissions;
+  app.results[code + '_late_or_timeout'] = late;
+  app.results[code + '_accuracy'] = round(accuracy);
+  app.results[code + '_median_correct_rt'] = round(median(rtCorrect));
+  app.results[code + '_mean_correct_rt'] = round(mean(rtCorrect));
+  app.results[code + '_sd_correct_rt'] = round(sd(rtCorrect));
+  app.results[code + '_hard_accuracy'] = hard.length ? round(hardCorrect / hard.length) : '';
+  app.results[code + '_raw_trials_json'] = JSON.stringify(rows.map(r => Object.assign({}, r, {rt: round(r.rt)})));
+
+  if (code === 'COMPLEX_ACC') {
+    const extra = '<div class="resultline">Part 1 complete\nAccuracy: ' + app.results.COMPLEX_ACC_accuracy + '\nMedian RT: ' + app.results.COMPLEX_ACC_median_correct_rt + ' ms\nComplex trials: ' + app.results.COMPLEX_ACC_hard_accuracy + '</div>';
+    showComplexSpeedPause(extra);
+  } else {
+    finishComplexDiagnostic();
+  }
+}
+
+function finishComplexDiagnostic() {
+  clearTimeout(app.deadlineTimer);
+  clearInterval(app.timerInterval);
+  markTestEnd("COMPLEX");
+
+  const accRT = Number(app.results.COMPLEX_ACC_median_correct_rt);
+  const spdRT = Number(app.results.COMPLEX_SPD_median_correct_rt);
+  const accErr = 1 - Number(app.results.COMPLEX_ACC_accuracy);
+  const spdErr = 1 - Number(app.results.COMPLEX_SPD_accuracy);
+  const speedGain = (Number.isFinite(accRT) && Number.isFinite(spdRT)) ? accRT - spdRT : '';
+  const errorIncrease = (Number.isFinite(accErr) && Number.isFinite(spdErr)) ? spdErr - accErr : '';
+
+  app.results.COMPLEX_SPEED_GAIN_MS = round(speedGain);
+  app.results.COMPLEX_ERROR_INCREASE_RATE = round(errorIncrease);
+
+  let interpretation = '';
+  if (speedGain !== '' && errorIncrease !== '') {
+    if (speedGain > 250 && errorIncrease <= 0.15) {
+      interpretation = 'CONTROL_GATING_STRATEGY: speed improves sharply without a large rise in errors. Likely high validator / overcontrol rather than a comprehension limit.';
+    } else if (speedGain < 200 && errorIncrease > 0.15) {
+      interpretation = 'COMPLEX_INTEGRATION_LIMIT: speeding up barely helps, errors increase. Likely a real limit on complex integration under time pressure.';
+    } else if (speedGain > 250 && errorIncrease > 0.15) {
+      interpretation = 'STRONG_SPEED_ACCURACY_TRADEOFF: speeding up is possible, but the error cost is high. The circuit works, but the margin under pressure is limited.';
+    } else {
+      interpretation = 'MIXED_OR_STABLE: no pronounced mode effect. A repeat or a harder block is needed.';
+    }
+  }
+
+  app.results.COMPLEX_DIAGNOSTIC_INTERPRETATION = interpretation;
+
+  // Legacy fields for older analyzer compatibility: accuracy-mode values.
+  app.results.COMPLEX_trials = app.results.COMPLEX_ACC_trials;
+  app.results.COMPLEX_correct = app.results.COMPLEX_ACC_correct;
+  app.results.COMPLEX_errors = app.results.COMPLEX_ACC_errors;
+  app.results.COMPLEX_omissions = app.results.COMPLEX_ACC_omissions;
+  app.results.COMPLEX_accuracy = app.results.COMPLEX_ACC_accuracy;
+  app.results.COMPLEX_mean_correct_rt = app.results.COMPLEX_ACC_mean_correct_rt;
+  app.results.COMPLEX_median_correct_rt = app.results.COMPLEX_ACC_median_correct_rt;
+  app.results.COMPLEX_sd_correct_rt = app.results.COMPLEX_ACC_sd_correct_rt;
+  app.results.COMPLEX_hard_accuracy = app.results.COMPLEX_ACC_hard_accuracy;
+  app.results.COMPLEX_rule_integration_score = round(Number(app.results.COMPLEX_ACC_accuracy) * 1000 / Math.max(350, Number(app.results.COMPLEX_ACC_median_correct_rt) || 1000));
+
+  finishAll();
+}
+
+/* ===========================
+   FINISH + DOWNLOAD
+   =========================== */
+
+function finishAll() {
+  app.currentTest = null;
+  app.keyHandler = null;
+
+  showTest(false);
+  showFinal(true);
+
+  const lines = [
+    "SRT_median_rt: " + app.results.SRT_median_rt,
+    "CHOICE_accuracy: " + app.results.CHOICE_accuracy,
+    "NBACK_accuracy: " + app.results.NBACK_accuracy,
+    "SIMON_interference_cost: " + app.results.SIMON_interference_cost,
+    "",
+    "COMPLEX ACCURACY block:",
+    "  accuracy: " + app.results.COMPLEX_ACC_accuracy,
+    "  median RT: " + app.results.COMPLEX_ACC_median_correct_rt + " ms",
+    "  hard accuracy: " + app.results.COMPLEX_ACC_hard_accuracy,
+    "",
+    "COMPLEX SPEED block:",
+    "  accuracy: " + app.results.COMPLEX_SPD_accuracy,
+    "  median RT: " + app.results.COMPLEX_SPD_median_correct_rt + " ms",
+    "  hard accuracy: " + app.results.COMPLEX_SPD_hard_accuracy,
+    "  late/timeouts: " + app.results.COMPLEX_SPD_late_or_timeout,
+    "",
+    "Speed gain: " + app.results.COMPLEX_SPEED_GAIN_MS + " ms",
+    "Error increase: " + app.results.COMPLEX_ERROR_INCREASE_RATE,
+    "",
+    app.results.COMPLEX_DIAGNOSTIC_INTERPRETATION
+  ];
+
+  byId("summaryText").textContent = lines.join("\n");
+}
+
+function downloadResults() {
+  const data = Object.assign({}, app.client, app.results);
+
+  const headers = Object.keys(data);
+  const values = headers.map(h => data[h]);
+
+  const csv = [
+    headers.map(csvEscape).join(","),
+    values.map(csvEscape).join(",")
+  ].join("\n");
+
+  const blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+
+  const namePart = String(data.NAME || "NO_NAME").trim().replace(/[^a-zA-Zа-яА-Я0-9_-]+/g, "_");
+  const dobPart = String(data.DOB || "NO_DOB").trim().replace(/[^0-9-]+/g, "_");
+  const filename = "psychotyp_cognitive_" + namePart + "_" + dobPart + ".csv";
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
+
+  alert("CSV downloaded. Check your Downloads folder.");
+}
+</script>
+</body>
+</html>

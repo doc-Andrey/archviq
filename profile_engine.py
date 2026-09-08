@@ -1,355 +1,218 @@
+"""Production adapter between Archviq UI and the frozen engine 43.
+
+The adapter never performs lag optimisation.  For the canonical
+``43_universal_full_cascade_engine.py`` API it calls ``run_one(..., 0, 0)``.
+Set ``PSYCHOTYP_ENGINE_PATH`` when the engine is stored outside this folder.
+"""
+
 from __future__ import annotations
 
-import csv
+import datetime as _dt
 import hashlib
+import importlib.util
 import os
-import subprocess
-import sys
-import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict
 
+import numpy as np
 import pandas as pd
 
-SITE_DIR = Path.home() / "psychotyp_site"
-ENGINE_PATH = SITE_DIR / "43_CLIENT_RUN_v2.py"
 
-PROFILES: Dict[str, Dict[str, Any]] = {
-    "FORTRESS": {
-        "type_name": {"EN": "Fortress", "RU": "Крепость"},
-        "tagline": {
-            "EN": "Stable, structured, resistant to chaos.",
-            "RU": "Стабильный, структурный, устойчивый к хаосу.",
-        },
-        "insights_EN": [
-            "You process information best when the task has clear boundaries.",
-            "Your strength is stability under pressure.",
-            "Too much uncertainty can slow the first step.",
-        ],
-        "insights_RU": [
-            "Вы лучше работаете, когда у задачи есть ясные границы.",
-            "Ваша сила — устойчивость под давлением.",
-            "Избыток неопределённости может тормозить первый шаг.",
-        ],
-        "recommendations_EN": [
-            "Use checklists and clear success criteria.",
-            "Split large tasks into controlled steps.",
-            "Avoid too many open tasks at the same time.",
-        ],
-        "recommendations_RU": [
-            "Используйте чек-листы и ясные критерии результата.",
-            "Делите большие задачи на контролируемые шаги.",
-            "Не держите одновременно слишком много открытых задач.",
-        ],
-    },
-    "ANTENNA": {
-        "type_name": {"EN": "Antenna", "RU": "Антенна"},
-        "tagline": {
-            "EN": "Sensitive, signal-oriented, fast at detecting change.",
-            "RU": "Чувствительный тип, быстро улавливающий изменения.",
-        },
-        "insights_EN": [
-            "You detect weak signals earlier than many others.",
-            "The main risk is overload from noise and ambiguity.",
-            "You need separation between signal detection and final decision.",
-        ],
-        "insights_RU": [
-            "Вы рано замечаете слабые сигналы.",
-            "Главный риск — перегрузка шумом и неопределённостью.",
-            "Вам полезно разделять обнаружение сигнала и финальное решение.",
-        ],
-        "recommendations_EN": [
-            "Reduce background noise and interruptions.",
-            "Use written task criteria.",
-            "Do not make important decisions inside emotional noise.",
-        ],
-        "recommendations_RU": [
-            "Снижайте фоновый шум и прерывания.",
-            "Используйте письменные критерии задачи.",
-            "Не принимайте важные решения внутри эмоционального шума.",
-        ],
-    },
-    "FLUID": {
-        "type_name": {"EN": "Fluid Integrator", "RU": "Гибкий интегратор"},
-        "tagline": {
-            "EN": "Adaptive, associative, strong in connecting distant elements.",
-            "RU": "Гибкий, ассоциативный, сильный в связывании разных элементов.",
-        },
-        "insights_EN": [
-            "You work well with complex and changing tasks.",
-            "You connect distant ideas quickly.",
-            "Efficiency drops when there is no priority or output format.",
-        ],
-        "insights_RU": [
-            "Вы хорошо работаете со сложными и изменчивыми задачами.",
-            "Вы быстро связываете далёкие идеи.",
-            "Эффективность падает, если нет приоритета и формата результата.",
-        ],
-        "recommendations_EN": [
-            "Use time boxes and milestones.",
-            "Keep one main objective visible.",
-            "Convert exploration into a concrete deliverable early.",
-        ],
-        "recommendations_RU": [
-            "Используйте временные блоки и промежуточные точки.",
-            "Держите перед собой одну главную цель.",
-            "Рано переводите исследование в конкретный результат.",
-        ],
-    },
-    "COLLAPSE": {
-        "type_name": {"EN": "High-Load System", "RU": "Система высокой нагрузки"},
-        "tagline": {
-            "EN": "Powerful, but vulnerable to overload without structure.",
-            "RU": "Мощная, но уязвимая к перегрузке без структуры.",
-        },
-        "insights_EN": [
-            "You may have high internal intensity.",
-            "Too many simultaneous demands can destabilize performance.",
-            "Your result improves when pressure and responsibility are structured.",
-        ],
-        "insights_RU": [
-            "У вас может быть высокая внутренняя интенсивность.",
-            "Слишком много одновременных требований может снижать устойчивость.",
-            "Результат улучшается, когда давление и ответственность структурированы.",
-        ],
-        "recommendations_EN": [
-            "Avoid chaotic multitasking.",
-            "Use recovery pauses after high-load decisions.",
-            "Break pressure tasks into small execution blocks.",
-        ],
-        "recommendations_RU": [
-            "Избегайте хаотичной многозадачности.",
-            "Делайте паузы восстановления после решений с высокой нагрузкой.",
-            "Делите стрессовые задачи на малые блоки выполнения.",
-        ],
-    },
-}
+RAW_KEYS = (
+    "RS1_RHYTHM", "RS2_SYNC", "RS3_SEGR", "RS4_INTEGRAL",
+    "X_EXC", "X_SENS", "X_STAB", "X_INTEG", "X_FLEX", "X_LAB",
+    "X_SEGR", "X_HUB", "X_MAT", "hidden_tension_index",
+    "creative_integrator_index", "control_compensation_index",
+    "architecture_power_score", "pathology_load_score",
+    "adaptive_control_score", "adaptive_stability_score",
+    "decompensation_risk_score", "high_load_compensation_score",
+    "tension_control_ratio",
+)
 
-COMPAT: Dict[Tuple[str, str], Tuple[int, str]] = {
-    ("FORTRESS", "FORTRESS"): (78, "Stable pair. Strong structure, but possible rigidity."),
-    ("FORTRESS", "ANTENNA"): (74, "Structure plus sensitivity. Good balance if sensitivity is respected."),
-    ("FORTRESS", "FLUID"): (82, "Strong complementarity: structure plus adaptability."),
-    ("FORTRESS", "COLLAPSE"): (66, "The stable profile can reduce overload, but pressure rules are needed."),
-    ("ANTENNA", "FORTRESS"): (74, "Structure plus sensitivity. Good balance if sensitivity is respected."),
-    ("ANTENNA", "ANTENNA"): (62, "High mutual sensitivity. Understanding is high, but noise can amplify tension."),
-    ("ANTENNA", "FLUID"): (76, "Sensitive detection plus flexible integration. Creative but needs noise control."),
-    ("ANTENNA", "COLLAPSE"): (58, "High sensitivity can amplify overload. Boundaries are necessary."),
-    ("FLUID", "FORTRESS"): (82, "Strong complementarity: adaptability plus structure."),
-    ("FLUID", "ANTENNA"): (76, "Flexible integration plus signal sensitivity. Good for complex tasks."),
-    ("FLUID", "FLUID"): (72, "Highly adaptive pair. Needs deadlines and clear output criteria."),
-    ("FLUID", "COLLAPSE"): (64, "High creative intensity, but overload risk rises without structure."),
-    ("COLLAPSE", "FORTRESS"): (66, "Stability can compensate high load if roles are explicit."),
-    ("COLLAPSE", "ANTENNA"): (58, "Sensitivity plus high load needs calm communication and boundaries."),
-    ("COLLAPSE", "FLUID"): (64, "Creative intensity is high, but task structure is essential."),
-    ("COLLAPSE", "COLLAPSE"): (52, "High intensity on both sides. Strong recovery and conflict rules are needed."),
-}
 
-def _text(ptype: str, lang: str) -> Dict[str, Any]:
-    lang = "RU" if lang == "RU" else "EN"
-    p = PROFILES.get(ptype, PROFILES["FLUID"])
-    return {
-        "type_name": p["type_name"][lang],
-        "tagline": p["tagline"][lang],
-        "insights": p[f"insights_{lang}"],
-        "recommendations": p[f"recommendations_{lang}"],
-    }
-
-def _safe_float(x, default=50.0) -> float:
+def _clamp(value: Any, low: float = 0.0, high: float = 100.0) -> float:
     try:
-        v = float(x)
-        if pd.isna(v):
-            return default
-        return v
-    except Exception:
-        return default
+        value = float(value)
+    except (TypeError, ValueError):
+        value = low
+    return max(low, min(high, value))
 
-def _norm(x, default=50.0) -> float:
-    v = _safe_float(x, default)
-    if 0 <= v <= 1:
-        v *= 100.0
-    return max(0.0, min(100.0, v))
 
-def _map_profile_class(profile_class: str, row: Dict[str, Any] | None = None) -> str:
-    pc = str(profile_class or "").upper()
+def _engine_candidates() -> list[Path]:
+    root = Path(__file__).resolve().parent
+    home = Path.home()
+    candidates: list[Path] = []
+    configured = os.getenv("PSYCHOTYP_ENGINE_PATH", "").strip()
+    if configured:
+        candidates.append(Path(configured).expanduser())
+    for name in ("43_CLIENT_RUN_v2.py", "43_universal_full_cascade_engine.py"):
+        candidates.extend((
+            root / name,
+            root.parent / name,
+            home / "Downloads" / name,
+            home / "Downloads" / "psychotyp_site" / name,
+            home / "Downloads" / "psychotyp_app" / name,
+        ))
+    seen: set[Path] = set()
+    return [p.resolve() for p in candidates if not (p.resolve() in seen or seen.add(p.resolve()))]
 
-    if "HIGH_LOAD" in pc or "COLLAPSE" in pc or "DECOMP" in pc or "RISK" in pc:
-        return "COLLAPSE"
-    if "SENS" in pc or "ANTENNA" in pc:
-        return "ANTENNA"
-    if "STAB" in pc or "FORTRESS" in pc or "LOW_LOAD" in pc:
-        return "FORTRESS"
-    if "INTEGR" in pc or "FLEX" in pc or "COMPENSATED" in pc or "MIDDLE" in pc:
-        return "FLUID"
 
-    if row:
-        tension = _safe_float(row.get("hidden_tension_index", 0), 0)
-        adaptive = _safe_float(row.get("adaptive_control_score", 0), 0)
-        sens = _safe_float(row.get("X_SENS", 0), 0)
-        integ = _safe_float(row.get("X_INTEG", 0), 0)
-        stab = _safe_float(row.get("X_STAB", 0), 0)
+def _load_module(path: Path):
+    token = hashlib.sha1(str(path).encode("utf-8")).hexdigest()[:10]
+    spec = importlib.util.spec_from_file_location(f"archviq_engine43_{token}", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Cannot load engine module: {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
-        if tension > 35 and adaptive < 20:
-            return "COLLAPSE"
-        if sens > 15:
-            return "ANTENNA"
-        if stab > 10:
-            return "FORTRESS"
-        if integ > 15:
-            return "FLUID"
 
-    return "FLUID"
-
-def _fallback_profile(dob: str, sex: str, name: str, lang: str) -> Dict[str, Any]:
-    seed = f"{dob}|{sex}|{name}".encode("utf-8")
-    h = hashlib.md5(seed).hexdigest()
-    keys = ["FORTRESS", "ANTENNA", "FLUID", "COLLAPSE"]
-    ptype = keys[int(h[0:2], 16) % 4]
-    tx = _text(ptype, lang)
-
-    return {
+def _canonical_no_lag(module, dob: str, name: str) -> Dict[str, Any]:
+    if not (hasattr(module, "load_ssn") and hasattr(module, "run_one")):
+        raise AttributeError("Engine does not expose load_ssn() + run_one()")
+    ssn = module.load_ssn()
+    person = pd.Series({
         "name": name,
         "dob": dob,
-        "sex": sex,
-        "lang": lang,
-        "ptype": ptype,
-        "type_name": tx["type_name"],
-        "tagline": tx["tagline"],
-        "rs1": int(h[2:4], 16) % 101,
-        "rs2": int(h[4:6], 16) % 101,
-        "rs3": int(h[6:8], 16) % 101,
-        "rs4": int(h[8:10], 16) % 101,
-        "tension": int(h[10:12], 16) % 101,
-        "adaptive": int(h[12:14], 16) % 101,
-        "insights": tx["insights"],
-        "recommendations": tx["recommendations"],
-        "source": "fallback_md5",
-    }
+        "dob_parsed": pd.Timestamp(dob),
+        "context": "ARCHVIQ_CLIENT_NO_LAG",
+    })
+    output = module.run_one(ssn, person, 0, 0)
+    raw = output[0] if isinstance(output, tuple) else output
+    if isinstance(raw, pd.Series):
+        raw = raw.to_dict()
+    if not isinstance(raw, dict):
+        raise TypeError("run_one() did not return a result dictionary")
+    raw["pre_lag_days"] = 0
+    raw["post_lag_days"] = 0
+    if hasattr(module, "classify_profile"):
+        raw["profile_class"] = module.classify_profile(raw)
+    return raw
 
-def compute_profile(dob: str, sex: str, name: str, lang: str = "EN") -> Dict[str, Any]:
-    lang = "RU" if lang == "RU" else "EN"
 
-    if not ENGINE_PATH.exists():
-        return _fallback_profile(dob, sex, name, lang)
-
-    with tempfile.TemporaryDirectory(prefix="psychotyp_") as tmp:
-        tmpdir = Path(tmp)
-        input_csv = tmpdir / "input.csv"
-        out_dir = tmpdir / "out"
-        out_dir.mkdir(parents=True, exist_ok=True)
-
-        with input_csv.open("w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=["name", "dob", "sex"])
-            writer.writeheader()
-            writer.writerow({"name": name, "dob": dob, "sex": sex})
-
-        env = os.environ.copy()
-        env["PSYCHOTYP_OUT"] = str(out_dir)
-
-        cmd = [
-            sys.executable,
-            str(ENGINE_PATH),
-            "--input",
-            str(input_csv),
-            "--no_lag",
-        ]
-
+def _find_and_run_engine(dob: str, name: str) -> tuple[Dict[str, Any] | None, str, str]:
+    errors: list[str] = []
+    for path in _engine_candidates():
+        if not path.is_file():
+            continue
         try:
-            subprocess.run(
-                cmd,
-                cwd=str(SITE_DIR),
-                env=env,
-                check=True,
-                capture_output=True,
-                text=True,
-                timeout=90,
-            )
+            raw = _canonical_no_lag(_load_module(path), dob, name)
+            return raw, f"ENGINE 43 · NO_LAG · {path.name}", ""
+        except Exception as exc:
+            errors.append(f"{path.name}: {exc}")
+    return None, "DETERMINISTIC DEMO FALLBACK", "; ".join(errors[-2:])
 
-            summary_path = out_dir / "00_universal_summary.csv"
-            if not summary_path.exists():
-                found = list(out_dir.rglob("00_universal_summary.csv"))
-                if found:
-                    summary_path = found[0]
 
-            if not summary_path.exists():
-                return _fallback_profile(dob, sex, name, lang)
+def _demo_raw(dob: str, sex: str) -> Dict[str, float]:
+    """Stable offline fallback; never presented as a production 43 result."""
+    digest = hashlib.sha256(f"ARCHVIQ-DEMO|{dob}|{sex}".encode("utf-8")).digest()
+    unit = np.frombuffer(digest, dtype=np.uint8).astype(float) / 255.0
+    z = (unit - .5) * 2
+    raw = {
+        "RS1_RHYTHM": z[0] * 4,
+        "RS2_SYNC": 24 + unit[1] * 18,
+        "RS3_SEGR": 7 + unit[2] * 8,
+        "RS4_INTEGRAL": 14 + unit[3] * 16,
+        "X_EXC": 6 + unit[4] * 7,
+        "X_SENS": 10 + unit[5] * 12,
+        "X_STAB": -30 + unit[6] * 18,
+        "X_INTEG": 14 + unit[7] * 16,
+        "X_FLEX": 11 + unit[8] * 15,
+        "X_LAB": 8 + unit[9] * 12,
+        "X_SEGR": 12 + unit[10] * 15,
+        "X_HUB": 18 + unit[11] * 17,
+        "X_MAT": 19 + unit[12] * 18,
+    }
+    raw["hidden_tension_index"] = raw["X_SENS"] + raw["X_LAB"] - raw["X_STAB"]
+    raw["creative_integrator_index"] = raw["X_INTEG"] + raw["X_HUB"] + raw["X_FLEX"] + raw["RS2_SYNC"]
+    raw["control_compensation_index"] = raw["X_MAT"] + raw["RS3_SEGR"] - raw["X_LAB"]
+    raw["architecture_power_score"] = .35 * raw["X_INTEG"] + .35 * raw["X_HUB"] + .30 * raw["X_MAT"]
+    raw["pathology_load_score"] = .45 * raw["hidden_tension_index"] + .55 * raw["X_LAB"]
+    raw["adaptive_control_score"] = .55 * raw["control_compensation_index"] + .45 * raw["X_MAT"]
+    raw["adaptive_stability_score"] = raw["adaptive_control_score"] + .25 * raw["architecture_power_score"] - .45 * raw["pathology_load_score"]
+    raw["decompensation_risk_score"] = raw["pathology_load_score"] + .20 * raw["architecture_power_score"] - .45 * raw["adaptive_control_score"]
+    raw["high_load_compensation_score"] = raw["architecture_power_score"] + raw["adaptive_control_score"] - .35 * raw["pathology_load_score"]
+    raw["tension_control_ratio"] = raw["pathology_load_score"] / max(raw["adaptive_control_score"], 1e-9)
+    raw["pre_lag_days"] = 0
+    raw["post_lag_days"] = 0
+    return raw
 
-            df = pd.read_csv(summary_path)
-            if df.empty:
-                return _fallback_profile(dob, sex, name, lang)
 
-            row = df.iloc[0].to_dict()
-            profile_class = row.get("profile_class", "")
-            ptype = _map_profile_class(profile_class, row)
-            tx = _text(ptype, lang)
+def _architecture_label(raw: Dict[str, Any]) -> str:
+    pathology = float(raw.get("pathology_load_score", 0))
+    control = float(raw.get("adaptive_control_score", 0))
+    if pathology > control * 1.35:
+        return "COLLAPSE · OVERLOADED MODE"
+    if float(raw.get("X_SENS", 0)) >= 16:
+        return "ANTENNA"
+    rs3 = float(raw.get("RS3_SEGR", 0)) * 5 + 30
+    if rs3 >= 67:
+        return "FORTRESS"
+    return "FLUID"
 
-            return {
-                "name": name,
-                "dob": dob,
-                "sex": sex,
-                "lang": lang,
-                "ptype": ptype,
-                "type_name": tx["type_name"],
-                "tagline": tx["tagline"],
-                "rs1": _norm(row.get("RS1_RHYTHM", row.get("rs1", 50))),
-                "rs2": _norm(row.get("RS2_SYNC", row.get("rs2", 50))),
-                "rs3": _norm(row.get("RS3_SEGR", row.get("rs3", 50))),
-                "rs4": _norm(row.get("RS4_INTEGRAL", row.get("rs4", 50))),
-                "tension": _norm(row.get("hidden_tension_index", row.get("tension", 50))),
-                "adaptive": _norm(row.get("adaptive_control_score", row.get("adaptive", 50))),
-                "insights": tx["insights"],
-                "recommendations": tx["recommendations"],
-                "profile_class_raw": profile_class,
-                "source": "43_engine",
-            }
 
-        except Exception:
-            return _fallback_profile(dob, sex, name, lang)
+def _profile_from_raw(raw: Dict[str, Any], name: str, source: str, error: str) -> Dict[str, Any]:
+    cleaned = dict(raw)
+    for key in RAW_KEYS:
+        if key in cleaned:
+            try:
+                cleaned[key] = float(cleaned[key])
+            except (TypeError, ValueError):
+                pass
+    label = _architecture_label(cleaned)
+    tension = _clamp(cleaned.get("pathology_load_score"))
+    adaptive = _clamp(float(cleaned.get("high_load_compensation_score", 0)) * .8)
+    profile = {
+        "name": name,
+        "type_name": label,
+        "tagline": {
+            "FORTRESS": "Stable pattern maintenance and protected focus",
+            "ANTENNA": "High input gain and environmental sensitivity",
+            "FLUID": "Adaptive integration and flexible reconfiguration",
+            "COLLAPSE · OVERLOADED MODE": "High load with reduced control reserve",
+        }[label],
+        "rs1": _clamp(float(cleaned.get("RS1_RHYTHM", 0)) * 5 + 50),
+        "rs2": _clamp(cleaned.get("RS2_SYNC")),
+        "rs3": _clamp(float(cleaned.get("RS3_SEGR", 0)) * 5 + 30),
+        "rs4": _clamp(cleaned.get("RS4_INTEGRAL")),
+        "tension": tension,
+        "adaptive": adaptive,
+        "raw": cleaned,
+        "engine_source": source,
+        "engine_error": error,
+        "insights": [
+            "RS1–RS4 summarize rhythm, synchrony, functional segregation and integration.",
+            "The interpretation layer compares this prior with measured cognition and behavior.",
+        ],
+        "recommendations": [
+            "Use the cognitive test to measure the architecture–function GAP.",
+            "Keep wake time stable for 14 days before evaluating a sleep intervention.",
+            "Treat Kp-linked observations as an N-of-1 hypothesis, not a causal conclusion.",
+        ],
+    }
+    return profile
+
+
+def compute_profile(dob: Any, sex: str, name: str, lang: str = "EN") -> Dict[str, Any]:
+    if isinstance(dob, (_dt.date, _dt.datetime, pd.Timestamp)):
+        dob_text = pd.Timestamp(dob).date().isoformat()
+    else:
+        dob_text = str(dob)[:10]
+    raw, source, error = _find_and_run_engine(dob_text, name)
+    if raw is None:
+        raw = _demo_raw(dob_text, sex)
+    return _profile_from_raw(raw, name, source, error)
+
 
 def get_compatibility(p1: Dict[str, Any], p2: Dict[str, Any]) -> Dict[str, Any]:
-    ptype1 = p1.get("ptype", "FLUID")
-    ptype2 = p2.get("ptype", "FLUID")
-
-    score, summary = COMPAT.get(
-        (ptype1, ptype2),
-        (65, "Mixed profile. Compatibility depends on task structure and communication rules."),
-    )
-
-    lang = p1.get("lang", "EN")
-    dynamics: List[str] = []
-
-    if lang == "RU":
-        if ptype1 == ptype2:
-            dynamics.append("Профили похожи. Это улучшает понимание, но может усиливать одну и ту же слабость.")
-        else:
-            dynamics.append("Профили дополняют друг друга. Это работает лучше при ясном разделении ролей.")
-
-        if "ANTENNA" in [ptype1, ptype2]:
-            dynamics.append("Есть высокая чувствительность к сигналам. Нужно снижать шум и неопределённость.")
-        if "FORTRESS" in [ptype1, ptype2]:
-            dynamics.append("Есть стабилизирующий компонент. Помогают планы, границы и критерии.")
-        if "FLUID" in [ptype1, ptype2]:
-            dynamics.append("Есть гибкий интегратор. Нужны сроки и понятный формат результата.")
-        if "COLLAPSE" in [ptype1, ptype2]:
-            dynamics.append("Возможна высокая нагрузка. Нельзя смешивать давление, конфликт и размытую ответственность.")
-    else:
-        if ptype1 == ptype2:
-            dynamics.append("Both profiles are similar. This improves mutual understanding but may amplify the same weakness.")
-        else:
-            dynamics.append("The profiles are complementary. This works best when roles are explicit.")
-
-        if "ANTENNA" in [ptype1, ptype2]:
-            dynamics.append("High signal sensitivity is present. Reduce noise and ambiguity.")
-        if "FORTRESS" in [ptype1, ptype2]:
-            dynamics.append("A stabilizing component is present. Plans, boundaries and criteria help.")
-        if "FLUID" in [ptype1, ptype2]:
-            dynamics.append("A flexible integration component is present. Deadlines and output format are important.")
-        if "COLLAPSE" in [ptype1, ptype2]:
-            dynamics.append("High-load dynamics are possible. Avoid pressure, conflict and unclear responsibility at the same time.")
-
+    axes = ("rs1", "rs2", "rs3", "rs4")
+    distance = float(np.mean([abs(float(p1.get(k, 50)) - float(p2.get(k, 50))) for k in axes]))
+    score = _clamp(100 - 1.45 * distance)
     return {
-        "score": int(score),
-        "summary": summary,
-        "dynamics": dynamics,
-        "p1_type": ptype1,
-        "p2_type": ptype2,
+        "score": score,
+        "summary": "Architectural distance with explicit coordination protocol",
+        "dynamics": [
+            "Similarity reduces translation cost but does not guarantee relationship quality.",
+            "The largest RS gap identifies where thresholds, pace or recovery expectations need explicit negotiation.",
+        ],
     }
