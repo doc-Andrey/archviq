@@ -5,6 +5,8 @@ import gzip
 import json
 import os
 import urllib.request
+import urllib.parse
+import urllib.error
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -202,7 +204,7 @@ SCIENCE_CSS = r"""
   background:
     radial-gradient(circle at 12% 8%, rgba(227,163,78,.16), transparent 31rem),
     radial-gradient(circle at 88% 22%, rgba(111,216,196,.13), transparent 34rem),
-    linear-gradient(145deg,#10152A 0%,#141B33 52%,#10152A 100%)
+    linear-gradient(145deg,#161C36 0%,#1B2340 52%,#161C36 100%)
     ,url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNjAiIGhlaWdodD0iMzYwIiB2aWV3Qm94PSIwIDAgMzYwIDM2MCI+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNkZEOEM0IiBzdHJva2Utd2lkdGg9IjEuMyIgb3BhY2l0eT0iMC4yMCI+CiAgICA8cGF0aCBkPSJNMTAsNjAgTDMwLDYwIEwzOCw0MiBMNDYsNzggTDU0LDUwIEw2Miw2MCBMOTAsNjAiLz4KICAgIDxwYXRoIGQ9Ik0xODAsNDAgQzE5NSwyMCAyMTAsNjAgMjI1LDQwIEMyNDAsMjAgMjU1LDYwIDI3MCw0MCIvPgogIDwvZz4KICA8ZyBmaWxsPSJub25lIiBzdHJva2U9IiNFM0EzNEUiIHN0cm9rZS13aWR0aD0iMS4zIiBvcGFjaXR5PSIwLjIyIj4KICAgIDxjaXJjbGUgY3g9IjMwMCIgY3k9IjEyMCIgcj0iMjIiLz4KICAgIDxjaXJjbGUgY3g9IjI5NCIgY3k9IjExNSIgcj0iMi42IiBmaWxsPSIjRTNBMzRFIiBzdHJva2U9Im5vbmUiLz4KICAgIDxjaXJjbGUgY3g9IjMwOCIgY3k9IjEyNiIgcj0iMS44IiBmaWxsPSIjRTNBMzRFIiBzdHJva2U9Im5vbmUiLz4KICAgIDxsaW5lIHgxPSIzMDAiIHkxPSI5MCIgeDI9IjMwMCIgeTI9IjgwIi8+CiAgICA8bGluZSB4MT0iMzAwIiB5MT0iMTUwIiB4Mj0iMzAwIiB5Mj0iMTYwIi8+CiAgICA8bGluZSB4MT0iMjcwIiB5MT0iMTIwIiB4Mj0iMjYwIiB5Mj0iMTIwIi8+CiAgICA8bGluZSB4MT0iMzMwIiB5MT0iMTIwIiB4Mj0iMzQwIiB5Mj0iMTIwIi8+CiAgPC9nPgogIDxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0E3QjBDOCIgc3Ryb2tlLXdpZHRoPSIxLjIiIG9wYWNpdHk9IjAuMjAiPgogICAgPGVsbGlwc2UgY3g9IjcwIiBjeT0iMjIwIiByeD0iMzQiIHJ5PSIxNCIvPgogICAgPGVsbGlwc2UgY3g9IjcwIiBjeT0iMjIwIiByeD0iMzQiIHJ5PSIxNCIgdHJhbnNmb3JtPSJyb3RhdGUoNjAgNzAgMjIwKSIvPgogICAgPGVsbGlwc2UgY3g9IjcwIiBjeT0iMjIwIiByeD0iMzQiIHJ5PSIxNCIgdHJhbnNmb3JtPSJyb3RhdGUoMTIwIDcwIDIyMCkiLz4KICAgIDxjaXJjbGUgY3g9IjcwIiBjeT0iMjIwIiByPSIyLjgiIGZpbGw9IiNBN0IwQzgiIHN0cm9rZT0ibm9uZSIvPgogIDwvZz4KICA8ZyBmaWxsPSJub25lIiBzdHJva2U9IiM2RkQ4QzQiIHN0cm9rZS13aWR0aD0iMS4yIiBvcGFjaXR5PSIwLjIwIj4KICAgIDxjaXJjbGUgY3g9IjIzMCIgY3k9IjI2MCIgcj0iNyIvPgogICAgPGxpbmUgeDE9IjIzMCIgeTE9IjI1MyIgeDI9IjIxNSIgeTI9IjIzNSIvPgogICAgPGxpbmUgeDE9IjIzMCIgeTE9IjI1MyIgeDI9IjI0NSIgeTI9IjIzMiIvPgogICAgPGxpbmUgeDE9IjIzNyIgeTE9IjI2NCIgeDI9IjI2MCIgeTI9IjI3MCIvPgogICAgPGxpbmUgeDE9IjIyMyIgeTE9IjI2NiIgeDI9IjIwNSIgeTI9IjI4NSIvPgogIDwvZz4KICA8dGV4dCB4PSIxNTAiIHk9IjMzMCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjIyIiBmaWxsPSIjQTdCMEM4IiBvcGFjaXR5PSIwLjIwIj7OozwvdGV4dD4KICA8dGV4dCB4PSIyMCIgeT0iMTUwIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNkZEOEM0IiBvcGFjaXR5PSIwLjIwIj7OlFNTTjwvdGV4dD4KPC9zdmc+Cg==') repeat;
 }
 .stApp::before {
@@ -225,12 +227,12 @@ p,li {line-height:1.65}
   box-shadow:0 14px 38px rgba(0,0,0,.18);
 }
 .science-card h3,.axis-card h3,.protocol-card h3,.pair-card h3 {font-family:'Newsreader',serif;font-style:italic;font-weight:500;font-size:1.08rem;margin:.1rem 0 .5rem;color:var(--ink)}
-.science-card p,.axis-card p,.protocol-card p,.pair-card p {font-size:.94rem;color:var(--muted);margin:.25rem 0}
+.science-card p,.axis-card p,.protocol-card p,.pair-card p {font-size:1rem;color:#C7CEDE;margin:.25rem 0}
 .formula {background:rgba(6,10,20,.7);border-left:3px solid var(--cyan);padding:1rem 1.2rem;border-radius:4px 14px 14px 4px;font:500 .92rem/1.7 'IBM Plex Mono',monospace;color:#CDEFE7;margin:1rem 0}
 .pipeline {display:grid;grid-template-columns:repeat(5,1fr);gap:.55rem;margin:1.3rem 0}
 .pipe-node {border:1px solid var(--line);border-radius:14px;padding:.9rem .7rem;text-align:center;background:rgba(18,26,48,.72);font-size:.8rem;color:var(--muted)}
 .pipe-node b {display:block;color:var(--cyan);font-size:.78rem;margin-bottom:.35rem}
-.eyebrow {font:600 .72rem/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase}
+.eyebrow {font:600 .78rem/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase}
 .score {font:500 2.15rem/1 'IBM Plex Mono',monospace;color:var(--ink)}
 .level-low {color:#68e0b4}.level-mid {color:#ffd166}.level-high {color:#ff7e8d}
 .micro {font-size:.78rem;color:var(--muted)}
@@ -241,6 +243,12 @@ p,li {line-height:1.65}
 .price-card{min-height:185px;background:linear-gradient(145deg,rgba(18,26,48,.94),rgba(11,15,28,.9));border:1px solid var(--line);border-radius:18px;padding:1.2rem;margin:.4rem 0}.price-card b{font:600 1.05rem 'Newsreader',serif;color:#fff}.price{font:500 2rem 'IBM Plex Mono',monospace;color:var(--gold);margin:.7rem 0}.price-card p{color:var(--muted);font-size:.84rem}
 .rule {height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin:1.2rem 0}
 [data-testid="stMetric"] {background:rgba(18,26,48,.78);border:1px solid var(--line);padding:1rem;border-radius:14px}
+[data-testid="stMetricValue"] {color:var(--ink)!important;font-size:1.9rem!important}
+[data-testid="stMetricLabel"] p {color:#B8C0D4!important;font-size:.95rem!important}
+.stTabs [data-baseweb="tab"] {font-size:1.02rem;color:#B8C0D4;padding:.6rem 1rem}
+.stTabs [aria-selected="true"] {color:var(--gold)!important}
+.stTabs [data-baseweb="tab-highlight"] {background-color:var(--gold)!important}
+p,li,.stMarkdown {color:#DCE1EC}
 [data-testid="stExpander"] {background:rgba(13,18,32,.72);border-color:var(--line);border-radius:14px}
 .stButton>button {border-radius:12px;border:1px solid rgba(227,163,78,.35);min-height:2.8rem}
 .stButton>button[kind="primary"] {background:var(--gold);color:#171106;border:0;font-size:1.12rem;font-weight:700;letter-spacing:.01em;min-height:3.2rem}
@@ -453,11 +461,91 @@ def purchase_button(label,product_key):
         st.link_button(label,url,width="stretch")
 
 
+def get_gumroad_product_id(product_key):
+    """Product ID (не permalink!) — берётся из Streamlit secrets:
+    GUMROAD_COGNITIVE_PRODUCT_ID, GUMROAD_COMPATIBILITY_PRODUCT_ID и т.д.
+    Найти его: Gumroad → товар → Content → License key → включить —
+    там появится Product ID для копирования."""
+    key = product_key.upper()
+    try:
+        return st.secrets.get(f"GUMROAD_{key}_PRODUCT_ID","")
+    except Exception:
+        return os.getenv(f"GUMROAD_{key}_PRODUCT_ID","")
+
+
+def verify_gumroad_license(product_key, license_key):
+    """Проверяет ключ через официальный публичный endpoint Gumroad.
+    Возвращает (ok: bool, message: str)."""
+    product_id = get_gumroad_product_id(product_key)
+    if not product_id:
+        return False, tr(
+            "This product's license verification is not configured yet (missing Product ID).",
+            "Проверка лицензии для этого товара ещё не настроена (нет Product ID)."
+        )
+    if not license_key or not license_key.strip():
+        return False, tr("Enter your license key.","Введите лицензионный ключ.")
+    try:
+        data = urllib.parse.urlencode({
+            "product_id": product_id,
+            "license_key": license_key.strip(),
+            "increment_uses_count": "false",
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            "https://api.gumroad.com/v2/licenses/verify",
+            data=data, method="POST",
+            headers={"User-Agent":"Archviq/1.0"},
+        )
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return False, tr("License key not found.","Лицензионный ключ не найден.")
+        return False, tr(f"Verification error: {e}", f"Ошибка проверки: {e}")
+    except Exception as e:
+        return False, tr(f"Verification error: {e}", f"Ошибка проверки: {e}")
+
+    if not payload.get("success"):
+        return False, payload.get("message") or tr("Invalid license key.","Неверный лицензионный ключ.")
+    purchase = payload.get("purchase",{})
+    if purchase.get("refunded") or purchase.get("chargebacked"):
+        return False, tr("This purchase was refunded and is no longer valid.","Эта покупка была возвращена и больше недействительна.")
+    return True, tr("Unlocked!","Открыто!")
+
+
+def paywall_gate(product_key, session_flag, price_label):
+    """Рендерит блок «купить / ввести ключ». Возвращает True, если контент уже разблокирован."""
+    if st.session_state.get(session_flag):
+        return True
+    st.markdown('<div class="rule"></div>',unsafe_allow_html=True)
+    st.info(tr(
+        f"Full analysis is part of the paid report ({price_label}). Buy it, then enter your license key below to unlock it here.",
+        f"Полный разбор — часть платного отчёта ({price_label}). Купите его, затем введите лицензионный ключ ниже, чтобы открыть здесь."
+    ))
+    c1,c2 = st.columns([1,1.4])
+    with c1:
+        purchase_button(tr(f"Buy · {price_label}",f"Купить · {price_label}"),product_key)
+    with c2:
+        lic = st.text_input(tr("License key","Лицензионный ключ"),key=f"lic_input_{product_key}",placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX")
+        if st.button(tr("Unlock","Открыть"),key=f"lic_btn_{product_key}",width="stretch"):
+            ok,msg = verify_gumroad_license(product_key, lic)
+            if ok:
+                st.session_state[session_flag]=True
+                st.success(msg)
+                st.rerun()
+            else:
+                st.error(msg)
+    return False
+
+
 def render_rs_radar(profile,title=""):
     labels=["RS1 · Rhythm","RS2 · Sync","RS3 · Topology","RS4 · Integral"]
     values=[max(0,min(100,safe_num(profile.get(k,50)))) for k in ("rs1","rs2","rs3","rs4")]
     fig=go.Figure(go.Scatterpolar(r=values+[values[0]],theta=labels+[labels[0]],fill="toself",line=dict(color="#6FD8C4",width=3),fillcolor="rgba(111,216,196,.25)",name=profile.get("name","Profile")))
-    fig.update_layout(template="plotly_dark",height=410,margin=dict(l=40,r=40,t=55,b=35),paper_bgcolor="rgba(0,0,0,0)",polar=dict(bgcolor="rgba(13,18,32,.55)",radialaxis=dict(range=[0,100],showticklabels=True,gridcolor="rgba(180,190,214,.2)")),showlegend=False,title=title)
+    fig.update_layout(template="plotly_dark",height=410,margin=dict(l=40,r=40,t=55,b=35),paper_bgcolor="rgba(0,0,0,0)",
+        polar=dict(bgcolor="rgba(13,18,32,.55)",
+            radialaxis=dict(range=[0,100],showticklabels=True,gridcolor="rgba(180,190,214,.28)",tickfont=dict(size=12,color="#B8C0D4")),
+            angularaxis=dict(tickfont=dict(size=14,color="#ECEEF3"),gridcolor="rgba(180,190,214,.28)")),
+        showlegend=False,title=title,font=dict(color="#ECEEF3"))
     st.plotly_chart(fig,width="stretch",config={"displayModeBar":False})
 
 
@@ -1618,67 +1706,68 @@ elif st.session_state.step == "compat":
         "Балл показывает только архитектурную дистанцию. Качество отношений зависит от того, как две системы согласуют нагрузку, общение, восстановление и решения."
     ))
 
-    c1,c2=st.columns(2)
-    for col,person in ((c1,p1),(c2,p2)):
-        with col:
-            st.markdown(f'<div class="pair-card"><div class="eyebrow">{person.get("type_name","")}</div><h3>{person.get("name","")}</h3><p>{person.get("tagline","")}</p></div>',unsafe_allow_html=True)
-            a,b=st.columns(2)
-            a.metric("RS4",f"{safe_num(person.get('rs4')):.1f}")
-            b.metric(tr("Tension","Напряжение"),f"{safe_num(person.get('tension')):.1f}")
+    if paywall_gate("compatibility","compat_unlocked",tr("$19","$19")):
+        c1,c2=st.columns(2)
+        for col,person in ((c1,p1),(c2,p2)):
+            with col:
+                st.markdown(f'<div class="pair-card"><div class="eyebrow">{person.get("type_name","")}</div><h3>{person.get("name","")}</h3><p>{person.get("tagline","")}</p></div>',unsafe_allow_html=True)
+                a,b=st.columns(2)
+                a.metric("RS4",f"{safe_num(person.get('rs4')):.1f}")
+                b.metric(tr("Tension","Напряжение"),f"{safe_num(person.get('tension')):.1f}")
 
-    architecture,dynamics,protocol,monitoring=st.tabs([
-        tr("Pair architecture","Архитектура пары"),tr("Relationship dynamics","Динамика отношений"),
-        tr("Behavior protocol","Протокол поведения"),tr("Control & forecast","Контроль и прогноз")])
-    with architecture:
-        r1,r2=st.columns(2)
-        with r1: render_rs_radar(p1,p1.get("name","P1"))
-        with r2: render_rs_radar(p2,p2.get("name","P2"))
-        if deep:
-            labels={
-                "overload":tr("System load","Нагрузка"),"recovery":tr("Recovery","Восстановление"),
-                "flexibility":tr("Flexibility","Гибкость"),"rigidity":tr("Rigidity","Ригидность"),
-                "transition_cost":tr("Switching cost","Цена переключения"),"emo_cost":tr("Emotional cost","Эмоциональная цена"),
-                "bottleneck":tr("Processing bottleneck","Узкое место"),"autonomic":tr("Autonomic reactivity","Автономная реактивность")}
-            rows=[]
-            for key,label in labels.items():
-                v1,v2=deep["idx1"][key],deep["idx2"][key]
-                rows.append({tr("Function","Функция"):label,p1.get("name","P1"):round(v1,1),p2.get("name","P2"):round(v2,1),tr("Gap","Разрыв"):round(abs(v1-v2),1)})
-            st.dataframe(rows,width="stretch",hide_index=True)
-        else:
-            render_axes(p1);render_axes(p2)
-    with dynamics:
-        items=list(compat.get("dynamics",[]))
-        if deep: items+=deep.get("dynamics",[])
-        for d in dict.fromkeys(items): card(tr("Observed pair mechanism","Механизм пары"),d,"ARCHITECTURE → INTERACTION")
-        if deep:
-            gaps={k:abs(deep["idx1"][k]-deep["idx2"][k]) for k in deep["idx1"]}
-            largest=max(gaps,key=gaps.get)
-            n1,n2=p1.get("name","P1"),p2.get("name","P2")
-            high=n1 if deep["idx1"][largest]>deep["idx2"][largest] else n2
-            low=n2 if high==n1 else n1
-            card(tr("Largest asymmetry","Главная асимметрия"),tr(
-                f"{labels[largest]} differs by {gaps[largest]:.1f} points. {high} carries the higher value; {low} should not use their own threshold as the norm for both.",
-                f"{labels[largest]} различается на {gaps[largest]:.1f} пункта. Более высокий уровень у {high}; {low} не следует считать собственный порог нормой для обоих."
-            ),"PAIR GAP")
-    with protocol:
-        steps=[
-            tr("Before a difficult conversation, each partner states current load from 0 to 10.","Перед трудным разговором каждый называет текущую нагрузку от 0 до 10."),
-            tr("Use one issue per conversation: fact → interpretation → feeling → concrete request.","Обсуждайте один вопрос за разговор: факт → интерпретация → чувство → конкретная просьба."),
-            tr("Agree on a pause signal and an exact return time; a pause without return increases uncertainty.","Согласуйте сигнал паузы и точное время возврата; пауза без возврата усиливает неопределённость."),
-            tr("Do not demand identical recovery speed. Record the time each partner needs after conflict.","Не требуйте одинаковой скорости восстановления. Фиксируйте время, нужное каждому после конфликта."),
-            tr("Hold one weekly 25-minute review: what restored us, what overloaded us, what one rule changes next week.","Раз в неделю проводите 25-минутный разбор: что восстановило, что перегрузило, какое одно правило меняем на следующую неделю."),
-        ]
-        for i,s in enumerate(steps,1): card(f"{i:02d}",s,"PAIR CONTROL")
-    with monitoring:
-        card(tr("Two-week baseline","Двухнедельный базовый цикл"),tr(
-            "Each evening record individual load, relationship tension, sleep quality and recovery. Compare the median of week 1 and week 2.",
-            "Каждый вечер записывайте индивидуальную нагрузку, напряжение в паре, качество сна и восстановление. Сравните медианы первой и второй недели."
-        ),"FEEDBACK")
-        render_space_weather(get_interp(p1))
-        st.caption(tr(
-            "During forecast active periods, treat any change as a hypothesis: compare both partners with their own quiet-period baseline before changing behavior.",
-            "В периоды прогнозируемой активности рассматривайте любое изменение как гипотезу: сравнивайте каждого партнёра с его собственным базовым состоянием в спокойные периоды до изменения поведения."
-        ))
+        architecture,dynamics,protocol,monitoring=st.tabs([
+            tr("Pair architecture","Архитектура пары"),tr("Relationship dynamics","Динамика отношений"),
+            tr("Behavior protocol","Протокол поведения"),tr("Control & forecast","Контроль и прогноз")])
+        with architecture:
+            r1,r2=st.columns(2)
+            with r1: render_rs_radar(p1,p1.get("name","P1"))
+            with r2: render_rs_radar(p2,p2.get("name","P2"))
+            if deep:
+                labels={
+                    "overload":tr("System load","Нагрузка"),"recovery":tr("Recovery","Восстановление"),
+                    "flexibility":tr("Flexibility","Гибкость"),"rigidity":tr("Rigidity","Ригидность"),
+                    "transition_cost":tr("Switching cost","Цена переключения"),"emo_cost":tr("Emotional cost","Эмоциональная цена"),
+                    "bottleneck":tr("Processing bottleneck","Узкое место"),"autonomic":tr("Autonomic reactivity","Автономная реактивность")}
+                rows=[]
+                for key,label in labels.items():
+                    v1,v2=deep["idx1"][key],deep["idx2"][key]
+                    rows.append({tr("Function","Функция"):label,p1.get("name","P1"):round(v1,1),p2.get("name","P2"):round(v2,1),tr("Gap","Разрыв"):round(abs(v1-v2),1)})
+                st.dataframe(rows,width="stretch",hide_index=True)
+            else:
+                render_axes(p1);render_axes(p2)
+        with dynamics:
+            items=list(compat.get("dynamics",[]))
+            if deep: items+=deep.get("dynamics",[])
+            for d in dict.fromkeys(items): card(tr("Observed pair mechanism","Механизм пары"),d,"ARCHITECTURE → INTERACTION")
+            if deep:
+                gaps={k:abs(deep["idx1"][k]-deep["idx2"][k]) for k in deep["idx1"]}
+                largest=max(gaps,key=gaps.get)
+                n1,n2=p1.get("name","P1"),p2.get("name","P2")
+                high=n1 if deep["idx1"][largest]>deep["idx2"][largest] else n2
+                low=n2 if high==n1 else n1
+                card(tr("Largest asymmetry","Главная асимметрия"),tr(
+                    f"{labels[largest]} differs by {gaps[largest]:.1f} points. {high} carries the higher value; {low} should not use their own threshold as the norm for both.",
+                    f"{labels[largest]} различается на {gaps[largest]:.1f} пункта. Более высокий уровень у {high}; {low} не следует считать собственный порог нормой для обоих."
+                ),"PAIR GAP")
+        with protocol:
+            steps=[
+                tr("Before a difficult conversation, each partner states current load from 0 to 10.","Перед трудным разговором каждый называет текущую нагрузку от 0 до 10."),
+                tr("Use one issue per conversation: fact → interpretation → feeling → concrete request.","Обсуждайте один вопрос за разговор: факт → интерпретация → чувство → конкретная просьба."),
+                tr("Agree on a pause signal and an exact return time; a pause without return increases uncertainty.","Согласуйте сигнал паузы и точное время возврата; пауза без возврата усиливает неопределённость."),
+                tr("Do not demand identical recovery speed. Record the time each partner needs after conflict.","Не требуйте одинаковой скорости восстановления. Фиксируйте время, нужное каждому после конфликта."),
+                tr("Hold one weekly 25-minute review: what restored us, what overloaded us, what one rule changes next week.","Раз в неделю проводите 25-минутный разбор: что восстановило, что перегрузило, какое одно правило меняем на следующую неделю."),
+            ]
+            for i,s in enumerate(steps,1): card(f"{i:02d}",s,"PAIR CONTROL")
+        with monitoring:
+            card(tr("Two-week baseline","Двухнедельный базовый цикл"),tr(
+                "Each evening record individual load, relationship tension, sleep quality and recovery. Compare the median of week 1 and week 2.",
+                "Каждый вечер записывайте индивидуальную нагрузку, напряжение в паре, качество сна и восстановление. Сравните медианы первой и второй недели."
+            ),"FEEDBACK")
+            render_space_weather(get_interp(p1))
+            st.caption(tr(
+                "During forecast active periods, treat any change as a hypothesis: compare both partners with their own quiet-period baseline before changing behavior.",
+                "В периоды прогнозируемой активности рассматривайте любое изменение как гипотезу: сравнивайте каждого партнёра с его собственным базовым состоянием в спокойные периоды до изменения поведения."
+            ))
 
     st.markdown('<div class="rule"></div>',unsafe_allow_html=True)
     if st.button(t("restart")):
