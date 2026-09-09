@@ -414,7 +414,7 @@ def render_pricing():
         (tr("Architecture profile","Архитектурный профиль"),tr("RS axes and basic type","Оси RS и базовый тип"),"FREE",None),
         (tr("Cognitive test + GAP","Когнитивный тест + GAP"),tr("Five measured tasks","Пять измерительных задач"),"$12","cognitive"),
         (tr("Target questionnaire","Целевой опросник"),tr("Burnout, compatibility or AI","Выгорание, совместимость или ИИ"),"$19","burnout"),
-        (tr("Full protocol","Полный протокол"),tr("Integrated report + biohacking","Интегрированный отчёт + биохакинг"),"$39","full"),
+        (tr("Compatibility profile","Профиль совместимости"),tr("For couples — two architectures compared","Для пары — сравнение двух архитектур"),"$19","compatibility"),
     ]
     cols=st.columns(4)
     for col,(name,desc,price,key) in zip(cols,offers):
@@ -1257,7 +1257,7 @@ if st.session_state.step == "landing":
         card(title,body)
     st.subheader(tr("Choose the depth of analysis", "Выберите глубину анализа"))
     render_pricing()
-    purchase_button(tr("Compatibility for couples · $19","Совместимость в паре · $19"),"compatibility")
+    purchase_button(tr("Get the complete Archviq package · $39","Получить полный пакет Archviq · $39"),"full")
     st.caption("Patent Pending — Israel Application No. 322588 (2025)")
     render_founder()
     st.markdown('<div class="rule"></div>',unsafe_allow_html=True)
