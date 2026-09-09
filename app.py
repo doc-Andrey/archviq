@@ -200,14 +200,15 @@ SCIENCE_CSS = r"""
 .stApp, p, li, label, button, input {font-family:'IBM Plex Sans',sans-serif}.stApp {
   color:var(--ink);
   background:
-    radial-gradient(circle at 12% 8%, rgba(227,163,78,.10), transparent 31rem),
-    radial-gradient(circle at 88% 22%, rgba(111,216,196,.08), transparent 34rem),
-    linear-gradient(145deg,#0A0E1A 0%,#0D1220 52%,#0B0F1C 100%);
+    radial-gradient(circle at 12% 8%, rgba(227,163,78,.16), transparent 31rem),
+    radial-gradient(circle at 88% 22%, rgba(111,216,196,.13), transparent 34rem),
+    linear-gradient(145deg,#10152A 0%,#141B33 52%,#10152A 100%)
+    ,url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNjAiIGhlaWdodD0iMzYwIiB2aWV3Qm94PSIwIDAgMzYwIDM2MCI+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNkZEOEM0IiBzdHJva2Utd2lkdGg9IjEuMyIgb3BhY2l0eT0iMC4yMCI+CiAgICA8cGF0aCBkPSJNMTAsNjAgTDMwLDYwIEwzOCw0MiBMNDYsNzggTDU0LDUwIEw2Miw2MCBMOTAsNjAiLz4KICAgIDxwYXRoIGQ9Ik0xODAsNDAgQzE5NSwyMCAyMTAsNjAgMjI1LDQwIEMyNDAsMjAgMjU1LDYwIDI3MCw0MCIvPgogIDwvZz4KICA8ZyBmaWxsPSJub25lIiBzdHJva2U9IiNFM0EzNEUiIHN0cm9rZS13aWR0aD0iMS4zIiBvcGFjaXR5PSIwLjIyIj4KICAgIDxjaXJjbGUgY3g9IjMwMCIgY3k9IjEyMCIgcj0iMjIiLz4KICAgIDxjaXJjbGUgY3g9IjI5NCIgY3k9IjExNSIgcj0iMi42IiBmaWxsPSIjRTNBMzRFIiBzdHJva2U9Im5vbmUiLz4KICAgIDxjaXJjbGUgY3g9IjMwOCIgY3k9IjEyNiIgcj0iMS44IiBmaWxsPSIjRTNBMzRFIiBzdHJva2U9Im5vbmUiLz4KICAgIDxsaW5lIHgxPSIzMDAiIHkxPSI5MCIgeDI9IjMwMCIgeTI9IjgwIi8+CiAgICA8bGluZSB4MT0iMzAwIiB5MT0iMTUwIiB4Mj0iMzAwIiB5Mj0iMTYwIi8+CiAgICA8bGluZSB4MT0iMjcwIiB5MT0iMTIwIiB4Mj0iMjYwIiB5Mj0iMTIwIi8+CiAgICA8bGluZSB4MT0iMzMwIiB5MT0iMTIwIiB4Mj0iMzQwIiB5Mj0iMTIwIi8+CiAgPC9nPgogIDxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0E3QjBDOCIgc3Ryb2tlLXdpZHRoPSIxLjIiIG9wYWNpdHk9IjAuMjAiPgogICAgPGVsbGlwc2UgY3g9IjcwIiBjeT0iMjIwIiByeD0iMzQiIHJ5PSIxNCIvPgogICAgPGVsbGlwc2UgY3g9IjcwIiBjeT0iMjIwIiByeD0iMzQiIHJ5PSIxNCIgdHJhbnNmb3JtPSJyb3RhdGUoNjAgNzAgMjIwKSIvPgogICAgPGVsbGlwc2UgY3g9IjcwIiBjeT0iMjIwIiByeD0iMzQiIHJ5PSIxNCIgdHJhbnNmb3JtPSJyb3RhdGUoMTIwIDcwIDIyMCkiLz4KICAgIDxjaXJjbGUgY3g9IjcwIiBjeT0iMjIwIiByPSIyLjgiIGZpbGw9IiNBN0IwQzgiIHN0cm9rZT0ibm9uZSIvPgogIDwvZz4KICA8ZyBmaWxsPSJub25lIiBzdHJva2U9IiM2RkQ4QzQiIHN0cm9rZS13aWR0aD0iMS4yIiBvcGFjaXR5PSIwLjIwIj4KICAgIDxjaXJjbGUgY3g9IjIzMCIgY3k9IjI2MCIgcj0iNyIvPgogICAgPGxpbmUgeDE9IjIzMCIgeTE9IjI1MyIgeDI9IjIxNSIgeTI9IjIzNSIvPgogICAgPGxpbmUgeDE9IjIzMCIgeTE9IjI1MyIgeDI9IjI0NSIgeTI9IjIzMiIvPgogICAgPGxpbmUgeDE9IjIzNyIgeTE9IjI2NCIgeDI9IjI2MCIgeTI9IjI3MCIvPgogICAgPGxpbmUgeDE9IjIyMyIgeTE9IjI2NiIgeDI9IjIwNSIgeTI9IjI4NSIvPgogIDwvZz4KICA8dGV4dCB4PSIxNTAiIHk9IjMzMCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjIyIiBmaWxsPSIjQTdCMEM4IiBvcGFjaXR5PSIwLjIwIj7OozwvdGV4dD4KICA8dGV4dCB4PSIyMCIgeT0iMTUwIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNkZEOEM0IiBvcGFjaXR5PSIwLjIwIj7OlFNTTjwvdGV4dD4KPC9zdmc+Cg==') repeat;
 }
 .stApp::before {
   content:"ΔSSN(t)    ∂²S/∂t²    Xₖ₊₁ = DₖXₖ + GₖFₖ + C(Xₖ)\A\A RS₁ = rhythm · stability     RS₂ = synchrony · hubness\A\A W₀ → W₁ → W₂ → W₃ → W₄ → W₅ → N₀ → P₁ … P₈\A\A Fₖ = dynamic + instability + |direction|";
   white-space:pre-wrap; position:fixed; inset:7rem 2vw auto auto; width:38vw;
-  color:rgba(227,163,78,.05); font:600 18px/2.3 'IBM Plex Mono',monospace;
+  color:rgba(227,163,78,.09); font:600 18px/2.3 'IBM Plex Mono',monospace;
   transform:rotate(-8deg); pointer-events:none; z-index:0;animation:neuralDrift 16s ease-in-out infinite alternate;
 }
 @keyframes neuralDrift{from{transform:translate3d(0,0,0) rotate(-8deg);opacity:.75}to{transform:translate3d(-24px,18px,0) rotate(-5deg);opacity:1}}
@@ -411,11 +412,11 @@ def render_pricing():
 
 
 GUMROAD_LINKS = {
-    "COGNITIVE": "https://osipoff.gumroad.com/l/kdjqsj",
-    "COMPATIBILITY": "https://osipoff.gumroad.com/l/tfmfiw",
-    "BURNOUT": "https://osipoff.gumroad.com/l/zfbje",
-    "AI": "https://osipoff.gumroad.com/l/tspxvc",
-    "FULL": "https://osipoff.gumroad.com/l/wsxcl",
+    "COGNITIVE": "https://archviq.gumroad.com/l/kdjqsj",
+    "COMPATIBILITY": "https://archviq.gumroad.com/l/tfmfiw",
+    "BURNOUT": "https://archviq.gumroad.com/l/zfbje",
+    "AI": "https://archviq.gumroad.com/l/tspxvc",
+    "FULL": "https://archviq.gumroad.com/l/wsxcl",
 }
 
 
