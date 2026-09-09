@@ -409,6 +409,8 @@ def render_pricing():
             st.markdown(f'<div class="price-card"><b>{name}</b><div class="price">{price}</div><p>{desc}</p></div>',unsafe_allow_html=True)
             if key:
                 purchase_button(tr("Buy","Купить"),key)
+            else:
+                st.button(tr("Included","Включено"),key="free_included_badge",disabled=True,width="stretch")
 
 
 GUMROAD_LINKS = {
@@ -1237,7 +1239,7 @@ if st.session_state.step == "landing":
         card(title,body)
     st.subheader(tr("Choose the depth of analysis", "Выберите глубину анализа"))
     render_pricing()
-    purchase_button(tr("Get the complete Archviq package · $39","Получить полный пакет Archviq · $39"),"full")
+    purchase_button(tr("Compatibility for couples · $19","Совместимость в паре · $19"),"compatibility")
     st.caption("Patent Pending — Israel Application No. 322588 (2025)")
     render_founder()
     st.markdown('<div class="rule"></div>',unsafe_allow_html=True)
