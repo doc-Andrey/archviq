@@ -243,7 +243,20 @@ p,li {line-height:1.65}
 [data-testid="stMetric"] {background:rgba(18,26,48,.78);border:1px solid var(--line);padding:1rem;border-radius:14px}
 [data-testid="stExpander"] {background:rgba(13,18,32,.72);border-color:var(--line);border-radius:14px}
 .stButton>button {border-radius:12px;border:1px solid rgba(227,163,78,.35);min-height:2.8rem}
-.stButton>button[kind="primary"] {background:var(--gold);color:#171106;border:0}
+.stButton>button[kind="primary"] {background:var(--gold);color:#171106;border:0;font-size:1.12rem;font-weight:700;letter-spacing:.01em;min-height:3.2rem}
+[data-testid="stAlert"],[data-testid^="stAlertContent"] {
+  background:rgba(18,26,48,.94)!important;border:1px solid var(--line)!important;border-radius:14px!important;
+}
+[data-testid="stAlert"] p,[data-testid="stAlert"] div,[data-testid="stAlert"] span,
+[data-testid^="stAlertContent"] p,[data-testid^="stAlertContent"] div,[data-testid^="stAlertContent"] span {
+  color:var(--ink)!important;font-size:1rem!important;
+}
+[data-testid="stAlertContentInfo"] {border-left:4px solid var(--cyan)!important}
+[data-testid="stAlertContentSuccess"] {border-left:4px solid var(--cyan)!important}
+[data-testid="stAlertContentWarning"] {border-left:4px solid var(--gold)!important}
+[data-testid="stAlertContentError"] {border-left:4px solid #ff7e8d!important}
+.stRadio label p {font-size:1.05rem!important;color:var(--ink)!important}
+.stRadio [role="radiogroup"] label {padding:.3rem .8rem}
 @media(max-width:760px){.pipeline{grid-template-columns:1fr 1fr}.stApp::before{display:none}.block-container{padding-top:1rem}}
 </style>
 """
@@ -410,7 +423,12 @@ def render_pricing():
             if key:
                 purchase_button(tr("Buy","Купить"),key)
             else:
-                st.button(tr("Included","Включено"),key="free_included_badge",disabled=True,width="stretch")
+                st.markdown(
+                    '<div style="text-align:center;padding:.6rem;border:1px solid rgba(227,163,78,.5);'
+                    'border-radius:12px;color:var(--gold);font-weight:600;font-size:.92rem;'
+                    'background:rgba(227,163,78,.08)">✓ '+tr("Included","Включено")+'</div>',
+                    unsafe_allow_html=True,
+                )
 
 
 GUMROAD_LINKS = {
