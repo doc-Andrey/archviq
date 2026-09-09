@@ -10,11 +10,6 @@ import pandas as pd
 import plotly.graph_objects as go
 from profile_engine import compute_profile, get_compatibility
 from interpret_engine import interpret, compatibility_analysis
-from pdf_report import build_pdf
-try:
-    from email_report import send_report_email
-except Exception:
-    send_report_email = None
 
 
 st.set_page_config(
@@ -192,57 +187,57 @@ def get_cognitive_html():
 
 SCIENCE_CSS = r"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
 :root {
-  --ink:#ECEEF3; --muted:#8C96AE; --cyan:#6FD8C4; --gold:#E3A34E;
-  --slate:#A7B0C8; --panel:rgba(18,26,48,.82); --line:rgba(180,190,214,.16);
+  --ink:#e8f2ff; --muted:#91a7bd; --cyan:#45d6e8; --blue:#6aa8ff;
+  --violet:#a98bff; --panel:rgba(8,22,39,.82); --line:rgba(117,194,255,.18);
 }
-.stApp, p, li, label, button, input {font-family:'IBM Plex Sans',sans-serif}.stApp {
+.stApp, p, li, label, button, input {font-family:'Inter',sans-serif}.stApp {
   color:var(--ink);
   background:
-    radial-gradient(circle at 12% 8%, rgba(227,163,78,.10), transparent 31rem),
-    radial-gradient(circle at 88% 22%, rgba(111,216,196,.08), transparent 34rem),
-    linear-gradient(145deg,#0A0E1A 0%,#0D1220 52%,#0B0F1C 100%);
+    radial-gradient(circle at 12% 8%, rgba(38,112,171,.25), transparent 31rem),
+    radial-gradient(circle at 88% 22%, rgba(103,64,178,.18), transparent 34rem),
+    linear-gradient(145deg,#030913 0%,#071524 52%,#06101d 100%);
 }
 .stApp::before {
   content:"ΔSSN(t)    ∂²S/∂t²    Xₖ₊₁ = DₖXₖ + GₖFₖ + C(Xₖ)\A\A RS₁ = rhythm · stability     RS₂ = synchrony · hubness\A\A W₀ → W₁ → W₂ → W₃ → W₄ → W₅ → N₀ → P₁ … P₈\A\A Fₖ = dynamic + instability + |direction|";
   white-space:pre-wrap; position:fixed; inset:7rem 2vw auto auto; width:38vw;
-  color:rgba(227,163,78,.05); font:600 18px/2.3 'IBM Plex Mono',monospace;
+  color:rgba(104,196,234,.038); font:600 18px/2.3 ui-monospace,monospace;
   transform:rotate(-8deg); pointer-events:none; z-index:0;animation:neuralDrift 16s ease-in-out infinite alternate;
 }
 @keyframes neuralDrift{from{transform:translate3d(0,0,0) rotate(-8deg);opacity:.75}to{transform:translate3d(-24px,18px,0) rotate(-5deg);opacity:1}}
 [data-testid="stAppViewContainer"] > .main {position:relative;z-index:1}
 .block-container {max-width:1180px;padding-top:2.1rem;padding-bottom:5rem}
-h1,h2,h3 {font-family:'Newsreader',serif;font-weight:500;letter-spacing:0;color:#F4F0E8}
-h1 {font-size:clamp(2.2rem,5.5vw,4.3rem)!important;line-height:1.05!important}
+h1,h2,h3 {font-family:'Space Grotesk',sans-serif;letter-spacing:-.025em;color:#f4f9ff}
+h1 {font-size:clamp(2.4rem,6vw,5rem)!important;line-height:.98!important}
 p,li {line-height:1.65}
-.hero-kicker {font:600 .76rem/1 'IBM Plex Mono',monospace;letter-spacing:.18em;color:var(--cyan);text-transform:uppercase;margin-bottom:1.1rem}
-.hero-copy {font-size:1.18rem;color:var(--muted);max-width:800px;line-height:1.7;margin:1.2rem 0 1.5rem}
+.hero-kicker {font:700 .76rem/1 ui-monospace,monospace;letter-spacing:.18em;color:var(--cyan);text-transform:uppercase;margin-bottom:1.1rem}
+.hero-copy {font-size:1.18rem;color:#bdd0e2;max-width:800px;line-height:1.7;margin:1.2rem 0 1.5rem}
 .science-card,.axis-card,.protocol-card,.pair-card {
-  background:linear-gradient(145deg,rgba(18,26,48,.91),rgba(11,15,28,.82));
+  background:linear-gradient(145deg,rgba(13,34,57,.91),rgba(7,20,36,.82));
   border:1px solid var(--line);border-radius:18px;padding:1.2rem 1.35rem;margin:.55rem 0;
   box-shadow:0 14px 38px rgba(0,0,0,.18);
 }
-.science-card h3,.axis-card h3,.protocol-card h3,.pair-card h3 {font-family:'Newsreader',serif;font-style:italic;font-weight:500;font-size:1.08rem;margin:.1rem 0 .5rem;color:var(--ink)}
-.science-card p,.axis-card p,.protocol-card p,.pair-card p {font-size:.94rem;color:var(--muted);margin:.25rem 0}
-.formula {background:rgba(6,10,20,.7);border-left:3px solid var(--cyan);padding:1rem 1.2rem;border-radius:4px 14px 14px 4px;font:500 .92rem/1.7 'IBM Plex Mono',monospace;color:#CDEFE7;margin:1rem 0}
+.science-card h3,.axis-card h3,.protocol-card h3,.pair-card h3 {font-size:1.03rem;margin:.1rem 0 .5rem;color:#dff8ff}
+.science-card p,.axis-card p,.protocol-card p,.pair-card p {font-size:.94rem;color:#a9bfd2;margin:.25rem 0}
+.formula {background:rgba(2,9,18,.7);border-left:3px solid var(--cyan);padding:1rem 1.2rem;border-radius:4px 14px 14px 4px;font:600 .92rem/1.7 ui-monospace,monospace;color:#bcecf5;margin:1rem 0}
 .pipeline {display:grid;grid-template-columns:repeat(5,1fr);gap:.55rem;margin:1.3rem 0}
-.pipe-node {border:1px solid var(--line);border-radius:14px;padding:.9rem .7rem;text-align:center;background:rgba(18,26,48,.72);font-size:.8rem;color:var(--muted)}
-.pipe-node b {display:block;color:var(--cyan);font-size:.78rem;margin-bottom:.35rem}
-.eyebrow {font:600 .72rem/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase}
-.score {font:500 2.15rem/1 'IBM Plex Mono',monospace;color:var(--ink)}
+.pipe-node {border:1px solid var(--line);border-radius:14px;padding:.9rem .7rem;text-align:center;background:rgba(8,28,47,.72);font-size:.8rem;color:#afc7da}
+.pipe-node b {display:block;color:#62e0ed;font-size:.78rem;margin-bottom:.35rem}
+.eyebrow {font:700 .72rem/1 ui-monospace,monospace;letter-spacing:.14em;color:#6edeea;text-transform:uppercase}
+.score {font:700 2.15rem/1 ui-monospace,monospace;color:#effcff}
 .level-low {color:#68e0b4}.level-mid {color:#ffd166}.level-high {color:#ff7e8d}
-.micro {font-size:.78rem;color:var(--muted)}
-.founder-photo{width:100%;border-radius:24px;border:1px solid rgba(227,163,78,.4);box-shadow:0 24px 70px rgba(0,0,0,.45);display:block}
-.bio-role{color:var(--gold);font:600 .9rem/1.5 'IBM Plex Mono',monospace;margin:-.4rem 0 1.2rem}
-.comparison-table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;background:rgba(13,18,32,.72);border-radius:16px;overflow:hidden}
-.comparison-table th,.comparison-table td{border-bottom:1px solid var(--line);padding:.8rem 1rem;text-align:left;font-size:.9rem}.comparison-table th{color:var(--cyan);background:rgba(111,216,196,.08)}
-.price-card{min-height:185px;background:linear-gradient(145deg,rgba(18,26,48,.94),rgba(11,15,28,.9));border:1px solid var(--line);border-radius:18px;padding:1.2rem;margin:.4rem 0}.price-card b{font:600 1.05rem 'Newsreader',serif;color:#fff}.price{font:500 2rem 'IBM Plex Mono',monospace;color:var(--gold);margin:.7rem 0}.price-card p{color:var(--muted);font-size:.84rem}
-.rule {height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin:1.2rem 0}
-[data-testid="stMetric"] {background:rgba(18,26,48,.78);border:1px solid var(--line);padding:1rem;border-radius:14px}
-[data-testid="stExpander"] {background:rgba(13,18,32,.72);border-color:var(--line);border-radius:14px}
-.stButton>button {border-radius:12px;border:1px solid rgba(227,163,78,.35);min-height:2.8rem}
-.stButton>button[kind="primary"] {background:var(--gold);color:#171106;border:0}
+.micro {font-size:.78rem;color:#7f98ad}
+.founder-photo{width:100%;border-radius:24px;border:1px solid rgba(58,134,255,.5);box-shadow:0 24px 70px rgba(0,0,0,.45);display:block}
+.bio-role{color:#74dceb;font:600 .9rem/1.5 'Inter',sans-serif;margin:-.4rem 0 1.2rem}
+.comparison-table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;background:rgba(5,18,33,.72);border-radius:16px;overflow:hidden}
+.comparison-table th,.comparison-table td{border-bottom:1px solid var(--line);padding:.8rem 1rem;text-align:left;font-size:.9rem}.comparison-table th{color:#6fe2ef;background:rgba(58,134,255,.1)}
+.price-card{min-height:185px;background:linear-gradient(145deg,rgba(21,48,78,.94),rgba(9,22,40,.9));border:1px solid var(--line);border-radius:18px;padding:1.2rem;margin:.4rem 0}.price-card b{font:700 1.05rem 'Space Grotesk';color:#fff}.price{font:700 2rem 'Space Grotesk';color:#58dcea;margin:.7rem 0}.price-card p{color:#9fb6ca;font-size:.84rem}
+.rule {height:1px;background:linear-gradient(90deg,var(--cyan),transparent);margin:1.2rem 0}
+[data-testid="stMetric"] {background:rgba(8,27,46,.78);border:1px solid var(--line);padding:1rem;border-radius:14px}
+[data-testid="stExpander"] {background:rgba(7,23,40,.72);border-color:var(--line);border-radius:14px}
+.stButton>button {border-radius:12px;border:1px solid rgba(90,205,232,.35);min-height:2.8rem}
+.stButton>button[kind="primary"] {background:linear-gradient(100deg,#176f9f,#5549b5);border:0}
 @media(max-width:760px){.pipeline{grid-template-columns:1fr 1fr}.stApp::before{display:none}.block-container{padding-top:1rem}}
 </style>
 """
@@ -366,11 +361,11 @@ def render_ssn_windows_chart():
     x=np.linspace(0,110,260)
     y=52+18*np.sin(x/8.5)+8*np.sin(x/2.9)+.12*x
     fig=go.Figure()
-    fig.add_trace(go.Scatter(x=x,y=y,mode="lines",name="SSN dynamics",line=dict(color="#6FD8C4",width=3),fill="tozeroy",fillcolor="rgba(111,216,196,.08)"))
-    windows=[("W1",18,45,"#6FD8C4"),("W2",46,73,"#E3A34E"),("W3",74,100,"#A7B0C8")]
+    fig.add_trace(go.Scatter(x=x,y=y,mode="lines",name="SSN dynamics",line=dict(color="#3A86FF",width=3),fill="tozeroy",fillcolor="rgba(58,134,255,.08)"))
+    windows=[("W1",18,45,"#3A86FF"),("W2",46,73,"#8B5CF6"),("W3",74,100,"#10B981")]
     for name,a,b,color in windows:
         fig.add_vrect(x0=a,x1=b,fillcolor=color,opacity=.13,line_width=0,annotation_text=name,annotation_position="top left")
-    fig.update_layout(template="plotly_dark",height=340,margin=dict(l=10,r=10,t=35,b=10),paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(13,18,32,.72)",xaxis_title=tr("Days after conception","Дни после зачатия"),yaxis_title="SSN / dynamic signal",legend=dict(orientation="h"))
+    fig.update_layout(template="plotly_dark",height=340,margin=dict(l=10,r=10,t=35,b=10),paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(4,16,29,.65)",xaxis_title=tr("Days after conception","Дни после зачатия"),yaxis_title="SSN / dynamic signal",legend=dict(orientation="h"))
     st.plotly_chart(fig,width="stretch",config={"displayModeBar":False})
     st.caption(tr("Conceptual visualization of the calculation. The personal profile uses actual daily SILSO values for the corresponding historical dates.","Схематическая визуализация расчёта. Персональный профиль использует реальные суточные значения SILSO для соответствующих исторических дат."))
 
@@ -378,8 +373,8 @@ def render_ssn_windows_chart():
 def render_validation_chart():
     names=[tr("Anxiety","Тревога"),tr("Impulsivity","Импульсивность"),tr("Stress","Стресс")]
     rho=[.20,.26,.23];p=[.004,.0002,.001]
-    fig=go.Figure(go.Bar(x=names,y=rho,text=[f"ρ={r:.2f}<br>p={pv:g}" for r,pv in zip(rho,p)],textposition="outside",marker=dict(color=["#6FD8C4","#E3A34E","#A7B0C8"])))
-    fig.update_layout(template="plotly_dark",height=330,margin=dict(l=10,r=10,t=35,b=10),paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(13,18,32,.72)",yaxis=dict(title="Spearman ρ",range=[0,.32]))
+    fig=go.Figure(go.Bar(x=names,y=rho,text=[f"ρ={r:.2f}<br>p={pv:g}" for r,pv in zip(rho,p)],textposition="outside",marker=dict(color=["#3A86FF","#8B5CF6","#10B981"])))
+    fig.update_layout(template="plotly_dark",height=330,margin=dict(l=10,r=10,t=35,b=10),paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(4,16,29,.65)",yaxis=dict(title="Spearman ρ",range=[0,.32]))
     st.plotly_chart(fig,width="stretch",config={"displayModeBar":False})
 
 
@@ -397,37 +392,18 @@ def render_not_astrology():
 
 def render_pricing():
     offers=[
-        (tr("Architecture profile","Архитектурный профиль"),tr("RS axes and basic type","Оси RS и базовый тип"),"FREE",None),
-        (tr("Cognitive test + GAP","Когнитивный тест + GAP"),tr("Five measured tasks","Пять измерительных задач"),"$12","cognitive"),
-        (tr("Target questionnaire","Целевой опросник"),tr("Burnout, compatibility or AI","Выгорание, совместимость или ИИ"),"$19","burnout"),
-        (tr("Full protocol","Полный протокол"),tr("Integrated report + biohacking","Интегрированный отчёт + биохакинг"),"$39","full"),
+        (tr("Architecture profile","Архитектурный профиль"),tr("RS axes and basic type","Оси RS и базовый тип"),"FREE"),
+        (tr("Cognitive test + GAP","Когнитивный тест + GAP"),tr("Five measured tasks","Пять измерительных задач"),"$12"),
+        (tr("Target questionnaire","Целевой опросник"),tr("Burnout, compatibility or AI","Выгорание, совместимость или ИИ"),"$19"),
+        (tr("Full protocol","Полный протокол"),tr("Integrated report + biohacking","Интегрированный отчёт + биохакинг"),"$39"),
     ]
     cols=st.columns(4)
-    for col,(name,desc,price,key) in zip(cols,offers):
-        with col:
-            st.markdown(f'<div class="price-card"><b>{name}</b><div class="price">{price}</div><p>{desc}</p></div>',unsafe_allow_html=True)
-            if key:
-                purchase_button(tr("Buy","Купить"),key)
-
-
-GUMROAD_LINKS = {
-    "COGNITIVE": "https://osipoff.gumroad.com/l/kdjqsj",
-    "COMPATIBILITY": "https://osipoff.gumroad.com/l/tfmfiw",
-    "BURNOUT": "https://osipoff.gumroad.com/l/zfbje",
-    "AI": "https://osipoff.gumroad.com/l/tspxvc",
-    "FULL": "https://osipoff.gumroad.com/l/wsxcl",
-}
+    for col,(name,desc,price) in zip(cols,offers):
+        with col: st.markdown(f'<div class="price-card"><b>{name}</b><div class="price">{price}</div><p>{desc}</p></div>',unsafe_allow_html=True)
 
 
 def purchase_button(label,product_key):
-    key=product_key.upper()
-    url = ""
-    try:
-        url = st.secrets.get(f"GUMROAD_{key}_URL","")
-    except Exception:
-        pass
-    if not url:
-        url = os.getenv(f"GUMROAD_{key}_URL", GUMROAD_LINKS.get(key,""))
+    url=os.getenv(f"GUMROAD_{product_key.upper()}_URL",os.getenv("GUMROAD_URL",""))
     if url:
         st.link_button(label,url,width="stretch")
 
@@ -435,8 +411,8 @@ def purchase_button(label,product_key):
 def render_rs_radar(profile,title=""):
     labels=["RS1 · Rhythm","RS2 · Sync","RS3 · Topology","RS4 · Integral"]
     values=[max(0,min(100,safe_num(profile.get(k,50)))) for k in ("rs1","rs2","rs3","rs4")]
-    fig=go.Figure(go.Scatterpolar(r=values+[values[0]],theta=labels+[labels[0]],fill="toself",line=dict(color="#6FD8C4",width=3),fillcolor="rgba(111,216,196,.25)",name=profile.get("name","Profile")))
-    fig.update_layout(template="plotly_dark",height=410,margin=dict(l=40,r=40,t=55,b=35),paper_bgcolor="rgba(0,0,0,0)",polar=dict(bgcolor="rgba(13,18,32,.55)",radialaxis=dict(range=[0,100],showticklabels=True,gridcolor="rgba(180,190,214,.2)")),showlegend=False,title=title)
+    fig=go.Figure(go.Scatterpolar(r=values+[values[0]],theta=labels+[labels[0]],fill="toself",line=dict(color="#3A86FF",width=3),fillcolor="rgba(58,134,255,.25)",name=profile.get("name","Profile")))
+    fig.update_layout(template="plotly_dark",height=410,margin=dict(l=40,r=40,t=55,b=35),paper_bgcolor="rgba(0,0,0,0)",polar=dict(bgcolor="rgba(4,16,29,.55)",radialaxis=dict(range=[0,100],showticklabels=True,gridcolor="rgba(130,190,230,.2)")),showlegend=False,title=title)
     st.plotly_chart(fig,width="stretch",config={"displayModeBar":False})
 
 
@@ -500,7 +476,7 @@ def famous_analogies(profile):
 
 def render_type_profile(profile,interp):
     key=architecture_type(profile,interp);title,icon,*paras=TYPE_CONTENT[st.session_state.lang][key]
-    color={"fortress":"#6FD8C4","antenna":"#E3A34E","fluid":"#A7B0C8","collapse":"#D9714B"}[key]
+    color={"fortress":"#3A86FF","antenna":"#8B5CF6","fluid":"#10B981","collapse":"#F59E0B"}[key]
     st.markdown(f'<div class="science-card" style="border-color:{color}88;background:linear-gradient(135deg,{color}25,rgba(7,20,36,.88))"><div class="eyebrow">ARCHITECTURE TYPE</div><h3>{icon} {title}</h3></div>',unsafe_allow_html=True)
     for p in paras:st.write(p)
     analogies=famous_analogies(profile)
@@ -645,10 +621,10 @@ def render_space_weather(interp):
         if predicted:
             times=[r.get("time_tag") for r in predicted]
             vals=[safe_num(r.get("kp"),0) for r in predicted]
-            colors=["#D9714B" if v>=5 else "#6FD8C4" for v in vals]
-            fig=go.Figure(go.Scatter(x=times,y=vals,mode="lines+markers",line=dict(color="#6FD8C4",width=3),marker=dict(color=colors,size=7),fill="tozeroy",fillcolor="rgba(111,216,196,.1)"))
-            fig.add_hline(y=5,line_dash="dash",line_color="#D9714B",annotation_text="Kp 5")
-            fig.update_layout(template="plotly_dark",height=310,margin=dict(l=10,r=10,t=25,b=10),paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(13,18,32,.72)",xaxis_title=tr("Forecast time","Время прогноза"),yaxis=dict(title="Kp",range=[0,max(6,max(vals)+.5)]))
+            colors=["#F59E0B" if v>=5 else "#3A86FF" for v in vals]
+            fig=go.Figure(go.Scatter(x=times,y=vals,mode="lines+markers",line=dict(color="#3A86FF",width=3),marker=dict(color=colors,size=7),fill="tozeroy",fillcolor="rgba(58,134,255,.1)"))
+            fig.add_hline(y=5,line_dash="dash",line_color="#F59E0B",annotation_text="Kp 5")
+            fig.update_layout(template="plotly_dark",height=310,margin=dict(l=10,r=10,t=25,b=10),paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(4,16,29,.65)",xaxis_title=tr("Forecast time","Время прогноза"),yaxis=dict(title="Kp",range=[0,max(6,max(vals)+.5)]))
             st.plotly_chart(fig,width="stretch",config={"displayModeBar":False})
         if kp >= 5 and autonomic >= 60:
             st.warning(tr("Active period for this architecture: protect sleep timing, avoid stacking high-stakes decisions late in the day, reduce conflict load and record the response.", "Активный период для этой архитектуры: защитите режим сна, не накапливайте важные решения к вечеру, снизьте конфликтную нагрузку и зафиксируйте реакцию."))
@@ -717,8 +693,8 @@ def render_method_detail():
 st.markdown(SCIENCE_CSS, unsafe_allow_html=True)
 st.markdown(
     '<div style="position:fixed;left:14px;bottom:10px;z-index:9999;'
-    'font:700 10px "IBM Plex Mono",monospace;letter-spacing:.08em;color:#6FD8C4;'
-    'background:#0B0F1C;border:1px solid rgba(111,216,196,.35);border-radius:8px;'
+    'font:700 10px ui-monospace,monospace;letter-spacing:.08em;color:#45d6e8;'
+    'background:#061321;border:1px solid rgba(69,214,232,.35);border-radius:8px;'
     'padding:6px 9px">ARCHVIQ · PRODUCT R3</div>',
     unsafe_allow_html=True,
 )
@@ -1362,36 +1338,6 @@ elif st.session_state.step == "result":
         st.session_state.step = "landing"
         st.rerun()
     purchase_button(tr("Full report + biohacking protocol · $39","Полный отчёт + биохакинг-протокол · $39"),"full")
-
-    st.markdown('<div class="rule"></div>',unsafe_allow_html=True)
-    st.subheader(tr("Get your report as PDF","Получить отчёт в PDF"))
-    pdf_col1, pdf_col2 = st.columns([1,1.4])
-    with pdf_col1:
-        pdf_bytes = build_pdf(p, interp, lang=L)
-        st.download_button(
-            tr("Download PDF","Скачать PDF"),
-            data=pdf_bytes,
-            file_name="archviq_report.pdf",
-            mime="application/pdf",
-            width="stretch",
-        )
-    with pdf_col2:
-        email_to = st.text_input(tr("Email address","Email"), key="report_email")
-        if st.button(tr("Email me this report","Отправить на почту"), width="stretch"):
-            if not email_to or "@" not in email_to:
-                st.error(tr("Enter a valid email address.","Введите корректный email."))
-            elif send_report_email is None:
-                st.error(tr(
-                    "Email delivery is not configured yet (RESEND_API_KEY missing).",
-                    "Отправка на почту ещё не настроена (нет RESEND_API_KEY)."
-                ))
-            else:
-                with st.spinner(tr("Sending...","Отправляем...")):
-                    try:
-                        send_report_email(email_to, p, interp, lang=L)
-                        st.success(tr("Report sent!","Отчёт отправлен!"))
-                    except Exception as e:
-                        st.error(tr(f"Could not send: {e}", f"Не получилось отправить: {e}"))
 
 # ═══════════════════════════════════════════════════════════════════════════
 # ЭКРАН 4: Когнитивный тест
