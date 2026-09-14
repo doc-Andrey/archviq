@@ -1,0 +1,1431 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Psychotyp Stage 2 — Cognitive Tests v6</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 0;
+      line-height: 1.55;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 18px 80px;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid #374151;
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    h1, h2 {
+      color: white;
+      margin-top: 0;
+    }
+    .muted {
+      color: #9ca3af;
+    }
+    .warn {
+      color: #fcd34d;
+      border-left: 4px solid #f59e0b;
+      padding-left: 14px;
+    }
+    label {
+      display: block;
+      margin: 16px 0 6px;
+      font-weight: 700;
+    }
+    input, select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: white;
+      font-size: 16px;
+    }
+    button {
+      padding: 14px 20px;
+      border: 0;
+      border-radius: 12px;
+      background: #2563eb;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 16px;
+      margin-right: 10px;
+    }
+    button.secondary {
+      background: #059669;
+    }
+    .testbox {
+      min-height: 380px;
+      border: 1px solid #374151;
+      border-radius: 18px;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      margin-top: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .big {
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .medium {
+      font-size: 30px;
+      font-weight: 700;
+    }
+    .dot {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #22c55e;
+      margin: 0 auto 20px;
+    }
+    .leftpos, .rightpos {
+      position: absolute;
+      top: 45%;
+      transform: translateY(-50%);
+      font-size: 80px;
+      font-weight: 800;
+    }
+    .leftpos {
+      left: 18%;
+    }
+    .rightpos {
+      right: 18%;
+    }
+    .progress {
+      margin-top: 12px;
+      color: #93c5fd;
+      font-weight: 700;
+    }
+    .resultline {
+      border-top: 1px solid #374151;
+      padding-top: 10px;
+      margin-top: 14px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      color: #d1d5db;
+    }
+
+    .rulebox {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .ruleline {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 10px 0;
+    }
+    .keyhint {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .keyhint div {
+      border: 1px solid #475569;
+      background: #0b1220;
+      border-radius: 14px;
+      padding: 14px;
+      font-weight: 800;
+    }
+    .yeskey { color: #86efac; }
+    .nokey { color: #fca5a5; }
+    .explain {
+      color: #d1d5db;
+      font-size: 18px;
+      margin-top: 14px;
+    }
+
+    .small {
+      font-size: 18px;
+    }
+    .timer {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      color: #fca5a5;
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .keys {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    .key {
+      background: #111827;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .ok { color: #86efac; }
+    .bad { color: #fca5a5; }
+    .blue { color: #93c5fd; }
+
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>Psychotyp Stage 2 — Cognitive Tests v6</h1>
+    <p>
+      Локальная версия когнитивных тестов второго этапа. Данные никуда не отправляются.
+      После прохождения будет скачан CSV-файл.
+    </p>
+    <p class="warn">
+      Проходить только с компьютера или ноутбука.
+    </p>
+  </div>
+
+  <div class="card" id="introCard">
+    <h2>Данные участника</h2>
+
+    <label>Имя</label>
+    <input id="clientName" required placeholder="Имя участника">
+
+    <label>Дата рождения</label>
+    <input id="dob" type="date" required>
+
+    <label>Email</label>
+    <input id="email" required placeholder="email">
+
+    <label>Возраст</label>
+    <input id="age" required placeholder="Возраст">
+
+    <label>Пол</label>
+    <select id="sex" required>
+      <option value="">Выберите</option>
+      <option>Женский</option>
+      <option>Мужской</option>
+      <option>Другое / не указывать</option>
+    </select>
+
+    <label>Устройство</label>
+    <select id="device" required>
+      <option value="">Выберите</option>
+      <option>Компьютер / ноутбук</option>
+      <option>Планшет</option>
+      <option>Телефон</option>
+    </select>
+
+
+    <button onclick="startAll()">Перейти к тестам</button>
+  </div>
+
+  <div class="card" id="testCard" style="display:none;">
+    <h2 id="testTitle">Тест</h2>
+    <p id="testInstruction" class="muted"></p>
+    <div class="progress" id="progress"></div>
+    <div class="testbox" id="screen"></div>
+  </div>
+
+  <div class="card" id="finalCard" style="display:none;">
+    <h2>Тесты завершены</h2>
+    <p>CSV готов. Нажмите кнопку ниже, чтобы скачать результат.</p>
+    <div id="summaryText" class="resultline"></div>
+    <button class="secondary" onclick="downloadResults()">Скачать CSV</button>
+  </div>
+</div>
+
+<script>
+const app = {
+  client: {},
+  results: {},
+  currentTest: null,
+  keyHandler: null,
+  pauseShownAt: null
+};
+
+document.addEventListener("keydown", function(e) {
+  if (["Space", "ArrowLeft", "ArrowRight"].includes(e.code)) {
+    e.preventDefault();
+  }
+  if (app.keyHandler) {
+    app.keyHandler(e);
+  }
+});
+
+function byId(id) {
+  return document.getElementById(id);
+}
+
+function showIntro(show) {
+  byId("introCard").style.display = show ? "block" : "none";
+}
+
+function showTest(show) {
+  byId("testCard").style.display = show ? "block" : "none";
+}
+
+function showFinal(show) {
+  byId("finalCard").style.display = show ? "block" : "none";
+}
+
+function setScreen(html) {
+  byId("screen").innerHTML = html;
+}
+
+function setTitle(title, instruction) {
+  byId("testTitle").textContent = title;
+  byId("testInstruction").textContent = instruction;
+}
+
+function setProgress(text) {
+  byId("progress").textContent = text;
+}
+
+function showStartScreen(title, instruction, buttonText, startFunctionName, extraHtml) {
+  app.currentTest = null;
+  app.keyHandler = null;
+  app.pauseShownAt = performance.now();
+
+  showIntro(false);
+  showFinal(false);
+  showTest(true);
+
+  setTitle(title, instruction);
+  setProgress("Пауза перед тестом. Нажмите кнопку, когда готовы.");
+
+  setScreen(
+    '<div>' +
+      '<div class="medium">' + title + '</div>' +
+      '<p class="muted">' + instruction + '</p>' +
+      (extraHtml || '') +
+      '<button class="secondary" onclick="' + startFunctionName + '()">' + buttonText + '</button>' +
+    '</div>'
+  );
+}
+
+function markTestStart(code) {
+  app.results[code + "_started_at"] = new Date().toISOString();
+  if (app.pauseShownAt !== null) {
+    app.results[code + "_pause_before_ms"] = round(performance.now() - app.pauseShownAt);
+  }
+}
+
+function markTestEnd(code) {
+  app.results[code + "_ended_at"] = new Date().toISOString();
+}
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function mean(arr) {
+  if (!arr.length) return "";
+  return arr.reduce((a, b) => a + b, 0) / arr.length;
+}
+
+function median(arr) {
+  if (!arr.length) return "";
+  const a = arr.slice().sort((x, y) => x - y);
+  const mid = Math.floor(a.length / 2);
+  return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
+}
+
+function sd(arr) {
+  if (arr.length < 2) return "";
+  const m = mean(arr);
+  const v = mean(arr.map(x => Math.pow(x - m, 2)));
+  return Math.sqrt(v);
+}
+
+function round(x) {
+  if (x === "" || x === null || x === undefined || Number.isNaN(x)) return "";
+  return Math.round(x * 100) / 100;
+}
+
+function csvEscape(value) {
+  const s = String(value === undefined || value === null ? "" : value);
+  return '"' + s.replace(/"/g, '""') + '"';
+}
+
+function collectClient() {
+  const clientName = byId("clientName").value.trim();
+  const dob = byId("dob").value.trim();
+  const email = byId("email").value.trim();
+  const age = byId("age").value.trim();
+  const sex = byId("sex").value;
+  const device = byId("device").value;
+
+  if (!clientName || !dob || !email || !age || !sex || !device) {
+    alert("Заполните имя, дату рождения, email, возраст, пол и устройство.");
+    return false;
+  }
+
+  app.client = {
+    NAME: clientName,
+    DOB: dob,
+    EMAIL: email,
+    AGE: age,
+    SEX: sex,
+    DEVICE_TYPE: device,
+    TIMESTAMP_LOCAL: new Date().toISOString()
+  };
+
+  return true;
+}
+
+function startAll() {
+  if (!collectClient()) return;
+
+  showStartScreen(
+    "Тест 1. Простая реакция",
+    "Ждите появления зелёного круга. Как только он появился — нажмите ПРОБЕЛ. Не нажимайте заранее.",
+    "Начать тест 1",
+    "startSimpleRT"
+  );
+}
+
+/* ===========================
+   TEST 1. SIMPLE REACTION TIME
+   =========================== */
+
+function startSimpleRT() {
+  app.currentTest = "simple_rt";
+  markTestStart("SRT");
+
+  setTitle(
+    "Тест 1. Простая реакция",
+    "Ждите появления зелёного круга. Как только он появился — нажмите ПРОБЕЛ. Не нажимайте заранее."
+  );
+
+  const total = 20;
+  const trials = [];
+  let i = 0;
+  let waiting = false;
+  let active = false;
+  let timer = null;
+  let stimTime = 0;
+
+  app.keyHandler = function(e) {
+    if (e.code !== "Space") return;
+
+    if (waiting) {
+      clearTimeout(timer);
+      waiting = false;
+      active = false;
+      trials.push({
+        trial: i + 1,
+        false_start: 1,
+        rt: ""
+      });
+      i++;
+      setScreen('<div><div class="medium">Слишком рано</div><p class="muted">Ждите появления круга.</p></div>');
+      setTimeout(nextTrial, 650);
+      return;
+    }
+
+    if (active) {
+      const rt = performance.now() - stimTime;
+      active = false;
+      trials.push({
+        trial: i + 1,
+        false_start: 0,
+        rt: rt
+      });
+      i++;
+      setScreen('<div><div class="medium">Ответ принят</div><p class="muted">RT: ' + Math.round(rt) + ' мс</p></div>');
+      setTimeout(nextTrial, 450);
+    }
+  };
+
+  function nextTrial() {
+    if (i >= total) {
+      finishSimpleRT(trials);
+      return;
+    }
+
+    setProgress("Проба " + (i + 1) + " из " + total);
+    waiting = true;
+    active = false;
+    setScreen('<div><div class="medium">Ждите...</div><p class="muted">Не нажимайте заранее.</p></div>');
+
+    const delay = randomInt(900, 2200);
+    timer = setTimeout(function() {
+      waiting = false;
+      active = true;
+      stimTime = performance.now();
+      setScreen('<div><div class="dot"></div><div class="medium">Пробел!</div></div>');
+    }, delay);
+  }
+
+  nextTrial();
+}
+
+function finishSimpleRT(trials) {
+  markTestEnd("SRT");
+
+  const valid = trials
+    .filter(t => t.false_start === 0 && t.rt !== "" && t.rt >= 100 && t.rt <= 1500)
+    .map(t => t.rt);
+
+  const falseStarts = trials.filter(t => t.false_start === 1).length;
+  const tooFast = trials.filter(t => t.false_start === 0 && t.rt !== "" && t.rt < 100).length;
+
+  app.results.SRT_trials = trials.length;
+  app.results.SRT_valid_trials = valid.length;
+  app.results.SRT_false_starts = falseStarts;
+  app.results.SRT_too_fast = tooFast;
+  app.results.SRT_mean_rt = round(mean(valid));
+  app.results.SRT_median_rt = round(median(valid));
+  app.results.SRT_sd_rt = round(sd(valid));
+
+  showStartScreen(
+    "Пауза. Тест 2 — выбор лево / право",
+    "Можно отдохнуть. В следующем тесте: если стрелка влево — нажмите ←, если вправо — нажмите →.",
+    "Начать тест 2",
+    "startChoiceRT",
+    '<div class="resultline">Тест 1 завершён\nSRT median RT: ' + app.results.SRT_median_rt + ' мс</div>'
+  );
+}
+
+/* ===========================
+   TEST 2. CHOICE REACTION TIME
+   =========================== */
+
+function startChoiceRT() {
+  app.currentTest = "choice_rt";
+  markTestStart("CHOICE");
+
+  setTitle(
+    "Тест 2. Выбор лево / право",
+    "Если стрелка влево — нажмите ←. Если стрелка вправо — нажмите →. Работайте быстро и точно."
+  );
+
+  const total = 28;
+  const trials = [];
+  const seq = Array.from({length: total}, () => Math.random() < 0.5 ? "left" : "right");
+
+  let i = 0;
+  let stimTime = 0;
+  let responded = false;
+  let timeout = null;
+
+  app.keyHandler = function(e) {
+    if (!["ArrowLeft", "ArrowRight"].includes(e.code)) return;
+    if (responded) return;
+
+    const response = e.code === "ArrowLeft" ? "left" : "right";
+    finishTrial(response);
+  };
+
+  function nextTrial() {
+    if (i >= total) {
+      finishChoiceRT(trials);
+      return;
+    }
+
+    responded = false;
+    const dir = seq[i];
+    const arrow = dir === "left" ? "←" : "→";
+
+    setProgress("Проба " + (i + 1) + " из " + total);
+    setScreen('<div><div class="big">' + arrow + '</div><p class="muted">Нажмите соответствующую стрелку на клавиатуре</p></div>');
+
+    stimTime = performance.now();
+
+    timeout = setTimeout(function() {
+      if (!responded) {
+        responded = true;
+        trials.push({
+          trial: i + 1,
+          stimulus: dir,
+          response: "",
+          correct: 0,
+          omission: 1,
+          rt: ""
+        });
+        i++;
+        setScreen('<div><div class="medium">Нет ответа</div></div>');
+        setTimeout(nextTrial, 450);
+      }
+    }, 2500);
+  }
+
+  function finishTrial(response) {
+    clearTimeout(timeout);
+    responded = true;
+
+    const dir = seq[i];
+    const rt = performance.now() - stimTime;
+    const correct = response === dir ? 1 : 0;
+
+    trials.push({
+      trial: i + 1,
+      stimulus: dir,
+      response: response,
+      correct: correct,
+      omission: 0,
+      rt: rt
+    });
+
+    i++;
+    setScreen('<div><div class="medium">' + (correct ? "Верно" : "Ошибка") + '</div><p class="muted">RT: ' + Math.round(rt) + ' мс</p></div>');
+    setTimeout(nextTrial, 350);
+  }
+
+  nextTrial();
+}
+
+function finishChoiceRT(trials) {
+  markTestEnd("CHOICE");
+
+  const correctTrials = trials.filter(t => t.correct === 1 && t.rt !== "");
+  const rts = correctTrials.map(t => t.rt);
+  const errors = trials.filter(t => t.correct === 0 && t.omission === 0).length;
+  const omissions = trials.filter(t => t.omission === 1).length;
+  const accuracy = correctTrials.length / trials.length;
+
+  app.results.CHOICE_trials = trials.length;
+  app.results.CHOICE_correct = correctTrials.length;
+  app.results.CHOICE_errors = errors;
+  app.results.CHOICE_omissions = omissions;
+  app.results.CHOICE_accuracy = round(accuracy);
+  app.results.CHOICE_mean_correct_rt = round(mean(rts));
+  app.results.CHOICE_median_correct_rt = round(median(rts));
+  app.results.CHOICE_sd_correct_rt = round(sd(rts));
+
+  showStartScreen(
+    "Пауза. Тест 3 — 2-back",
+    "Можно отдохнуть. В следующем тесте нажимайте ПРОБЕЛ только если текущая цифра совпадает с цифрой, которая была две позиции назад. Сначала будет короткая тренировка.",
+    "Начать тест 3",
+    "startNBackPractice",
+    '<div class="resultline">Тест 2 завершён\nChoice accuracy: ' + app.results.CHOICE_accuracy + '\nChoice median RT: ' + app.results.CHOICE_median_correct_rt + ' мс</div>'
+  );
+}
+
+/* ===========================
+   TEST 3. 2-BACK
+   =========================== */
+
+function startNBackPractice() {
+  app.currentTest = "nback_practice";
+  markTestStart("NBACK");
+
+  setTitle(
+    "Тест 3. 2-back — тренировка",
+    "Нажимайте ПРОБЕЛ только если текущая цифра совпадает с цифрой, которая была две позиции назад. Тренировка в итоговый CSV не входит."
+  );
+
+  const seq = [4, 7, 4, 2, 9, 2, 5, 1, 5, 8];
+  const total = seq.length;
+
+  let i = 0;
+  let stimTime = 0;
+  let pressed = false;
+  let responseWindow = null;
+
+  app.keyHandler = function(e) {
+    if (e.code !== "Space") return;
+    if (app.currentTest !== "nback_practice") return;
+    if (pressed) return;
+    if (!responseWindow) return;
+
+    pressed = true;
+  };
+
+  function nextPracticeTrial() {
+    if (i >= total) {
+      app.keyHandler = null;
+      setProgress("Тренировка завершена. Теперь основной тест.");
+      setScreen(
+        '<div>' +
+          '<div class="medium">Основной 2-back</div>' +
+          '<p class="muted">Теперь ответы пойдут в итоговый CSV.</p>' +
+          '<p class="muted">Правило то же: нажимать ПРОБЕЛ только если текущая цифра совпадает с цифрой две позиции назад.</p>' +
+          '<button class="secondary" onclick="startNBackMain()">Начать основной тест 3</button>' +
+        '</div>'
+      );
+      return;
+    }
+
+    pressed = false;
+    responseWindow = true;
+
+    const digit = seq[i];
+    const hasTwoBack = i >= 2;
+    const twoBack = hasTwoBack ? seq[i - 2] : "";
+    const target = hasTwoBack && digit === twoBack ? 1 : 0;
+
+    setProgress("Тренировка: проба " + (i + 1) + " из " + total + ". В итог не входит.");
+    setScreen(
+      '<div>' +
+        '<div class="big">' + digit + '</div>' +
+        '<p class="muted">Пробел только если эта цифра совпадает с цифрой 2 позиции назад</p>' +
+      '</div>'
+    );
+
+    stimTime = performance.now();
+
+    setTimeout(function() {
+      responseWindow = false;
+      const correct = target ? pressed : !pressed;
+      showNBackPracticeFeedback(digit, twoBack, hasTwoBack, target, pressed, correct);
+    }, 1800);
+  }
+
+  function showNBackPracticeFeedback(digit, twoBack, hasTwoBack, target, pressed, correct) {
+    let ruleLine = "";
+    if (!hasTwoBack) {
+      ruleLine = "Для первых двух цифр сравнения ещё нет. ПРОБЕЛ нажимать не нужно.";
+    } else {
+      ruleLine =
+        "Текущая цифра: <b>" + digit + "</b><br>" +
+        "Цифра 2 позиции назад: <b>" + twoBack + "</b><br>" +
+        "Нужно было: <b>" + (target ? "нажать ПРОБЕЛ" : "не нажимать") + "</b>";
+    }
+
+    setScreen(
+      '<div>' +
+        '<div class="medium">' + (correct ? "Верно" : "Ошибка") + '</div>' +
+        '<p class="muted">' + ruleLine + '</p>' +
+        '<p class="muted">Ваш ответ: ' + (pressed ? "ПРОБЕЛ" : "нет нажатия") + '</p>' +
+      '</div>'
+    );
+
+    i++;
+    setTimeout(nextPracticeTrial, 1900);
+  }
+
+  nextPracticeTrial();
+}
+
+function startNBackMain() {
+  app.currentTest = "nback";
+
+  setTitle(
+    "Тест 3. 2-back",
+    "На экране будут появляться цифры. Нажимайте ПРОБЕЛ, если текущая цифра совпадает с цифрой, которая была две позиции назад."
+  );
+
+  const total = 36;
+  const seq = generateNBackSequence(total);
+  const trials = [];
+
+  let i = 0;
+  let stimTime = 0;
+  let pressed = false;
+  let pressRT = "";
+  let responseWindow = null;
+
+  app.keyHandler = function(e) {
+    if (e.code !== "Space") return;
+    if (app.currentTest !== "nback") return;
+    if (pressed) return;
+    if (!responseWindow) return;
+
+    pressed = true;
+    pressRT = performance.now() - stimTime;
+  };
+
+  function nextTrial() {
+    if (i >= total) {
+      finishNBack(trials);
+      return;
+    }
+
+    pressed = false;
+    pressRT = "";
+    responseWindow = true;
+
+    const digit = seq[i];
+    const target = i >= 2 && seq[i] === seq[i - 2] ? 1 : 0;
+
+    setProgress("Проба " + (i + 1) + " из " + total);
+    setScreen('<div><div class="big">' + digit + '</div><p class="muted">Пробел только при совпадении с цифрой 2 позиции назад</p></div>');
+    stimTime = performance.now();
+
+    setTimeout(function() {
+      responseWindow = false;
+
+      let outcome = "";
+      if (target === 1 && pressed) outcome = "hit";
+      if (target === 1 && !pressed) outcome = "miss";
+      if (target === 0 && pressed) outcome = "false_alarm";
+      if (target === 0 && !pressed) outcome = "correct_rejection";
+
+      trials.push({
+        trial: i + 1,
+        digit: digit,
+        target: target,
+        pressed: pressed ? 1 : 0,
+        outcome: outcome,
+        rt: pressRT
+      });
+
+      i++;
+      setScreen('<div><div class="medium">+</div></div>');
+      setTimeout(nextTrial, 300);
+    }, 1500);
+  }
+
+  nextTrial();
+}
+
+function generateNBackSequence(total) {
+  const seq = [];
+
+  for (let i = 0; i < total; i++) {
+    if (i >= 2 && Math.random() < 0.32) {
+      seq.push(seq[i - 2]);
+    } else {
+      let d = randomInt(1, 9);
+      if (i >= 2) {
+        while (d === seq[i - 2]) {
+          d = randomInt(1, 9);
+        }
+      }
+      seq.push(d);
+    }
+  }
+
+  return seq;
+}
+
+function finishNBack(trials) {
+  markTestEnd("NBACK");
+
+  const hits = trials.filter(t => t.outcome === "hit").length;
+  const misses = trials.filter(t => t.outcome === "miss").length;
+  const fa = trials.filter(t => t.outcome === "false_alarm").length;
+  const cr = trials.filter(t => t.outcome === "correct_rejection").length;
+  const targets = hits + misses;
+  const nonTargets = fa + cr;
+
+  const accuracy = (hits + cr) / trials.length;
+  const hitRate = targets ? hits / targets : "";
+  const faRate = nonTargets ? fa / nonTargets : "";
+
+  const rts = trials
+    .filter(t => t.outcome === "hit" && t.rt !== "")
+    .map(t => t.rt);
+
+  app.results.NBACK_trials = trials.length;
+  app.results.NBACK_targets = targets;
+  app.results.NBACK_hits = hits;
+  app.results.NBACK_misses = misses;
+  app.results.NBACK_false_alarms = fa;
+  app.results.NBACK_correct_rejections = cr;
+  app.results.NBACK_accuracy = round(accuracy);
+  app.results.NBACK_hit_rate = round(hitRate);
+  app.results.NBACK_false_alarm_rate = round(faRate);
+  app.results.NBACK_median_hit_rt = round(median(rts));
+  app.results.NBACK_mean_hit_rt = round(mean(rts));
+
+  showStartScreen(
+    "Пауза. Тест 4 — Simon / Incompatibility",
+    "Можно отдохнуть. В следующем тесте стрелка может появляться слева или справа. Нажимайте по НАПРАВЛЕНИЮ стрелки, а не по месту появления.",
+    "Начать тест 4",
+    "startSimon",
+    '<div class="resultline">Тест 3 завершён\nN-back accuracy: ' + app.results.NBACK_accuracy + '\nN-back hit rate: ' + app.results.NBACK_hit_rate + '</div>'
+  );
+}
+
+/* ===========================
+   TEST 4. SIMON / INCOMPATIBILITY
+   =========================== */
+
+function startSimon() {
+  app.currentTest = "simon";
+  markTestStart("SIMON");
+
+  setTitle(
+    "Тест 4. Simon / Incompatibility",
+    "Стрелка может появляться слева или справа. Нажимайте по НАПРАВЛЕНИЮ стрелки, а не по месту появления."
+  );
+
+  const total = 36;
+  const trials = [];
+
+  let i = 0;
+  let stimTime = 0;
+  let responded = false;
+  let timeout = null;
+  let current = null;
+
+  app.keyHandler = function(e) {
+    if (!["ArrowLeft", "ArrowRight"].includes(e.code)) return;
+    if (responded) return;
+
+    const response = e.code === "ArrowLeft" ? "left" : "right";
+    finishTrial(response);
+  };
+
+  function makeTrial() {
+    const dir = Math.random() < 0.5 ? "left" : "right";
+    const pos = Math.random() < 0.5 ? "left" : "right";
+    return {
+      direction: dir,
+      position: pos,
+      compatible: dir === pos ? 1 : 0
+    };
+  }
+
+  function nextTrial() {
+    if (i >= total) {
+      finishSimon(trials);
+      return;
+    }
+
+    responded = false;
+    current = makeTrial();
+
+    const arrow = current.direction === "left" ? "←" : "→";
+    const cls = current.position === "left" ? "leftpos" : "rightpos";
+
+    setProgress("Проба " + (i + 1) + " из " + total);
+    setScreen('<div class="' + cls + '">' + arrow + '</div><div class="muted" style="position:absolute;bottom:24px;width:100%;left:0;">Нажимайте по направлению стрелки</div>');
+
+    stimTime = performance.now();
+
+    timeout = setTimeout(function() {
+      if (!responded) {
+        responded = true;
+        trials.push({
+          trial: i + 1,
+          direction: current.direction,
+          position: current.position,
+          compatible: current.compatible,
+          response: "",
+          correct: 0,
+          omission: 1,
+          rt: ""
+        });
+        i++;
+        setScreen('<div><div class="medium">Нет ответа</div></div>');
+        setTimeout(nextTrial, 450);
+      }
+    }, 2500);
+  }
+
+  function finishTrial(response) {
+    clearTimeout(timeout);
+    responded = true;
+
+    const rt = performance.now() - stimTime;
+    const correct = response === current.direction ? 1 : 0;
+
+    trials.push({
+      trial: i + 1,
+      direction: current.direction,
+      position: current.position,
+      compatible: current.compatible,
+      response: response,
+      correct: correct,
+      omission: 0,
+      rt: rt
+    });
+
+    i++;
+    setScreen('<div><div class="medium">' + (correct ? "Верно" : "Ошибка") + '</div><p class="muted">RT: ' + Math.round(rt) + ' мс</p></div>');
+    setTimeout(nextTrial, 350);
+  }
+
+  nextTrial();
+}
+
+function finishSimon(trials) {
+  markTestEnd("SIMON");
+
+  const compCorrect = trials.filter(t => t.compatible === 1 && t.correct === 1 && t.rt !== "").map(t => t.rt);
+  const incompCorrect = trials.filter(t => t.compatible === 0 && t.correct === 1 && t.rt !== "").map(t => t.rt);
+
+  const compErrors = trials.filter(t => t.compatible === 1 && t.correct === 0).length;
+  const incompErrors = trials.filter(t => t.compatible === 0 && t.correct === 0).length;
+
+  const correct = trials.filter(t => t.correct === 1).length;
+  const accuracy = correct / trials.length;
+
+  const compMed = median(compCorrect);
+  const incompMed = median(incompCorrect);
+  const cost = compMed !== "" && incompMed !== "" ? incompMed - compMed : "";
+
+  app.results.SIMON_trials = trials.length;
+  app.results.SIMON_accuracy = round(accuracy);
+  app.results.SIMON_compatible_median_rt = round(compMed);
+  app.results.SIMON_incompatible_median_rt = round(incompMed);
+  app.results.SIMON_interference_cost = round(cost);
+  app.results.SIMON_compatible_errors = compErrors;
+  app.results.SIMON_incompatible_errors = incompErrors;
+  app.results.SIMON_total_errors = compErrors + incompErrors;
+
+  showStartScreen(
+    "Пауза. Тест 5 — Сложное правило",
+    "Можно отдохнуть. Сначала будет короткая тренировка правила A + C больше B? Затем основной тест из двух частей.",
+    "Начать тест 5",
+    "startComplexDiagnostic",
+    '<div class="resultline">Тест 4 завершён\nSimon accuracy: ' + app.results.SIMON_accuracy + '\nSimon interference cost: ' + app.results.SIMON_interference_cost + ' мс</div>'
+  );
+}
+
+/* ===========================
+   TEST 5. COMPLEX RULE
+   =========================== */
+
+function startComplexDiagnostic() {
+  app.currentTest = "complex_diagnostic";
+  app.deadlineTimer = null;
+  app.timerInterval = null;
+  markTestStart("COMPLEX");
+
+  setTitle(
+    "Тест 5. Сложное правило",
+    "Правило всегда одно: A + C больше B? ← ДА, → НЕТ. Сначала тренировка, затем основной тест."
+  );
+
+  startComplexPractice();
+}
+
+function makeComplexTrial(wantYes, targetDifficulty) {
+  for (let attempt = 0; attempt < 500; attempt++) {
+    const A = randomInt(1, 9);
+    const C = randomInt(1, 9);
+    const sum = A + C;
+    let delta;
+
+    if (targetDifficulty === "hard") {
+      delta = Math.random() < 0.5 ? 1 : 2;
+    } else if (targetDifficulty === "medium") {
+      delta = randomInt(3, 5);
+    } else {
+      delta = randomInt(6, 9);
+    }
+
+    const B = wantYes ? sum - delta : sum + delta;
+    if (B < 2 || B > 18 || B === sum) continue;
+
+    const diff = sum - B;
+    const yes = diff > 0;
+    const absDiff = Math.abs(diff);
+    const difficulty = absDiff <= 2 ? "hard" : (absDiff <= 5 ? "medium" : "easy");
+
+    return {
+      A: A,
+      B: B,
+      C: C,
+      sum: sum,
+      diff: diff,
+      yes: yes,
+      correctKey: yes ? "left" : "right",
+      difficulty: difficulty
+    };
+  }
+
+  return {
+    A: 4,
+    B: wantYes ? 6 : 9,
+    C: 3,
+    sum: 7,
+    diff: wantYes ? 1 : -2,
+    yes: wantYes,
+    correctKey: wantYes ? "left" : "right",
+    difficulty: "hard"
+  };
+}
+
+function makeBalancedComplexTrials(total) {
+  const trials = [];
+  const pattern = ["hard", "hard", "medium", "easy"];
+
+  for (let i = 0; i < total; i++) {
+    const wantYes = i % 2 === 0;
+    const difficulty = pattern[i % pattern.length];
+    trials.push(makeComplexTrial(wantYes, difficulty));
+  }
+
+  for (let i = trials.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [trials[i], trials[j]] = [trials[j], trials[i]];
+  }
+
+  return trials;
+}
+
+function complexTrialHTML(t, showTimer) {
+  return '<div>' +
+    (showTimer ? '<div class="timer" id="timerBox"></div>' : '') +
+    '<div class="big">A = ' + t.A + '&nbsp;&nbsp; B = ' + t.B + '&nbsp;&nbsp; C = ' + t.C + '</div>' +
+    '<div class="medium" style="margin-top:26px;">A + C больше B?</div>' +
+    '<div class="keys"><div class="key yeskey">← ДА</div><div class="key nokey">→ НЕТ</div></div>' +
+    '<p class="muted">Сложите A + C и сравните с B.</p>' +
+    '</div>';
+}
+
+function complexFeedbackHTML(t, response, rt, isPractice) {
+  const respText = response === '' ? 'нет ответа' : (response === 'left' ? '← ДА' : '→ НЕТ');
+  const correctText = t.correctKey === 'left' ? '← ДА' : '→ НЕТ';
+  const ok = response === t.correctKey;
+
+  return '<div>' +
+    '<div class="medium ' + (ok ? 'ok' : 'bad') + '">' + (ok ? 'Верно' : 'Ошибка') + '</div>' +
+    '<div class="small" style="margin-top:14px;">' +
+      'A + C = ' + t.A + ' + ' + t.C + ' = <b>' + t.sum + '</b><br>' +
+      'B = <b>' + t.B + '</b><br>' +
+      (t.yes ? 'Сумма больше B' : 'Сумма НЕ больше B') + '<br>' +
+      'Правильный ответ: <b>' + correctText + '</b><br>' +
+      'Ваш ответ: <b>' + respText + '</b>' +
+      (rt !== '' ? '<br>RT: ' + Math.round(rt) + ' мс' : '') +
+    '</div>' +
+    (isPractice ? '<p class="muted">Нажмите ПРОБЕЛ для следующей тренировочной пробы.</p>' : '') +
+    '</div>';
+}
+
+function startComplexPractice() {
+  app.results.COMPLEX_PRACTICE_started_at = new Date().toISOString();
+
+  const trials = makeBalancedComplexTrials(10);
+  let i = 0;
+  let active = false;
+  let current = null;
+  let stimTime = 0;
+  let waitingNext = false;
+
+  setTitle(
+    "Тест 5. Тренировка",
+    "A + C больше B? ← ДА, → НЕТ. Тренировка не входит в итоговый результат. После объяснения нажимайте ПРОБЕЛ для следующей пробы."
+  );
+
+  app.keyHandler = function(e) {
+    if (waitingNext && e.code === 'Space') {
+      waitingNext = false;
+      i++;
+      nextPracticeTrial();
+      return;
+    }
+
+    if (!active) return;
+    if (!['ArrowLeft', 'ArrowRight'].includes(e.code)) return;
+
+    const response = e.code === 'ArrowLeft' ? 'left' : 'right';
+    const rt = performance.now() - stimTime;
+    active = false;
+    waitingNext = true;
+    setScreen(complexFeedbackHTML(current, response, rt, true));
+  };
+
+  function nextPracticeTrial() {
+    if (i >= trials.length) {
+      app.results.COMPLEX_PRACTICE_ended_at = new Date().toISOString();
+      showComplexAccuracyPause();
+      return;
+    }
+
+    current = trials[i];
+    setProgress('Тренировка: проба ' + (i + 1) + ' из ' + trials.length + '. В итог не входит.');
+    setScreen(complexTrialHTML(current, false));
+    stimTime = performance.now();
+    active = true;
+  }
+
+  nextPracticeTrial();
+}
+
+function showComplexBlockPause(title, instruction, buttonText, startFunctionName, extraHtml) {
+  app.currentTest = "complex_diagnostic_pause";
+  app.keyHandler = null;
+  app.pauseShownAt = performance.now();
+
+  setTitle(title, instruction);
+  setProgress("Пауза. Нажмите кнопку, когда готовы.");
+
+  setScreen(
+    '<div>' +
+      '<div class="medium">' + title + '</div>' +
+      '<p class="muted">' + instruction + '</p>' +
+      (extraHtml || '') +
+      '<button class="secondary" onclick="' + startFunctionName + '()">' + buttonText + '</button>' +
+    '</div>'
+  );
+}
+
+function showComplexAccuracyPause() {
+  showComplexBlockPause(
+    "Тест 5. Часть 1",
+    "Решайте спокойно и точно. Лимит ответа — 4 секунды.",
+    "Начать часть 1",
+    "startComplexAccuracyBlock"
+  );
+}
+
+function showComplexSpeedPause(extraHtml) {
+  showComplexBlockPause(
+    "Тест 5. Часть 2",
+    "Отвечайте быстрее. Лимит ответа — 1.5 секунды. ← ДА, → НЕТ.",
+    "Начать часть 2",
+    "startComplexSpeedBlock",
+    extraHtml || ''
+  );
+}
+
+function startComplexAccuracyBlock() {
+  startComplexDiagnosticBlock("COMPLEX_ACC", 24, 4000, false);
+}
+
+function startComplexSpeedBlock() {
+  startComplexDiagnosticBlock("COMPLEX_SPD", 24, 1500, true);
+}
+
+function startComplexDiagnosticBlock(code, total, deadlineMs, showTimer) {
+  app.currentTest = code;
+  app.results[code + '_started_at'] = new Date().toISOString();
+  if (app.pauseShownAt !== null) {
+    app.results[code + '_pause_before_ms'] = round(performance.now() - app.pauseShownAt);
+  }
+
+  const trials = makeBalancedComplexTrials(total);
+  const rows = [];
+  let i = 0;
+  let active = false;
+  let current = null;
+  let stimTime = 0;
+
+  setTitle(
+    code === 'COMPLEX_ACC' ? 'Тест 5. Часть 1' : 'Тест 5. Часть 2',
+    code === 'COMPLEX_ACC' ? 'Решайте точно. Не спешите.' : 'Отвечайте до 1.5 секунд. Быстро, даже если не полностью уверены.'
+  );
+
+  app.keyHandler = function(e) {
+    if (!active) return;
+    if (!['ArrowLeft', 'ArrowRight'].includes(e.code)) return;
+    const response = e.code === 'ArrowLeft' ? 'left' : 'right';
+    finishTrial(response, false);
+  };
+
+  function nextTrial() {
+    clearTimeout(app.deadlineTimer);
+    clearInterval(app.timerInterval);
+
+    if (i >= trials.length) {
+      finishComplexDiagnosticBlock(code, rows);
+      return;
+    }
+
+    current = trials[i];
+    active = true;
+    setProgress('Проба ' + (i + 1) + ' из ' + total);
+    setScreen(complexTrialHTML(current, showTimer));
+    stimTime = performance.now();
+
+    if (showTimer) {
+      app.timerInterval = setInterval(function() {
+        const left = Math.max(0, deadlineMs - (performance.now() - stimTime));
+        const box = byId('timerBox');
+        if (box) box.textContent = (left / 1000).toFixed(1) + ' c';
+      }, 50);
+    }
+
+    app.deadlineTimer = setTimeout(function() {
+      if (active) finishTrial('', true);
+    }, deadlineMs);
+  }
+
+  function finishTrial(response, timeout) {
+    clearTimeout(app.deadlineTimer);
+    clearInterval(app.timerInterval);
+    if (!active) return;
+    active = false;
+
+    const rt = response === '' ? '' : performance.now() - stimTime;
+    const correct = response !== '' && response === current.correctKey ? 1 : 0;
+
+    rows.push({
+      trial: i + 1,
+      A: current.A,
+      B: current.B,
+      C: current.C,
+      sum: current.sum,
+      diff: current.diff,
+      difficulty: current.difficulty,
+      yes: current.yes ? 1 : 0,
+      correct_response: current.correctKey,
+      response: response,
+      correct: correct,
+      omission: response === '' ? 1 : 0,
+      timeout: timeout ? 1 : 0,
+      rt: rt
+    });
+
+    if (code === 'COMPLEX_ACC') {
+      setScreen('<div><div class="medium ' + (correct ? 'ok' : 'bad') + '">' + (correct ? 'Верно' : 'Ошибка') + '</div><p class="muted">RT: ' + (rt === '' ? 'нет ответа' : Math.round(rt) + ' мс') + '</p></div>');
+      setTimeout(function() { i++; nextTrial(); }, 350);
+    } else {
+      setScreen('<div><div class="medium ' + (correct ? 'ok' : 'bad') + '">' + (correct ? 'Верно' : 'Ошибка / поздно') + '</div><p class="muted">' + (rt === '' ? 'нет ответа за 1.5 с' : 'RT: ' + Math.round(rt) + ' мс') + '</p></div>');
+      setTimeout(function() { i++; nextTrial(); }, 300);
+    }
+  }
+
+  nextTrial();
+}
+
+function finishComplexDiagnosticBlock(code, rows) {
+  app.results[code + '_ended_at'] = new Date().toISOString();
+
+  const correctRows = rows.filter(r => r.correct === 1 && r.rt !== '');
+  const rtCorrect = correctRows.map(r => r.rt);
+  const errors = rows.filter(r => r.correct === 0 && r.omission === 0).length;
+  const omissions = rows.filter(r => r.omission === 1).length;
+  const late = rows.filter(r => r.timeout === 1).length;
+  const accuracy = rows.length ? correctRows.length / rows.length : '';
+  const hard = rows.filter(r => r.difficulty === 'hard');
+  const hardCorrect = hard.filter(r => r.correct === 1).length;
+
+  app.results[code + '_trials'] = rows.length;
+  app.results[code + '_correct'] = correctRows.length;
+  app.results[code + '_errors'] = errors;
+  app.results[code + '_omissions'] = omissions;
+  app.results[code + '_late_or_timeout'] = late;
+  app.results[code + '_accuracy'] = round(accuracy);
+  app.results[code + '_median_correct_rt'] = round(median(rtCorrect));
+  app.results[code + '_mean_correct_rt'] = round(mean(rtCorrect));
+  app.results[code + '_sd_correct_rt'] = round(sd(rtCorrect));
+  app.results[code + '_hard_accuracy'] = hard.length ? round(hardCorrect / hard.length) : '';
+  app.results[code + '_raw_trials_json'] = JSON.stringify(rows.map(r => Object.assign({}, r, {rt: round(r.rt)})));
+
+  if (code === 'COMPLEX_ACC') {
+    const extra = '<div class="resultline">Часть 1 завершена\nТочность: ' + app.results.COMPLEX_ACC_accuracy + '\nМедиана RT: ' + app.results.COMPLEX_ACC_median_correct_rt + ' мс\nСложные пробы: ' + app.results.COMPLEX_ACC_hard_accuracy + '</div>';
+    showComplexSpeedPause(extra);
+  } else {
+    finishComplexDiagnostic();
+  }
+}
+
+function finishComplexDiagnostic() {
+  clearTimeout(app.deadlineTimer);
+  clearInterval(app.timerInterval);
+  markTestEnd("COMPLEX");
+
+  const accRT = Number(app.results.COMPLEX_ACC_median_correct_rt);
+  const spdRT = Number(app.results.COMPLEX_SPD_median_correct_rt);
+  const accErr = 1 - Number(app.results.COMPLEX_ACC_accuracy);
+  const spdErr = 1 - Number(app.results.COMPLEX_SPD_accuracy);
+  const speedGain = (Number.isFinite(accRT) && Number.isFinite(spdRT)) ? accRT - spdRT : '';
+  const errorIncrease = (Number.isFinite(accErr) && Number.isFinite(spdErr)) ? spdErr - accErr : '';
+
+  app.results.COMPLEX_SPEED_GAIN_MS = round(speedGain);
+  app.results.COMPLEX_ERROR_INCREASE_RATE = round(errorIncrease);
+
+  let interpretation = '';
+  if (speedGain !== '' && errorIncrease !== '') {
+    if (speedGain > 250 && errorIncrease <= 0.15) {
+      interpretation = 'CONTROL_GATING_STRATEGY: скорость резко улучшается без большого роста ошибок. Вероятен дорогой валидатор/сверхконтроль, а не лимит понимания.';
+    } else if (speedGain < 200 && errorIncrease > 0.15) {
+      interpretation = 'COMPLEX_INTEGRATION_LIMIT: ускорение почти не помогает, ошибки растут. Вероятен реальный лимит complex integration под временем.';
+    } else if (speedGain > 250 && errorIncrease > 0.15) {
+      interpretation = 'STRONG_SPEED_ACCURACY_TRADEOFF: ускорение возможно, но цена ошибок высокая. Контур работает, но запас под давлением ограничен.';
+    } else {
+      interpretation = 'MIXED_OR_STABLE: выраженного эффекта режима нет. Нужен повтор или более трудный блок.';
+    }
+  }
+
+  app.results.COMPLEX_DIAGNOSTIC_INTERPRETATION = interpretation;
+
+  // Legacy fields for older analyzer compatibility: accuracy-mode values.
+  app.results.COMPLEX_trials = app.results.COMPLEX_ACC_trials;
+  app.results.COMPLEX_correct = app.results.COMPLEX_ACC_correct;
+  app.results.COMPLEX_errors = app.results.COMPLEX_ACC_errors;
+  app.results.COMPLEX_omissions = app.results.COMPLEX_ACC_omissions;
+  app.results.COMPLEX_accuracy = app.results.COMPLEX_ACC_accuracy;
+  app.results.COMPLEX_mean_correct_rt = app.results.COMPLEX_ACC_mean_correct_rt;
+  app.results.COMPLEX_median_correct_rt = app.results.COMPLEX_ACC_median_correct_rt;
+  app.results.COMPLEX_sd_correct_rt = app.results.COMPLEX_ACC_sd_correct_rt;
+  app.results.COMPLEX_hard_accuracy = app.results.COMPLEX_ACC_hard_accuracy;
+  app.results.COMPLEX_rule_integration_score = round(Number(app.results.COMPLEX_ACC_accuracy) * 1000 / Math.max(350, Number(app.results.COMPLEX_ACC_median_correct_rt) || 1000));
+
+  finishAll();
+}
+
+/* ===========================
+   FINISH + DOWNLOAD
+   =========================== */
+
+function finishAll() {
+  app.currentTest = null;
+  app.keyHandler = null;
+
+  showTest(false);
+  showFinal(true);
+
+  const lines = [
+    "SRT_median_rt: " + app.results.SRT_median_rt,
+    "CHOICE_accuracy: " + app.results.CHOICE_accuracy,
+    "NBACK_accuracy: " + app.results.NBACK_accuracy,
+    "SIMON_interference_cost: " + app.results.SIMON_interference_cost,
+    "",
+    "COMPLEX ACCURACY block:",
+    "  accuracy: " + app.results.COMPLEX_ACC_accuracy,
+    "  median RT: " + app.results.COMPLEX_ACC_median_correct_rt + " мс",
+    "  hard accuracy: " + app.results.COMPLEX_ACC_hard_accuracy,
+    "",
+    "COMPLEX SPEED block:",
+    "  accuracy: " + app.results.COMPLEX_SPD_accuracy,
+    "  median RT: " + app.results.COMPLEX_SPD_median_correct_rt + " мс",
+    "  hard accuracy: " + app.results.COMPLEX_SPD_hard_accuracy,
+    "  late/timeouts: " + app.results.COMPLEX_SPD_late_or_timeout,
+    "",
+    "Speed gain: " + app.results.COMPLEX_SPEED_GAIN_MS + " мс",
+    "Error increase: " + app.results.COMPLEX_ERROR_INCREASE_RATE,
+    "",
+    app.results.COMPLEX_DIAGNOSTIC_INTERPRETATION
+  ];
+
+  byId("summaryText").textContent = lines.join("\n");
+}
+
+function downloadResults() {
+  const data = Object.assign({}, app.client, app.results);
+
+  const headers = Object.keys(data);
+  const values = headers.map(h => data[h]);
+
+  const csv = [
+    headers.map(csvEscape).join(","),
+    values.map(csvEscape).join(",")
+  ].join("\n");
+
+  const blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+
+  const namePart = String(data.NAME || "NO_NAME").trim().replace(/[^a-zA-Zа-яА-Я0-9_-]+/g, "_");
+  const dobPart = String(data.DOB || "NO_DOB").trim().replace(/[^0-9-]+/g, "_");
+  const filename = "psychotyp_cognitive_" + namePart + "_" + dobPart + ".csv";
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
+
+  alert("CSV скачан. Проверьте папку Загрузки.");
+}
+</script>
+</body>
+</html>
