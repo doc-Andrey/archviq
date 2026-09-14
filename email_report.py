@@ -50,8 +50,8 @@ resend.api_key = st.secrets["RESEND_API_KEY"]
 FROM_EMAIL = "ARCHVIQ <onboarding@resend.dev>"
 
 SUBJECT = {
-    "RU": "Ваш архитектурный отчёт ARCHVIQ",
-    "EN": "Your ARCHVIQ architecture report",
+    "RU": "Ваш индивидуальный профиль ARCHVIQ",
+    "EN": "Your ARCHVIQ processing profile",
 }
 
 BODY_HTML = {
@@ -60,7 +60,7 @@ BODY_HTML = {
           <p style="color:#B9791F;font-weight:bold;margin-bottom:4px;letter-spacing:0.5px;">ARCHVIQ</p>
           <h2 style="color:#0D1220;margin-top:0;">Ваш отчёт готов</h2>
           <p>Здравствуйте{name_part}!</p>
-          <p>Ваш архитектурный отчёт — во вложении (PDF). Если возникнут вопросы по интерпретации — просто ответьте на это письмо.</p>
+          <p>Ваш индивидуальный профиль обработки информации — во вложении (PDF). Если возникнут вопросы по интерпретации — просто ответьте на это письмо.</p>
           <p style="color:#5B6478;font-size:13px;margin-top:24px;border-top:1px solid #D8DCE6;padding-top:12px;">
             Это исследовательская вычислительная модель, а не медицинский диагноз.
           </p>
@@ -71,7 +71,7 @@ BODY_HTML = {
           <p style="color:#B9791F;font-weight:bold;margin-bottom:4px;letter-spacing:0.5px;">ARCHVIQ</p>
           <h2 style="color:#0D1220;margin-top:0;">Your report is ready</h2>
           <p>Hi{name_part},</p>
-          <p>Your architecture report is attached as a PDF. If you have questions about the interpretation, just reply to this email.</p>
+          <p>Your individual processing profile is attached as a PDF. If you have questions about the interpretation, just reply to this email.</p>
           <p style="color:#5B6478;font-size:13px;margin-top:24px;border-top:1px solid #D8DCE6;padding-top:12px;">
             This is a research computational model, not a medical diagnosis.
           </p>

@@ -20,7 +20,7 @@ except Exception:
 
 
 st.set_page_config(
-    page_title="Archviq — Your brain's operating system",
+    page_title="Archviq — Individual processing profile",
     page_icon="🧠",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -549,6 +549,174 @@ def render_rs_radar(profile,title=""):
     st.plotly_chart(fig,width="stretch",config={"displayModeBar":False})
 
 
+
+X_AXIS_META = {
+    "X_EXC": ("Excitability", "Активация"),
+    "X_SENS": ("Sensitivity", "Чувствительность"),
+    "X_STAB": ("Stability", "Стабильность"),
+    "X_INTEG": ("Integration", "Интеграция"),
+    "X_FLEX": ("Flexibility", "Гибкость"),
+    "X_LAB": ("Lability", "Лабильность"),
+    "X_SEGR": ("Segregation", "Сегрегация"),
+    "X_HUB": ("Hubness", "Хабность"),
+    "X_MAT": ("Maturation", "Матурация"),
+}
+
+
+def _x_display_from_raw(raw_value):
+    try:
+        x=float(raw_value)
+    except Exception:
+        x=0.0
+    return _clamp(50.0 + 50.0*np.tanh(x))
+
+
+def profile_x_values(profile):
+    stored=(profile or {}).get("x_axes") or {}
+    raw=(profile or {}).get("raw") or {}
+    return {k:_clamp(stored.get(k,_x_display_from_raw(raw.get(k,0.0)))) for k in X_AXIS_META}
+
+
+def render_x9_radar(profile,title=""):
+    xv=profile_x_values(profile)
+    labels=[meta[1] if st.session_state.lang=="RU" else meta[0] for meta in X_AXIS_META.values()]
+    values=[xv[k] for k in X_AXIS_META]
+    fig=go.Figure()
+    fig.add_trace(go.Scatterpolar(
+        r=values+[values[0]], theta=labels+[labels[0]], fill="toself",
+        line=dict(color="#6FD8C4",width=3), fillcolor="rgba(111,216,196,.22)",
+        marker=dict(size=7,color="#6FD8C4"), name=profile.get("name","43 NEW")
+    ))
+    fig.update_layout(
+        template="plotly_dark",height=430,margin=dict(l=35,r=35,t=60,b=35),
+        paper_bgcolor="rgba(0,0,0,0)",
+        polar=dict(bgcolor="rgba(13,18,32,.55)",
+            radialaxis=dict(range=[0,100],showticklabels=True,gridcolor="rgba(180,190,214,.28)"),
+            angularaxis=dict(tickfont=dict(size=12,color="#ECEEF3"),gridcolor="rgba(180,190,214,.28)")),
+        showlegend=False,title=title,font=dict(color="#ECEEF3"))
+    st.plotly_chart(fig,width="stretch",config={"displayModeBar":False})
+    st.caption(tr(
+        "X1–X9 are the primary 43 NEW V3 coordinates. The 0–100 radius is a fixed display transform, not a population percentile.",
+        "X1–X9 — основные координаты 43 NEW V3. Радиус 0–100 — фиксированное отображение, а не популяционный перцентиль."
+    ))
+
+
+def render_pair_x9_overlay(p1,p2):
+    x1=profile_x_values(p1); x2=profile_x_values(p2)
+    labels=[meta[1] if st.session_state.lang=="RU" else meta[0] for meta in X_AXIS_META.values()]
+    keys=list(X_AXIS_META)
+    v1=[x1[k] for k in keys]; v2=[x2[k] for k in keys]
+    fig=go.Figure()
+    fig.add_trace(go.Scatterpolar(
+        r=v1+[v1[0]],theta=labels+[labels[0]],fill="toself",
+        line=dict(color="#6FD8C4",width=3),fillcolor="rgba(111,216,196,.16)",
+        marker=dict(size=7,color="#6FD8C4"),name=p1.get("name","P1")))
+    fig.add_trace(go.Scatterpolar(
+        r=v2+[v2[0]],theta=labels+[labels[0]],fill="toself",
+        line=dict(color="#F7C873",width=3),fillcolor="rgba(247,200,115,.12)",
+        marker=dict(size=7,color="#F7C873"),name=p2.get("name","P2")))
+    gaps=[abs(a-b) for a,b in zip(v1,v2)]
+    hi=[i for i,g in enumerate(gaps) if g>=20]
+    if hi:
+        fig.add_trace(go.Scatterpolar(
+            r=[max(v1[i],v2[i])+4 for i in hi],theta=[labels[i] for i in hi],mode="markers",
+            marker=dict(size=12,color="#FF6B6B",symbol="diamond"),name=tr("Large gap ≥20","Большой разрыв ≥20")))
+    fig.update_layout(
+        template="plotly_dark",height=500,margin=dict(l=35,r=35,t=65,b=35),
+        paper_bgcolor="rgba(0,0,0,0)",
+        polar=dict(bgcolor="rgba(13,18,32,.55)",
+            radialaxis=dict(range=[0,105],showticklabels=True,gridcolor="rgba(180,190,214,.28)"),
+            angularaxis=dict(tickfont=dict(size=12,color="#ECEEF3"),gridcolor="rgba(180,190,214,.28)")),
+        legend=dict(orientation="h",y=-.08),
+        title=tr("43 NEW V3 · overlaid pair architecture","43 NEW V3 · наложение архитектур пары"),
+        font=dict(color="#ECEEF3"))
+    st.plotly_chart(fig,width="stretch",config={"displayModeBar":False})
+    gap_rows=[]
+    for i,k in enumerate(keys):
+        gap_rows.append({
+            tr("Axis","Ось"):labels[i],
+            p1.get("name","P1"):round(v1[i],1),
+            p2.get("name","P2"):round(v2[i],1),
+            tr("Gap","Разрыв"):round(gaps[i],1),
+            tr("Signal","Сигнал"):tr("HIGH","ВЫСОКИЙ") if gaps[i]>=20 else tr("moderate","умеренный") if gaps[i]>=10 else tr("close","близко"),
+        })
+    st.dataframe(pd.DataFrame(gap_rows).sort_values(tr("Gap","Разрыв"),ascending=False),width="stretch",hide_index=True)
+
+
+def _functional_prior(profile):
+    interp=get_interp(profile) or {}
+    idx=interp.get("indices",{})
+    def iv(k,d=50): return _clamp((idx.get(k) or {}).get("value",d))
+    x=profile_x_values(profile)
+    return {
+        "speed": .55*iv("recovery")+.45*(100-iv("overload")),
+        "memory": np.mean([x["X_STAB"],x["X_INTEG"],x["X_MAT"],100-x["X_LAB"]]),
+        "inhibition": np.mean([x["X_SEGR"],x["X_STAB"],100-x["X_LAB"]]),
+        "integration": np.mean([x["X_INTEG"],x["X_FLEX"],x["X_HUB"],x["X_MAT"]]),
+        "activation": np.mean([x["X_EXC"],x["X_FLEX"],x["X_HUB"]]),
+        "load_tolerance": 100-iv("overload"),
+        "self_control": np.mean([x["X_STAB"],x["X_SEGR"],x["X_MAT"],100-x["X_LAB"]]),
+        "adaptation": np.mean([x["X_FLEX"],x["X_STAB"],x["X_MAT"],100-x["X_LAB"]]),
+    }
+
+
+def _cognitive_layer(results):
+    if not results:return {}
+    complex_acc=_accuracy_pct(results.get("COMPLEX_ACC_accuracy"))
+    complex_hard=_accuracy_pct(results.get("COMPLEX_ACC_hard_accuracy",results.get("COMPLEX_ACC_accuracy")))
+    return {
+        "speed":_rt_score(results.get("SRT_median_rt")),
+        "memory":_accuracy_pct(results.get("NBACK_accuracy")),
+        "inhibition":_clamp(100-safe_num(results.get("SIMON_interference_cost"),350)/3.5),
+        "integration":.65*complex_acc+.35*complex_hard,
+    }
+
+
+def _questionnaire_layer(qres):
+    if not qres:return {}
+    kind=qres.get("type"); score=_clamp(qres.get("score_pct",50)); vals=qres.get("domain_values",[])
+    def d(i,default=50): return _clamp(vals[i] if i<len(vals) else default)
+    if kind=="burnout":
+        return {"activation":100-d(0),"load_tolerance":100-score,"self_control":100-d(2),"adaptation":100-d(3)}
+    if kind=="compatibility":
+        return {"integration":np.mean([d(0),d(2)]),"activation":d(3),"self_control":d(0),"adaptation":d(1)}
+    if kind=="ai":
+        return {"inhibition":d(0),"self_control":d(2),"adaptation":d(1)}
+    return {}
+
+
+def render_integrated_profile(profile,cognitive_results=None,questionnaire_results=None):
+    prior=_functional_prior(profile); cog=_cognitive_layer(cognitive_results); quest=_questionnaire_layer(questionnaire_results)
+    if not cog and not quest:return
+    keys=["speed","memory","inhibition","integration","activation","load_tolerance","self_control","adaptation"]
+    labels={
+        "speed":tr("Processing speed","Скорость обработки"),"memory":tr("Working memory","Рабочая память"),
+        "inhibition":tr("Interference control","Контроль интерференции"),"integration":tr("Rule integration","Интеграция правил"),
+        "activation":tr("Activation","Активация"),"load_tolerance":tr("Load tolerance","Устойчивость к нагрузке"),
+        "self_control":tr("Self-control","Самоконтроль"),"adaptation":tr("Adaptation","Адаптация")}
+    fig=go.Figure()
+    fig.add_trace(go.Bar(x=[labels[k] for k in keys],y=[prior[k] for k in keys],name=tr("43 NEW prior","43 NEW — prior"),marker_color="#6FD8C4"))
+    if cog:
+        fig.add_trace(go.Bar(x=[labels[k] for k in keys],y=[cog.get(k,None) for k in keys],name=tr("Cognitive test","Когнитивный тест"),marker_color="#F7C873"))
+    if quest:
+        fig.add_trace(go.Bar(x=[labels[k] for k in keys],y=[quest.get(k,None) for k in keys],name=tr("Questionnaire","Опросник"),marker_color="#C99CFF"))
+    fig.update_layout(template="plotly_dark",barmode="group",height=470,margin=dict(l=20,r=20,t=55,b=90),
+        paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(13,18,32,.55)",yaxis=dict(range=[0,100],title="0–100"),
+        legend=dict(orientation="h",y=1.12),title=tr("Integrated profile: prior × test × questionnaire","Интегрированный профиль: prior × тест × опросник"),font=dict(color="#ECEEF3"))
+    st.plotly_chart(fig,width="stretch",config={"displayModeBar":False})
+    rows=[]
+    for k in keys:
+        rows.append({tr("Function","Функция"):labels[k],
+                     tr("43 NEW prior","43 NEW — prior"):round(prior[k],1),
+                     tr("Cognitive","Тест"):round(cog[k],1) if k in cog else "—",
+                     tr("Questionnaire","Опросник"):round(quest[k],1) if k in quest else "—"})
+    st.dataframe(rows,width="stretch",hide_index=True)
+    st.caption(tr(
+        "This is a merged functional display. 43 NEW is the developmental prior; test and questionnaire are measured current layers. The common 0–100 view is for within-report comparison, not a clinical norm.",
+        "Это объединённое функциональное представление. 43 NEW — developmental prior; тест и опросник — измеренные текущие слои. Общая шкала 0–100 используется для сравнения внутри отчёта, а не как клиническая норма."
+    ))
+
+
 def architecture_type(profile,interp=None):
     supplied=str(profile.get("type_name","")).lower()
     for key in ("fortress","antenna","fluid","collapse"):
@@ -595,29 +763,22 @@ FAMOUS_REFERENCE={
 
 
 def famous_analogies(profile):
-    keys=("RS1_RHYTHM","RS2_SYNC","RS3_SEGR","RS4_INTEGRAL","X_SENS","X_LAB","X_STAB","X_FLEX","X_HUB")
-    raw=profile.get("raw",{})
-    if not raw or any(k not in raw for k in keys):return []
-    matrix=np.array(list(FAMOUS_REFERENCE.values()),dtype=float)
-    target=np.array([safe_num(raw[k],0) for k in keys],dtype=float)
-    scale=np.std(matrix,axis=0);scale[scale<1e-6]=1
-    dist=np.sqrt(np.mean(((matrix-target)/scale)**2,axis=1))
-    order=np.argsort(dist)[:3]
-    names=list(FAMOUS_REFERENCE)
-    return [(names[i],float(dist[i])) for i in order]
+    # Legacy public-reference vectors were generated on the old43 geometry.
+    # They are intentionally disabled for 43 NEW V3 to avoid a false comparison.
+    return []
 
 
 def render_type_profile(profile,interp):
     key=architecture_type(profile,interp);title,icon,*paras=TYPE_CONTENT[st.session_state.lang][key]
     color={"fortress":"#6FD8C4","antenna":"#E3A34E","fluid":"#A7B0C8","collapse":"#D9714B"}[key]
-    st.markdown(f'<div class="science-card" style="border-color:{color}88;background:linear-gradient(135deg,{color}25,rgba(7,20,36,.88))"><div class="eyebrow">ARCHITECTURE TYPE</div><h3>{icon} {title}</h3></div>',unsafe_allow_html=True)
+    st.markdown(f'<div class="science-card" style="border-color:{color}88;background:linear-gradient(135deg,{color}25,rgba(7,20,36,.88))"><div class="eyebrow">FUNCTIONAL SUMMARY</div><h3>{icon} {title}</h3></div>',unsafe_allow_html=True)
     for p in paras:st.write(p)
     analogies=famous_analogies(profile)
     if analogies:
         st.markdown("**"+tr("Closest reference profiles","Ближайшие референсные профили")+"**")
         st.write(" · ".join(name for name,_ in analogies))
         st.caption(tr("Mathematical proximity within an exploratory zero-lag 43 reference set; it does not imply identical personality, biography or ability.","Математическая близость в исследовательской zero-lag выборке 43; она не означает одинаковую личность, биографию или способности."))
-    st.caption(tr("Type assignment is a functional summary of continuous scores; the full profile is defined by the RS and X parameters.","Тип — функциональное резюме непрерывных показателей; полный профиль определяется параметрами RS и X."))
+    st.caption(tr("The label is only a functional summary; the full profile is defined by the continuous 43 NEW X and RS coordinates.","Название — только функциональное резюме; полный профиль задаётся непрерывными координатами X и RS движка 43 NEW."))
 
 
 AXIS_EXPLAIN = {
@@ -804,12 +965,12 @@ def render_method_detail():
         st.latex(r"RS_k=f\!\left(SSN(t)\otimes W_k(t)\right)")
     with tabs[1]:
         st.markdown(tr(
-            "The production v1 engine loads measured daily SILSO Wolf numbers, derives first and second differences, sign reversals, 7/14/21-day volatility and ranges, and robustly standardizes them. It aggregates impulse, jerk, volatility, directional asymmetry and instability in 15 developmental windows: W0–W5, N0 and P1–P8. Each window updates nine coupled latent states. The final state is projected into RS1–RS4 and load/control indices.",
-            "Production v1 загружает измеренные суточные числа Вольфа SILSO, вычисляет первую и вторую разности, смены знака, волатильность и диапазоны за 7/14/21 день, затем выполняет робастную стандартизацию. Импульс, рывок, волатильность, направленная асимметрия и нестабильность собираются в 15 окнах развития: W0–W5, N0 и P1–P8. Каждое окно обновляет девять связанных скрытых состояний. Финальное состояние проецируется в RS1–RS4 и индексы нагрузки/контроля."
+            "43 NEW V3 loads measured daily SILSO Wolf numbers, derives first and second differences, sign reversals, 7/14/21-day volatility and ranges, and robustly standardizes them. It aggregates impulse, jerk, volatility, directional asymmetry and instability in 15 developmental windows: W0–W5, N0 and P1–P8. Each window updates nine coupled latent states. In V3 the nine X states are primary; RS1–RS4 remain summary macrocoordinates.",
+            "43 NEW V3 загружает измеренные суточные числа Вольфа SILSO, вычисляет первую и вторую разности, смены знака, волатильность и диапазоны за 7/14/21 день, затем выполняет робастную стандартизацию. Импульс, рывок, волатильность, направленная асимметрия и нестабильность собираются в 15 окнах развития: W0–W5, N0 и P1–P8. Каждое окно обновляет девять связанных скрытых состояний. В V3 девять X-состояний являются основными; RS1–RS4 сохранены как сводные макрокоординаты."
         ))
         st.markdown('<div class="formula">dynamic = .35·impulse + .30·jerk + .20·volatility + .15·range<br>Xₖ₊₁ = clip(DₖXₖ + GₖFₖ + coupling)</div>',unsafe_allow_html=True)
         st.latex(r"X_{k+1}=\operatorname{clip}\left(D_kX_k+G_kF_k+C(X_k)\right)")
-        st.latex(r"RS_4=.30X_{integ}+.25X_{hub}+.20X_{mat}+.15X_{stab}-.20X_{lab}")
+        st.latex(r"RS_4=(X_{integ}+X_{hub}+X_{mat}+X_{stab}+X_{flex}-X_{lab})/6")
     with tabs[2]:
         st.markdown(tr(
             "The architecture is represented as a control system: excitation and sensitivity provide input gain; stability and maturation constrain the response; flexibility and segregation allocate processing; hubness and integration combine signals; lability describes switching cost. The useful output is not a label but a control policy: when to load the system, how to switch, how much recovery it needs, and how to measure adaptation.",
@@ -818,8 +979,8 @@ def render_method_detail():
         st.markdown('<div class="formula">input → state transition → output → measurement → correction</div>',unsafe_allow_html=True)
     with tabs[3]:
         st.markdown(tr(
-            "Unlike astrology, the model uses a public measured time series, explicit windows and reproducible equations. Its claims can be tested against EEG, cognitive measures and questionnaires, and can fail. The LEMON n=199 layer is used for research calibration and percentile interpretation; a date-only result remains a prior hypothesis until checked against the person's measured function.",
-            "В отличие от астрологии модель использует публичный измеренный временной ряд, явные окна и воспроизводимые уравнения. Её выводы можно проверять по EEG, когнитивным измерениям и опросникам, и проверка может их опровергнуть. Слой LEMON n=199 используется для исследовательской калибровки и перцентильной интерпретации; результат только по дате остаётся априорной гипотезой до сопоставления с измеренной функцией человека."
+            "Unlike astrology, the model uses a public measured time series, explicit windows and reproducible equations. Its claims can be tested against EEG, cognitive measures and questionnaires, and can fail. For 43 NEW V3 the website does not treat legacy LEMON percentiles as a new-engine norm; the date-only result remains a developmental prior until checked against the person's measured function and self-report.",
+            "В отличие от астрологии модель использует публичный измеренный временной ряд, явные окна и воспроизводимые уравнения. Её выводы можно проверять по EEG, когнитивным измерениям и опросникам, и проверка может их опровергнуть. Для 43 NEW V3 сайт не использует старые перцентили LEMON как норму нового движка; результат только по дате остаётся developmental prior до сопоставления с измеренной функцией и самоотчётом человека."
         ))
 
 
@@ -828,7 +989,7 @@ st.markdown(
     '<div style="position:fixed;left:14px;bottom:10px;z-index:9999;'
     'font:700 10px "IBM Plex Mono",monospace;letter-spacing:.08em;color:#6FD8C4;'
     'background:#0B0F1C;border:1px solid rgba(111,216,196,.35);border-radius:8px;'
-    'padding:6px 9px">ARCHVIQ · PRODUCT R3</div>',
+    'padding:6px 9px">ARCHVIQ · 43 NEW V3</div>',
     unsafe_allow_html=True,
 )
 
@@ -842,6 +1003,7 @@ for k,v in {
     "quiz_answers": {},
     "cog_done": False,
     "cognitive_results": None,
+    "questionnaire_results": None,
 }.items():
     if k not in st.session_state:
         st.session_state[k] = v
@@ -852,26 +1014,22 @@ L = st.session_state.lang
 T = {
     "title": {"EN": "Archviq", "RU": "Archviq"},
     "subtitle": {
-        "EN": "Your neural architecture — based on prenatal solar dynamics",
-        "RU": "Ваша нейронная архитектура — на основе пренатальной солнечной динамики",
+        "EN": "An individual information-processing profile from developmental time-series modeling",
+        "RU": "Индивидуальный профиль обработки информации на основе моделирования динамики периода развития",
     },
     "landing_h1": {
-        "EN": "What is your brain actually built for?",
-        "RU": "Для чего реально построен ваш мозг?",
+        "EN": "Why does your brain process information this way?",
+        "RU": "Почему ваш мозг обрабатывает информацию именно так?",
     },
     "landing_p1": {
-        "EN": """Standard personality tests measure *behaviour*.  
-Archviq measures the **architecture** behind it — the neural structure formed 
-during your critical developmental windows, shaped by electromagnetic solar dynamics.  
+        "EN": """Standard tests describe current behaviour and performance.  
+Archviq adds a **developmental computational prior** derived from a measured solar time series, then compares it with cognition and questionnaires.  
 
-This is not astrology. The mechanism is biophysical. The data is measured.  
-The results are falsifiable.""",
-        "RU": """Стандартные тесты личности измеряют *поведение*.  
-Archviq измеряет **архитектуру** за ним — нейронную структуру, сформированную  
-в критические окна развития под влиянием электромагнитной солнечной динамики.  
+The result is a testable model of individual information processing, not a diagnosis or a fixed identity label.""",
+        "RU": """Стандартные тесты описывают текущее поведение и функцию.  
+Archviq добавляет **расчётный developmental prior** из измеряемого временного ряда солнечной активности, а затем сопоставляет его с когнитивным тестом и опросниками.  
 
-Это не астрология. Механизм биофизический. Данные измерены.  
-Результаты фальсифицируемы.""",
+Результат — проверяемая модель индивидуальной обработки информации, а не диагноз и не фиксированный ярлык личности.""",
     },
     "how_title": {
         "EN": "How it works",
@@ -879,24 +1037,24 @@ Archviq измеряет **архитектуру** за ним — нейрон
     },
     "how_steps": {
         "EN": [
-            "**Step 1 — Neural Architecture Profile**  \nYour date of birth → prenatal solar dynamics → RS1-RS4 axes → 8 functional indices",
+            "**Step 1 — Computational Processing Profile**  \nDate of birth → developmental solar dynamics → 43 NEW V3 X1–X9 → functional prior",
             "**Step 2 — Cognitive Test** *(optional)*  \nReaction time, working memory, interference control → measured performance vs. predicted baseline",
-            "**Step 3 — Targeted Questionnaire** *(optional)*  \nBurnout / Compatibility / AI collaboration → behavioral layer on top of architecture",
-            "**Step 4 — Integrated Report**  \nGAP analysis: where architecture and behavior diverge — and what to do about it",
+            "**Step 3 — Targeted Questionnaire** *(optional)*  \nBurnout / Compatibility / AI collaboration → current behavioral/state layer",
+            "**Step 4 — Integrated Report**  \n43 NEW prior + cognitive test + questionnaire in one functional profile",
         ],
         "RU": [
-            "**Шаг 1 — Профиль нейронной архитектуры**  \nДата рождения → солнечная динамика → оси RS1-RS4 → 8 функциональных индексов",
+            "**Шаг 1 — Расчётный профиль обработки**  \nДата рождения → динамика периода развития → 43 NEW V3 X1–X9 → функциональный prior",
             "**Шаг 2 — Когнитивный тест** *(опционально)*  \nВремя реакции, рабочая память, контроль интерференции → измеренные показатели vs. предсказанный базовый уровень",
-            "**Шаг 3 — Целевой опросник** *(опционально)*  \nВыгорание / Совместимость / Работа с ИИ → поведенческий слой поверх архитектуры",
-            "**Шаг 4 — Интегрированный отчёт**  \nGAP-анализ: где архитектура и поведение расходятся — и что с этим делать",
+            "**Шаг 3 — Целевой опросник** *(опционально)*  \nВыгорание / Совместимость / Работа с ИИ → текущий поведенческий/состояний слой",
+            "**Шаг 4 — Интегрированный отчёт**  \n43 NEW prior + когнитивный тест + опросник в одном функциональном профиле",
         ],
     },
-    "start_btn": {"EN": "Decode Your Brain →", "RU": "Расшифровать архитектуру мозга →"},
+    "start_btn": {"EN": "Build My Processing Profile →", "RU": "Рассчитать мой профиль обработки →"},
     "name_label": {"EN": "Name (optional)", "RU": "Имя (опционально)"},
     "sex_label": {"EN": "Sex", "RU": "Пол"},
     "sex_opts": {"EN": ["Male", "Female"], "RU": ["Мужской", "Женский"]},
     "dob_label": {"EN": "Date of Birth", "RU": "Дата рождения"},
-    "compute_btn": {"EN": "Compute My Profile →", "RU": "Вычислить профиль →"},
+    "compute_btn": {"EN": "Calculate Profile →", "RU": "Рассчитать профиль →"},
     "computing": {"EN": "Analyzing solar dynamics...", "RU": "Анализ солнечной динамики..."},
     "mode_label": {"EN": "Mode", "RU": "Режим"},
     "mode_opts": {"EN": ["Personal Profile", "Compatibility"], "RU": ["Личный профиль", "Совместимость"]},
@@ -911,8 +1069,8 @@ Archviq измеряет **архитектуру** за ним — нейрон
     "restart": {"EN": "Start Over", "RU": "Начать заново"},
     "cog_title": {"EN": "Cognitive Assessment", "RU": "Когнитивная оценка"},
     "cog_desc": {
-        "EN": "5 short tests (15 min). Measures your actual reaction time, working memory, and cognitive control — compared against your architectural prediction.",
-        "RU": "5 коротких тестов (15 минут). Измеряет ваше реальное время реакции, рабочую память и когнитивный контроль — в сравнении с архитектурным предсказанием.",
+        "EN": "5 short tests (15 min). Measures reaction time, working memory and cognitive control, then merges them with the 43 NEW prior and questionnaire layer.",
+        "RU": "5 коротких тестов (15 минут). Измеряет время реакции, рабочую память и когнитивный контроль, затем объединяет их с 43 NEW prior и слоем опросника.",
     },
     "cog_done_btn": {"EN": "Tests Complete → View Results", "RU": "Тесты пройдены → Смотреть результаты"},
     "quiz_title": {"EN": "Choose Your Questionnaire", "RU": "Выберите опросник"},
@@ -931,11 +1089,11 @@ Archviq измеряет **архитектуру** за ним — нейрон
     "submit_quiz": {"EN": "Submit Answers →", "RU": "Отправить ответы →"},
     "scale_label": {"EN": "1 = Never / Strongly disagree  |  5 = Always / Strongly agree",
                     "RU": "1 = Никогда / Совершенно не согласен  |  5 = Всегда / Полностью согласен"},
-    "compat_score": {"EN": "Compatibility Index", "RU": "Индекс совместимости"},
+    "compat_score": {"EN": "Coordination Index", "RU": "Индекс согласования"},
     "pair_dynamics": {"EN": "Pair Dynamics", "RU": "Динамика пары"},
     "validation_note": {
-        "EN": "Validated on LEMON dataset (n=199). Significant associations with anxiety (ρ=0.20), impulsivity (ρ=0.26), stress (ρ=0.23).",
-        "RU": "Валидировано на датасете LEMON (n=199). Значимые связи с тревогой (ρ=0.20), импульсивностью (ρ=0.26), стрессом (ρ=0.23).",
+        "EN": "Earlier LEMON analyses provide research context; they are not a calibration norm for 43 NEW V3.",
+        "RU": "Ранние анализы LEMON дают исследовательский контекст; они не являются калибровочной нормой для 43 NEW V3.",
     },
 }
 
@@ -1229,7 +1387,7 @@ def cognitive_gap_rows(profile, results):
                   tr("marked divergence — repeat", "выраженное расхождение — повторить"))
         rows.append({
             tr("Function", "Функция"): titles[key],
-            tr("43 prior", "Прогноз 43"): round(predicted[key], 1),
+            tr("43 NEW prior", "43 NEW prior"): round(predicted[key], 1),
             tr("Measured", "Измерено"): round(measured[key], 1),
             "GAP": round(gap, 1),
             tr("Interpretation", "Интерпретация"): status,
@@ -1239,7 +1397,7 @@ def cognitive_gap_rows(profile, results):
 
 def render_cognitive_gap(profile, results):
     rows = cognitive_gap_rows(profile, results)
-    st.subheader(tr("Architecture × measured cognition", "Архитектура × измеренная когниция"))
+    st.subheader(tr("43 NEW prior × measured cognition", "43 NEW prior × измеренная когниция"))
     st.dataframe(rows, width="stretch", hide_index=True)
     gaps = [abs(safe_num(row["GAP"])) for row in rows]
     mean_gap = float(np.mean(gaps)) if gaps else 0.0
@@ -1300,12 +1458,12 @@ if new_lang != st.session_state.lang:
 # ЭКРАН 1: Лендинг
 # ═══════════════════════════════════════════════════════════════════════════
 if st.session_state.step == "landing":
-    st.markdown('<div class="hero-kicker">ARCHVIQ · NEURAL ARCHITECTURE INTELLIGENCE</div>', unsafe_allow_html=True)
-    st.title(tr("What is your brain actually built for?", "Для чего в действительности построен ваш мозг?"))
+    st.markdown('<div class="hero-kicker">ARCHVIQ · INDIVIDUAL PROCESSING MODEL</div>', unsafe_allow_html=True)
+    st.title(tr("Why does your brain process information this way?", "Почему ваш мозг обрабатывает информацию именно так?"))
     st.markdown(
         '<div class="hero-copy">' + tr(
-            "Your brain's operating system — decoded. Neural architecture profiling based on prenatal solar dynamics, tested against cognition, behavior and repeated measurement.",
-            "Операционная система вашего мозга — расшифрована. Профилирование нейронной архитектуры по пренатальной солнечной динамике с проверкой по когнитивным функциям, поведению и повторным измерениям."
+            "A computational developmental prior, compared with how you actually perform in cognitive tests and questionnaires.",
+            "Расчётный developmental prior, который сопоставляется с тем, как вы реально выполняете когнитивные тесты и отвечаете на опросники."
         ) + '</div>', unsafe_allow_html=True)
     render_science_pipeline()
     c1,c2,c3 = st.columns(3)
@@ -1314,10 +1472,10 @@ if st.session_state.step == "landing":
     with c3: card(tr("Feedback loop", "Контур обратной связи"),tr("Cognitive tests, questionnaires, sleep and repeated personal measurements.","Когнитивные тесты, опросники, сон и повторные персональные измерения."),"CONTROL")
     st.markdown('<div class="rule"></div>',unsafe_allow_html=True)
     st.subheader(tr("The problem", "Проблема"))
-    st.markdown('<div class="formula">ARCHITECTURE → COGNITION → BEHAVIOUR</div>',unsafe_allow_html=True)
+    st.markdown('<div class="formula">DEVELOPMENTAL PRIOR → COGNITION → BEHAVIOUR</div>',unsafe_allow_html=True)
     st.write(tr(
-        "Standard tests measure behavior after it has already been shaped by education, stress, culture and adaptation. Archviq estimates the architecture beneath that behavior, then measures how it is expressed now.",
-        "Стандартные тесты измеряют поведение после того, как его сформировали образование, стресс, культура и адаптация. Archviq оценивает лежащую под ним архитектуру, а затем измеряет, как она проявляется сейчас."
+        "Standard tests measure current performance and self-report. Archviq adds a developmental computational prior and then compares all layers in one profile.",
+        "Стандартные тесты измеряют текущую функцию и самоотчёт. Archviq добавляет расчётный developmental prior и затем сопоставляет все слои в одном профиле."
     ))
     st.subheader(tr("What the model is testing", "Что проверяет модель"))
     st.write(tr(
@@ -1328,11 +1486,11 @@ if st.session_state.step == "landing":
     render_method_detail()
     st.subheader(tr("Why this is not astrology", "Почему это не астрология"))
     render_not_astrology()
-    st.subheader(tr("Research calibration · LEMON n=199", "Исследовательская калибровка · LEMON n=199"))
+    st.subheader(tr("Research context · earlier LEMON analyses", "Исследовательский контекст · ранние анализы LEMON"))
     render_validation_chart()
     st.caption(tr(
-        "Reported Spearman associations in the project analysis: anxiety ρ=.20, p=.004; impulsivity ρ=.26, p=.0002; stress ρ=.23, p=.001. These are statistical associations and do not by themselves establish causality.",
-        "Связи Спирмена в анализе проекта: тревога ρ=.20, p=.004; импульсивность ρ=.26, p=.0002; стресс ρ=.23, p=.001. Это статистические связи; сами по себе они не устанавливают причинность."
+        "Earlier project analyses reported associations with anxiety, impulsivity and stress. They provide research context but are not used as a calibration norm for 43 NEW V3.",
+        "В ранних анализах проекта были получены связи с тревогой, импульсивностью и стрессом. Это исследовательский контекст, а не калибровочная норма для 43 NEW V3."
     ))
     st.markdown('<div class="rule"></div>',unsafe_allow_html=True)
     st.subheader(tr("From profile to an individual protocol", "От профиля к индивидуальному протоколу"))
@@ -1404,22 +1562,22 @@ elif st.session_state.step == "input":
 elif st.session_state.step == "result":
     p = st.session_state.p1
     interp = get_interp(p)
-    st.markdown('<div class="hero-kicker">PERSONAL CONTROL ARCHITECTURE · MODEL 43</div>',unsafe_allow_html=True)
-    st.title(p.get("name","") + " · " + tr("Neural Architecture", "Нейронная архитектура"))
+    st.markdown('<div class="hero-kicker">PERSONAL PROCESSING PROFILE · 43 NEW V3</div>',unsafe_allow_html=True)
+    st.title(p.get("name","") + " · " + tr("Processing Profile", "Профиль обработки информации"))
     st.markdown(f'<div class="hero-copy">{p.get("tagline","")}</div>',unsafe_allow_html=True)
-    engine_source = str(p.get("engine_source", "ENGINE 43"))
+    engine_source = str(p.get("engine_source", "43 NEW V3"))
     if "FALLBACK" in engine_source.upper():
         st.warning(tr(
-            "Demo fallback is active: the production engine file was not found. Place 43_universal_full_cascade_engine.py beside app.py or set PSYCHOTYP_ENGINE_PATH, then calculate again.",
-            "Включён демонстрационный резервный режим: файл промышленного движка не найден. Поместите 43_universal_full_cascade_engine.py рядом с app.py или задайте PSYCHOTYP_ENGINE_PATH и выполните расчёт повторно."
+            "43 NEW V3 is unavailable. Place 43_new_v3_engine.py beside app.py or set PSYCHOTYP_ENGINE_PATH, then calculate again.",
+            "43 NEW V3 недоступен. Поместите 43_new_v3_engine.py рядом с app.py или задайте PSYCHOTYP_ENGINE_PATH и выполните расчёт повторно."
         ))
     else:
         st.caption("✓ " + engine_source + " · pre_lag=0 · post_lag=0")
     radar_col,type_col=st.columns([1,1.15],gap="large")
-    with radar_col: render_rs_radar(p,tr("RS1–RS4 architecture","Архитектура RS1–RS4"))
+    with radar_col: render_x9_radar(p,tr("43 NEW V3 · primary X9 profile","43 NEW V3 · основной профиль X9"))
     with type_col: render_type_profile(p,interp)
     render_axes(p)
-    st.markdown('<div class="formula">SSN dynamics → developmental signatures → 9 coupled X states → RS architecture → functional protocol</div>',unsafe_allow_html=True)
+    st.markdown('<div class="formula">SSN dynamics → developmental signatures → 9 X states → functional prior → cognitive test + questionnaire → integrated profile</div>',unsafe_allow_html=True)
 
     overview,mechanics,protocol,weather = st.tabs([
         tr("Interpretation", "Интерпретация"),
@@ -1444,7 +1602,7 @@ elif st.session_state.step == "result":
         render_method_detail()
         raw = p.get("raw",{})
         if raw:
-            with st.expander(tr("Open the numerical output of engine 43", "Открыть численный выход движка 43")):
+            with st.expander(tr("Open the numerical output of engine 43", "Открыть численный выход 43 NEW V3")):
                 keys = ["RS1_RHYTHM","RS2_SYNC","RS3_SEGR","RS4_INTEGRAL",
                         "X_EXC","X_SENS","X_STAB","X_INTEG","X_FLEX","X_LAB","X_SEGR","X_HUB","X_MAT",
                         "hidden_tension_index","architecture_power_score","pathology_load_score",
@@ -1466,8 +1624,8 @@ elif st.session_state.step == "result":
         st.session_state.step = "quiz_select"
         st.rerun()
     if c3.button(t("restart")):
-        for k in ["p1","p2","quiz","quiz_answers","cog_done","cognitive_results"]:
-            st.session_state[k] = None if k in ["p1","p2","quiz","cognitive_results"] else {} if k=="quiz_answers" else False
+        for k in ["p1","p2","quiz","quiz_answers","cog_done","cognitive_results","questionnaire_results"]:
+            st.session_state[k] = None if k in ["p1","p2","quiz","cognitive_results","questionnaire_results"] else {} if k=="quiz_answers" else False
         st.session_state.step = "landing"
         st.rerun()
     purchase_button(tr("Full report + biohacking protocol · $39","Полный отчёт + биохакинг-протокол · $39"),"full")
@@ -1517,8 +1675,8 @@ elif st.session_state.step == "cognitive":
     st.iframe(get_cognitive_html(), height=1050)
     st.subheader(tr("Load the measured result", "Загрузите измеренный результат"))
     st.write(tr(
-        "After the test downloads its CSV, upload that file here. Archviq will compare the measured functions with the engine 43 prior.",
-        "После того как тест скачает CSV, загрузите этот файл сюда. Archviq сопоставит измеренные функции с прогнозом движка 43."
+        "After the test downloads its CSV, upload that file here. Archviq will compare the measured functions with the 43 NEW V3 prior.",
+        "После того как тест скачает CSV, загрузите этот файл сюда. Archviq сопоставит измеренные функции с прогнозом 43 NEW V3."
     ))
     uploaded = st.file_uploader(
         tr("Cognitive-test CSV", "CSV когнитивного теста"),
@@ -1536,10 +1694,12 @@ elif st.session_state.step == "cognitive":
                 raise ValueError(tr("Missing test fields: ", "Нет полей теста: ") + ", ".join(missing_metrics))
             st.session_state.cognitive_results = cognitive_result
             render_cognitive_gap(st.session_state.p1, cognitive_result)
+            render_integrated_profile(st.session_state.p1, cognitive_result, st.session_state.get("questionnaire_results"))
         except Exception as exc:
             st.error(tr("Cannot read this cognitive CSV: ", "Не удалось прочитать cognitive CSV: ") + str(exc))
     elif st.session_state.cognitive_results:
         render_cognitive_gap(st.session_state.p1, st.session_state.cognitive_results)
+        render_integrated_profile(st.session_state.p1, st.session_state.cognitive_results, st.session_state.get("questionnaire_results"))
     st.divider()
     c1, c2 = st.columns(2)
     if c1.button(t("cog_done_btn"), type="primary"):
@@ -1561,6 +1721,7 @@ elif st.session_state.step == "quiz_select":
         if st.button(qlabel, width="stretch"):
             st.session_state.quiz = qkey
             st.session_state.quiz_answers = {}
+            st.session_state.questionnaire_results = None
             st.session_state.step = "quiz"
             st.rerun()
     st.divider()
@@ -1607,10 +1768,18 @@ elif st.session_state.step == "quiz_result":
     score_pct, score_label = score_quiz(answers, quiz_type)
     domains = quiz_domain_scores(answers, quiz_type)
     interp = get_interp(p)
+    qres = {
+        "type": quiz_type,
+        "score_pct": score_pct,
+        "score_label": score_label,
+        "domain_names": [name for name,_ in domains],
+        "domain_values": [value for _,value in domains],
+    }
+    st.session_state.questionnaire_results = qres
 
     quiz_name = t("quiz_opts").get(quiz_type, quiz_type)
-    st.markdown('<div class="hero-kicker">BEHAVIOR × ARCHITECTURE · GAP ANALYSIS</div>',unsafe_allow_html=True)
-    st.title({"EN":"Your measured behavioral layer","RU":"Измеренный поведенческий слой"}[L])
+    st.markdown('<div class="hero-kicker">43 NEW PRIOR × MEASURED LAYERS · INTEGRATED PROFILE</div>',unsafe_allow_html=True)
+    st.title({"EN":"Integrated measured profile","RU":"Интегрированный измеренный профиль"}[L])
     st.subheader(quiz_name)
     if quiz_type=="ai":
         st.markdown(f'<div class="formula">AI PROFILE · {ai_profile_name(score_pct,domains,interp)}</div>',unsafe_allow_html=True)
@@ -1619,12 +1788,17 @@ elif st.session_state.step == "quiz_result":
     for col,(name,value) in zip(result_cols[1:],domains):
         col.metric(name,f"{value}%")
     st.caption(tr(
-        "The questionnaire measures the current behavioral layer. Engine 43 estimates a prior architecture. Their difference is information: it may reflect adaptation, compensation, context or current load.",
-        "Опросник измеряет текущий поведенческий слой. Движок 43 оценивает априорную архитектуру. Разница между ними информативна: она может отражать адаптацию, компенсацию, контекст или текущую нагрузку."
+        "The questionnaire measures the current behavioral/state layer. 43 NEW V3 supplies the developmental prior; the cognitive test supplies measured function. The report merges all available layers.",
+        "Опросник измеряет текущий поведенческий/состояний слой. 43 NEW V3 задаёт developmental prior, когнитивный тест — измеренную функцию. Отчёт объединяет все доступные слои."
     ))
+    st.subheader(tr("Integrated profile", "Интегрированный профиль"))
+    render_integrated_profile(p, st.session_state.get("cognitive_results"), qres)
+    if st.session_state.get("cognitive_results"):
+        with st.expander(tr("Detailed cognitive comparison", "Детальное сравнение с когнитивным тестом")):
+            render_cognitive_gap(p, st.session_state.get("cognitive_results"))
 
     # GAP: архитектура vs поведение
-    st.subheader({"EN":"Architecture × Behavior GAP","RU":"GAP: Архитектура × Поведение"}[L])
+    st.subheader({"EN":"43 NEW prior × Behavior","RU":"43 NEW prior × Поведение"}[L])
     try:
         if interp:
             overload_level = interp["index_levels"].get("overload","mid")
@@ -1682,8 +1856,8 @@ elif st.session_state.step == "quiz_result":
         st.session_state.step = "quiz_select"
         st.rerun()
     if c2.button(t("restart")):
-        for k in ["p1","p2","quiz","quiz_answers","cog_done","cognitive_results"]:
-            st.session_state[k] = None if k in ["p1","p2","quiz","cognitive_results"] else {} if k=="quiz_answers" else False
+        for k in ["p1","p2","quiz","quiz_answers","cog_done","cognitive_results","questionnaire_results"]:
+            st.session_state[k] = None if k in ["p1","p2","quiz","cognitive_results","questionnaire_results"] else {} if k=="quiz_answers" else False
         st.session_state.step = "landing"
         st.rerun()
 
@@ -1698,12 +1872,12 @@ elif st.session_state.step == "compat":
     raw1,raw2=p1.get("raw",{}),p2.get("raw",{})
     deep = compatibility_analysis(p1,p2,raw1,raw2,L) if raw1 and raw2 else None
 
-    st.markdown('<div class="hero-kicker">TWO CONTROL SYSTEMS · ONE RELATIONSHIP</div>',unsafe_allow_html=True)
+    st.markdown('<div class="hero-kicker">TWO PROCESSING PROFILES · ONE RELATIONSHIP</div>',unsafe_allow_html=True)
     st.title(f"{p1.get('name','P1')} × {p2.get('name','P2')}")
     st.metric(t("compat_score"),f"{score:.0f}%",compat.get("summary",""))
     st.caption(tr(
-        "The score is only a map of architectural distance. Relationship quality depends on the way two systems coordinate load, communication, recovery and decisions.",
-        "Балл показывает только архитектурную дистанцию. Качество отношений зависит от того, как две системы согласуют нагрузку, общение, восстановление и решения."
+        "The index maps similarity and differences across the 43 NEW V3 profiles. Relationship quality depends on the way two systems coordinate load, communication, recovery and decisions.",
+        "Индекс показывает близость и различия профилей 43 NEW V3. Качество отношений зависит от того, как две системы согласуют нагрузку, общение, восстановление и решения."
     ))
 
     if paywall_gate("compatibility","compat_unlocked",tr("$19","$19")):
@@ -1719,9 +1893,7 @@ elif st.session_state.step == "compat":
             tr("Pair architecture","Архитектура пары"),tr("Relationship dynamics","Динамика отношений"),
             tr("Behavior protocol","Протокол поведения"),tr("Control & forecast","Контроль и прогноз")])
         with architecture:
-            r1,r2=st.columns(2)
-            with r1: render_rs_radar(p1,p1.get("name","P1"))
-            with r2: render_rs_radar(p2,p2.get("name","P2"))
+            render_pair_x9_overlay(p1,p2)
             if deep:
                 labels={
                     "overload":tr("System load","Нагрузка"),"recovery":tr("Recovery","Восстановление"),
@@ -1771,7 +1943,9 @@ elif st.session_state.step == "compat":
 
     st.markdown('<div class="rule"></div>',unsafe_allow_html=True)
     if st.button(t("restart")):
-        for k in ["p1","p2"]:
+        for k in ["p1","p2","quiz","cognitive_results","questionnaire_results"]:
             st.session_state[k] = None
+        st.session_state.quiz_answers = {}
+        st.session_state.cog_done = False
         st.session_state.step = "landing"
         st.rerun()

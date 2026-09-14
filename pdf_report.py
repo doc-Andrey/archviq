@@ -61,10 +61,10 @@ STYLES = {
 
 I18N = {
     "RU": {
-        "report_title": "Архитектурный отчёт",
+        "report_title": "Индивидуальный профиль обработки информации",
         "generated": "Сформирован",
-        "axes": "Оси RS1–RS4",
-        "type": "Архитектурный тип",
+        "axes": "43 NEW V3 · основные X1–X9",
+        "type": "Функциональный профиль",
         "indices": "Функциональные индексы",
         "gap": "GAP-анализ",
         "priorities": "Приоритеты",
@@ -72,8 +72,8 @@ I18N = {
         "recommendations": "Рекомендации",
         "disclaimer": (
             "Это исследовательская вычислительная модель, а не медицинский диагноз. "
-            "Результат — проверяемая гипотеза об архитектуре, уточняемая через "
-            "когнитивные тесты и наблюдение, а не окончательное заключение о человеке."
+            "Результат — проверяемый developmental prior, который уточняется через "
+            "когнитивные тесты и опросники, а не окончательное заключение о человеке."
         ),
         "engine_demo_warning": (
             "Внимание: расчёт выполнен в демонстрационном режиме — производственный "
@@ -82,10 +82,10 @@ I18N = {
         ),
     },
     "EN": {
-        "report_title": "Architecture Report",
+        "report_title": "Individual Processing Profile",
         "generated": "Generated",
-        "axes": "RS1–RS4 Axes",
-        "type": "Architecture Type",
+        "axes": "43 NEW V3 · primary X1–X9",
+        "type": "Functional Profile",
         "indices": "Functional Indices",
         "gap": "GAP Analysis",
         "priorities": "Priorities",
@@ -93,8 +93,8 @@ I18N = {
         "recommendations": "Recommendations",
         "disclaimer": (
             "This is a research computational model, not a medical diagnosis. "
-            "The result is a testable hypothesis about architecture, refined through "
-            "cognitive testing and observation — not a final conclusion about the person."
+            "The result is a testable developmental prior, refined through cognitive "
+            "testing and questionnaires — not a final conclusion about the person."
         ),
         "engine_demo_warning": (
             "Warning: this was computed in demo fallback mode — the production engine 43 "
@@ -170,12 +170,22 @@ def build_pdf(profile: dict, interp: dict | None = None, lang: str = "RU") -> by
     story.append(Paragraph(f"<b>{profile.get('type_name','—')}</b> — {profile.get('tagline','')}",
                             STYLES["body"]))
 
-    # --- RS axes ---
+    # --- 43 NEW V3 primary X9 ---
     story.append(Paragraph(tr["axes"], STYLES["h2"]))
+    xlabels = {
+        "X_EXC":"EXC", "X_SENS":"SENS", "X_STAB":"STAB", "X_INTEG":"INTEG",
+        "X_FLEX":"FLEX", "X_LAB":"LAB", "X_SEGR":"SEGR", "X_HUB":"HUB", "X_MAT":"MAT",
+    }
+    xvals = profile.get("x_axes", {}) or {}
+    for key,label in xlabels.items():
+        if key in xvals:
+            story.append(_axis_row(label, float(xvals[key])))
+            story.append(Spacer(1, 3))
+    story.append(Paragraph("RS1–RS4 summary macrocoordinates", STYLES["muted"]))
     for label in ["rs1", "rs2", "rs3", "rs4"]:
         if label in profile:
             story.append(_axis_row(label.upper(), profile[label]))
-            story.append(Spacer(1, 4))
+            story.append(Spacer(1, 3))
 
     # --- Indices (from interpret_engine, if provided) ---
     if interp and interp.get("indices"):
@@ -229,7 +239,7 @@ if __name__ == "__main__":
         "tagline": "Adaptive integration and flexible reconfiguration",
         "rs1": 62.0, "rs2": 55.0, "rs3": 48.0, "rs4": 58.0,
         "tension": 34.0, "adaptive": 61.0,
-        "engine_source": "ENGINE 43 · NO_LAG · 43_universal_full_cascade_engine.py",
+        "engine_source": "43_NEW_V3_254D_SEMANTIC_DEDUP · NO_LAG · 43_new_v3_engine.py",
         "engine_error": "",
         "insights": [
             "RS1–RS4 summarize rhythm, synchrony, functional segregation and integration.",
