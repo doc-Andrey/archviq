@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARCHVIQ · Design preview</title>
+<style>
+:root{--bg:#EAF3FB;--panel:#fff;--ink:#17324D;--muted:#4C647A;--teal:#0B756F;--gold:#A67525;--line:rgba(49,88,122,.20)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 78% 6%,rgba(100,215,197,.10),transparent 31%),linear-gradient(180deg,var(--bg),#F6FAFD 72%);font-family:Arial,sans-serif;color:var(--ink)}
+.page{max-width:1180px;margin:auto;padding:24px 24px 70px}.top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:16px}.brand{font-size:24px;font-weight:800;line-height:1.35}.brand i{font-style:normal;color:var(--teal)}.lang{font-size:14px;color:var(--muted)}
+.hero{display:grid;grid-template-columns:1.45fr .8fr;gap:36px;padding:70px 0 44px}.kicker,.tag{font:700 12px ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#245D87}.tag{color:var(--teal)}h1{font-size:58px;line-height:1.05;letter-spacing:-.04em;margin:14px 0 20px}h1 span{color:var(--teal)}.copy{font-size:20px;line-height:1.55;color:#405C76}.buttons{display:flex;gap:12px;margin-top:24px}.button{min-height:54px;padding:14px 22px;border-radius:12px;border:1px solid #7895AC;background:#fff;color:var(--ink);font-weight:700}.button.primary{background:var(--teal);border-color:#075D58;color:#fff}
+.card,.price-card{background:linear-gradient(145deg,#fff,#F6FAFE);border:1px solid var(--line);border-radius:18px;padding:22px}.hero-card{align-self:start}.formula{font:600 14px/1.7 ui-monospace,monospace;color:#795519;background:#F5F9FD;border-left:3px solid #245D87;padding:16px;border-radius:4px 14px 14px 4px;margin-top:18px}.rule{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:18px 0 46px}
+h2{font-size:36px;letter-spacing:-.03em;margin:12px 0 24px}.offers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.price-card.featured{border:2px solid rgba(11,117,111,.55);box-shadow:0 16px 45px rgba(23,50,77,.10)}.price-card h3{font-size:19px;line-height:1.35;margin:10px 0}.price{font-size:29px;font-weight:700;margin:12px 0}.free{display:inline-block;color:#075D58;background:#D9F3EF;border-radius:999px;padding:8px 12px;font-size:14px;font-weight:700;margin:12px 0}.price-card ul{padding-left:20px;color:var(--muted);line-height:1.55;min-height:82px}.wide{grid-column:span 2}.cta{width:100%;margin-top:8px}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:42px}h1{font-size:40px}.offers{grid-template-columns:1fr}.wide{grid-column:auto}.buttons{flex-direction:column}}
+</style>
+</head>
+<body><main class="page">
+  <header class="top"><div class="brand">ARCHVIQ<i>.</i></div><div class="lang">Русский&nbsp;&nbsp; English</div></header>
+  <section class="hero">
+    <div><div class="kicker">АРХИТЕКТУРА РАЗВИТИЯ · МОДЕЛЬ 43</div><h1>Как работает именно <span>ваш мозг?</span></h1><div class="copy">ARCHVIQ строит карту того, как система распределяет ресурс, переключается, удерживает задачу, контролирует помехи и оплачивает сложность обработки.</div><div class="buttons"><button class="button primary">Начать бесплатный анализ</button><button class="button">Посмотреть логику расчёта</button></div></div>
+    <aside class="card hero-card"><div class="kicker">ЧТО ВЫ ПОЛУЧАЕТЕ</div><h3>Карта, которую можно использовать</h3><p>Семь практических осей вместо одного типа личности. Устойчивые и чувствительные ко времени выводы показаны отдельно.</p><div class="formula">РЕСУРС · ПЕРЕКЛЮЧЕНИЕ · ФИКСАЦИЯ · НОВИЗНА · КОНТРОЛЬ · ЦЕНА ОБРАБОТКИ</div></aside>
+  </section>
+  <div class="rule"></div>
+  <div class="kicker">ПРОДУКТЫ ARCHVIQ</div><h2>Выберите глубину анализа</h2>
+  <section class="offers">
+    <article class="price-card featured wide"><div class="tag">НАЧНИТЕ ЗДЕСЬ</div><h3>Ваша архитектура: полный бесплатный старт</h3><div class="free">Бесплатно</div><ul><li>Профиль модели 43 и семь осей</li><li>Опросник архитектуры</li><li>Когнитивная батарея и сравнение GAP</li></ul><button class="button primary cta">Начать бесплатный анализ</button></article>
+    <article class="price-card"><div class="tag">ПАРА</div><h3>Совместимость в паре</h3><div class="price">$19</div><ul><li>Архитектура взаимодействия</li><li>Сильные стороны и зоны трения</li><li>Периоды риска и поддержки</li></ul><button class="button cta">Выбрать · $19</button></article>
+    <article class="price-card"><div class="tag">ТЕКУЩАЯ НАГРУЗКА</div><h3>Выгорание</h3><div class="price">$19</div><ul><li>Истощение и отстранение</li><li>Дефицит восстановления</li><li>Напряжение архитектура–состояние</li></ul><button class="button cta">Выбрать · $19</button></article>
+    <article class="price-card"><div class="tag">ЧЕЛОВЕК + ИИ</div><h3>Работа с ИИ</h3><div class="price">$19</div><ul><li>Делегирование и проверка</li><li>Риски сверхдоверия</li><li>Практические правила</li></ul><button class="button cta">Выбрать · $19</button></article>
+    <article class="price-card featured"><div class="tag">ВСЕ МОДУЛИ</div><h3>Полный архитектурный отчёт</h3><div class="price">$39</div><ul><li>Архитектура и когнитивные показатели</li><li>Все тематические опросники</li><li>Интегрированная стратегия</li></ul><button class="button cta">Выбрать · $39</button></article>
+  </section>
+</main></body></html>

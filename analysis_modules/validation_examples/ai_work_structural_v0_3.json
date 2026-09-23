@@ -1,0 +1,176 @@
+{
+  "module": "ai_work",
+  "source": "independent_inputs_N_5000",
+  "status": "STRUCTURALLY_DISTINCT",
+  "data_kind": "synthetic",
+  "n_complete": 5000,
+  "n_outputs": 7,
+  "output_names": [
+    "prompt_structure_need",
+    "agency_retention",
+    "verification_capacity",
+    "role_switch_flexibility",
+    "cognitive_offload_fit",
+    "exploration_fit",
+    "passive_acceptance_risk"
+  ],
+  "correlation_matrix": {
+    "prompt_structure_need": {
+      "prompt_structure_need": 1.0,
+      "agency_retention": 0.0142,
+      "verification_capacity": -0.01,
+      "role_switch_flexibility": 0.0281,
+      "cognitive_offload_fit": -0.0237,
+      "exploration_fit": -0.0054,
+      "passive_acceptance_risk": 0.0056
+    },
+    "agency_retention": {
+      "prompt_structure_need": 0.0142,
+      "agency_retention": 1.0,
+      "verification_capacity": 0.0043,
+      "role_switch_flexibility": 0.0012,
+      "cognitive_offload_fit": 0.0042,
+      "exploration_fit": 0.0075,
+      "passive_acceptance_risk": -0.0037
+    },
+    "verification_capacity": {
+      "prompt_structure_need": -0.01,
+      "agency_retention": 0.0043,
+      "verification_capacity": 1.0,
+      "role_switch_flexibility": -0.0185,
+      "cognitive_offload_fit": 0.0037,
+      "exploration_fit": -0.012,
+      "passive_acceptance_risk": 0.0098
+    },
+    "role_switch_flexibility": {
+      "prompt_structure_need": 0.0281,
+      "agency_retention": 0.0012,
+      "verification_capacity": -0.0185,
+      "role_switch_flexibility": 1.0,
+      "cognitive_offload_fit": 0.0059,
+      "exploration_fit": 0.0032,
+      "passive_acceptance_risk": -0.0006
+    },
+    "cognitive_offload_fit": {
+      "prompt_structure_need": -0.0237,
+      "agency_retention": 0.0042,
+      "verification_capacity": 0.0037,
+      "role_switch_flexibility": 0.0059,
+      "cognitive_offload_fit": 1.0,
+      "exploration_fit": 0.0026,
+      "passive_acceptance_risk": -0.0025
+    },
+    "exploration_fit": {
+      "prompt_structure_need": -0.0054,
+      "agency_retention": 0.0075,
+      "verification_capacity": -0.012,
+      "role_switch_flexibility": 0.0032,
+      "cognitive_offload_fit": 0.0026,
+      "exploration_fit": 1.0,
+      "passive_acceptance_risk": -0.0112
+    },
+    "passive_acceptance_risk": {
+      "prompt_structure_need": 0.0056,
+      "agency_retention": -0.0037,
+      "verification_capacity": 0.0098,
+      "role_switch_flexibility": -0.0006,
+      "cognitive_offload_fit": -0.0025,
+      "exploration_fit": -0.0112,
+      "passive_acceptance_risk": 1.0
+    }
+  },
+  "top_correlated_pairs": [
+    {
+      "a": "prompt_structure_need",
+      "b": "role_switch_flexibility",
+      "r": 0.028128017193695575,
+      "abs_r": 0.028128017193695575
+    },
+    {
+      "a": "prompt_structure_need",
+      "b": "cognitive_offload_fit",
+      "r": -0.023724922598727792,
+      "abs_r": 0.023724922598727792
+    },
+    {
+      "a": "verification_capacity",
+      "b": "role_switch_flexibility",
+      "r": -0.018534038831751285,
+      "abs_r": 0.018534038831751285
+    },
+    {
+      "a": "prompt_structure_need",
+      "b": "agency_retention",
+      "r": 0.01421679605469557,
+      "abs_r": 0.01421679605469557
+    },
+    {
+      "a": "verification_capacity",
+      "b": "exploration_fit",
+      "r": -0.01197944643718143,
+      "abs_r": 0.01197944643718143
+    },
+    {
+      "a": "exploration_fit",
+      "b": "passive_acceptance_risk",
+      "r": -0.011200049032505684,
+      "abs_r": 0.011200049032505684
+    },
+    {
+      "a": "prompt_structure_need",
+      "b": "verification_capacity",
+      "r": -0.009951875914466866,
+      "abs_r": 0.009951875914466866
+    },
+    {
+      "a": "verification_capacity",
+      "b": "passive_acceptance_risk",
+      "r": 0.009797977721921989,
+      "abs_r": 0.009797977721921989
+    },
+    {
+      "a": "agency_retention",
+      "b": "exploration_fit",
+      "r": 0.007532715751152748,
+      "abs_r": 0.007532715751152748
+    },
+    {
+      "a": "role_switch_flexibility",
+      "b": "cognitive_offload_fit",
+      "r": 0.005890129396865957,
+      "abs_r": 0.005890129396865957
+    }
+  ],
+  "warning_pairs": [],
+  "pca_explained_variance_pct": [
+    14.916942422083443,
+    14.63805630530054,
+    14.38030936852,
+    14.32999609230474,
+    14.124573779439759,
+    13.949848206696696,
+    13.660273825654828
+  ],
+  "parallel_analysis": {
+    "observed_eigenvalues": [
+      1.0441859695458409,
+      1.0246639413710372,
+      1.0066216557964,
+      1.0030997264613313,
+      0.9887201645607828,
+      0.9764893744687686,
+      0.9562191677958382
+    ],
+    "null95_eigenvalues": [
+      1.0732930689880855,
+      1.0464742426977502,
+      1.0261625073329823,
+      1.0103137462330933,
+      0.9942930296305694,
+      0.9805471941715769,
+      0.9630184110395557
+    ],
+    "retained_components": 0
+  },
+  "interpretation": "Synthetic mode tests formula overlap only; it is not evidence about people."
+}

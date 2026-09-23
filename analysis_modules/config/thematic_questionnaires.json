@@ -1,0 +1,359 @@
+{
+  "schema_version": "0.4-pilot",
+  "status": "UNVALIDATED_PILOT",
+  "response_scale": {"min": 1, "max": 5, "anchors_ru": {"1": "совсем не похоже", "2": "скорее не похоже", "3": "иногда / частично похоже", "4": "скорее похоже", "5": "очень похоже"}},
+  "note": "Original ARCHVIQ pilot wording. These are research instruments, not clinical diagnostic scales.",
+  "instruments": {
+    "compatibility_questionnaire": {
+      "respondent_rule": "Each partner answers independently about the current relationship.",
+      "timeframe_ru": "Отвечайте о взаимодействии в этой паре за последние 3 месяца. Если ситуация возникает редко, оценивайте последний реальный эпизод.",
+      "scoring": {"min_answer_fraction": 0.75, "missing_policy": "scale_missing_below_threshold"},
+      "validation_criteria": {
+        "responsiveness": ["CRIT_PARTNER_RESPONSIVENESS"],
+        "dyadic_coping": ["CRIT_DYADIC_COPING"],
+        "repair": ["CRIT_REPAIR_SUCCESS_30D"],
+        "demand_withdraw_risk": ["CRIT_DEMAND_WITHDRAW"],
+        "escalation_risk": ["CRIT_DESTRUCTIVE_CONFLICT"],
+        "autonomy_coordination": ["CRIT_AUTONOMY_SUPPORT"],
+        "change_alignment": ["CRIT_GOAL_CONGRUENCE"],
+        "decision_initiation": ["CRIT_OBSERVED_DECISION_INITIATION"],
+        "monitoring_support": ["CRIT_DECISION_SUPPORT"],
+        "role_switch_flexibility": ["CRIT_ROLE_SWITCH_BEHAVIOR"],
+        "control_conflict": ["CRIT_DECISION_CONTROL_CONFLICT"]
+      },
+      "scales": {
+        "responsiveness": {"items": [
+          {"id": "COMP_RESP_01", "reverse": false, "ru": "Партнёр старается понять, что для меня действительно важно."},
+          {"id": "COMP_RESP_02", "reverse": false, "ru": "Когда мне трудно, партнёр замечает это и откликается."},
+          {"id": "COMP_RESP_03", "reverse": true, "ru": "В важных разговорах я часто чувствую, что меня не слышат."},
+          {"id": "COMP_RESP_04", "reverse": false, "ru": "Партнёр учитывает мои чувства, даже когда не согласен со мной."}
+        ]},
+        "dyadic_coping": {"items": [
+          {"id": "COMP_COPE_01", "reverse": false, "ru": "При внешнем стрессе мы действуем как команда."},
+          {"id": "COMP_COPE_02", "reverse": false, "ru": "Мы умеем распределять нагрузку, когда одному из нас тяжело."},
+          {"id": "COMP_COPE_03", "reverse": true, "ru": "Стресс одного из нас обычно быстро превращается в конфликт между нами."},
+          {"id": "COMP_COPE_04", "reverse": false, "ru": "После трудного периода мы вместе обсуждаем, что помогло и что помешало."}
+        ]},
+        "repair": {"items": [
+          {"id": "COMP_REPAIR_01", "reverse": false, "ru": "После разногласия мы можем вернуться к спокойному разговору."},
+          {"id": "COMP_REPAIR_02", "reverse": false, "ru": "Хотя бы один из нас умеет вовремя остановить нарастание конфликта."},
+          {"id": "COMP_REPAIR_03", "reverse": true, "ru": "Даже после примирения напряжение между нами держится долго."},
+          {"id": "COMP_REPAIR_04", "reverse": false, "ru": "Мы способны признать свою часть ответственности без взаимного унижения."}
+        ]},
+        "demand_withdraw_risk": {"items": [
+          {"id": "COMP_DW_01", "reverse": false, "ru": "Когда один требует немедленного разговора, другой закрывается или уходит."},
+          {"id": "COMP_DW_02", "reverse": false, "ru": "Чем сильнее один добивается ответа, тем меньше второй готов отвечать."},
+          {"id": "COMP_DW_03", "reverse": true, "ru": "Мы можем договориться о паузе, не воспринимая её как отказ от разговора."},
+          {"id": "COMP_DW_04", "reverse": false, "ru": "Мы часто спорим не о самой проблеме, а о том, когда и как её обсуждать."}
+        ]},
+        "escalation_risk": {"items": [
+          {"id": "COMP_ESC_01", "reverse": false, "ru": "В споре мы быстро переходим от одной темы к накопленным претензиям."},
+          {"id": "COMP_ESC_02", "reverse": false, "ru": "Раздражение одного легко усиливает раздражение другого."},
+          {"id": "COMP_ESC_03", "reverse": true, "ru": "Даже при сильном несогласии мы сохраняем границы уважительного разговора."},
+          {"id": "COMP_ESC_04", "reverse": false, "ru": "Во время конфликта нам трудно остановиться до полного истощения."}
+        ]},
+        "autonomy_coordination": {"items": [
+          {"id": "COMP_AUTO_01", "reverse": false, "ru": "Мы можем действовать самостоятельно, не разрушая чувство партнёрства."},
+          {"id": "COMP_AUTO_02", "reverse": false, "ru": "Нам понятно, какие решения принимаются вместе, а какие отдельно."},
+          {"id": "COMP_AUTO_03", "reverse": true, "ru": "Самостоятельность партнёра часто воспринимается как отдаление."},
+          {"id": "COMP_AUTO_04", "reverse": false, "ru": "Мы способны согласовывать планы без постоянного контроля друг друга."}
+        ]},
+        "change_alignment": {"items": [
+          {"id": "COMP_CHANGE_01", "reverse": false, "ru": "Нам подходит сходный темп изменений в жизни."},
+          {"id": "COMP_CHANGE_02", "reverse": false, "ru": "Мы умеем сочетать потребность одного в стабильности с потребностью другого в переменах."},
+          {"id": "COMP_CHANGE_03", "reverse": true, "ru": "Новые планы одного регулярно становятся источником тревоги или сопротивления другого."},
+          {"id": "COMP_CHANGE_04", "reverse": false, "ru": "Перед существенными переменами мы обсуждаем допустимый риск и запасной план."}
+        ]},
+        "decision_initiation": {"items": [
+          {"id": "COMP_INIT_01", "reverse": false, "ru": "В важных вопросах я обычно первым предлагаю конкретное решение."},
+          {"id": "COMP_INIT_02", "reverse": false, "ru": "Партнёр часто ждёт, что направление действий определю я."},
+          {"id": "COMP_INIT_03", "reverse": true, "ru": "Мне спокойнее, когда окончательное решение принимает партнёр."},
+          {"id": "COMP_INIT_04", "reverse": false, "ru": "При неопределённости я готов взять на себя ответственность за выбор."}
+        ]},
+        "monitoring_support": {"items": [
+          {"id": "COMP_MON_01", "reverse": false, "ru": "Когда я принимаю решение, вопросы партнёра помогают заметить риски."},
+          {"id": "COMP_MON_02", "reverse": false, "ru": "Партнёр может проверить мою идею, не обесценивая меня."},
+          {"id": "COMP_MON_03", "reverse": true, "ru": "Проверку со стороны партнёра я обычно воспринимаю как недоверие."},
+          {"id": "COMP_MON_04", "reverse": false, "ru": "Мы умеем отличать полезную проверку решения от попытки управлять друг другом."}
+        ]},
+        "role_switch_flexibility": {"items": [
+          {"id": "COMP_ROLE_01", "reverse": false, "ru": "В зависимости от ситуации мы можем меняться ролями инициатора и проверяющего."},
+          {"id": "COMP_ROLE_02", "reverse": false, "ru": "Я могу поддержать решение партнёра, когда у него больше опыта в вопросе."},
+          {"id": "COMP_ROLE_03", "reverse": true, "ru": "Мне трудно уступить партнёру ведущую роль даже в подходящей для него ситуации."},
+          {"id": "COMP_ROLE_04", "reverse": false, "ru": "После проверки вариантов мы ясно понимаем, кто принимает окончательное решение."}
+        ]},
+        "control_conflict": {"items": [
+          {"id": "COMP_CTRL_01", "reverse": false, "ru": "В важных вопросах каждый из нас стремится оставить последнее слово за собой."},
+          {"id": "COMP_CTRL_02", "reverse": false, "ru": "Обсуждение вариантов нередко превращается в борьбу за контроль."},
+          {"id": "COMP_CTRL_03", "reverse": true, "ru": "Мы можем не согласиться, не оспаривая право другого принять своё решение."},
+          {"id": "COMP_CTRL_04", "reverse": false, "ru": "Совет партнёра часто ощущается как попытка решить за меня."}
+        ]}
+      }
+    },
+    "burnout_questionnaire": {
+      "respondent_rule": "Answer about the last 14 days.",
+      "timeframe_ru": "Отвечайте только о последних 14 днях, а не о себе вообще.",
+      "scoring": {"min_answer_fraction": 0.75, "missing_policy": "scale_missing_below_threshold"},
+      "validation_criteria": {
+        "exhaustion": ["CRIT_VALIDATED_EXHAUSTION"],
+        "detachment": ["CRIT_VALIDATED_MENTAL_DISTANCE"],
+        "cognitive_wear": ["CRIT_COGNITIVE_FAILURES", "CRIT_COGNITIVE_DECLINE_REPEAT"],
+        "recovery_deficit": ["CRIT_RECOVERY_EXPERIENCE"],
+        "demand_control_mismatch": ["CRIT_JOB_DEMAND_CONTROL"],
+        "sleep_load": ["CRIT_SLEEP_QUALITY"],
+        "decision_load": ["CRIT_DECISION_FATIGUE", "CRIT_DAILY_DECISION_COUNT"],
+        "decision_recovery": ["CRIT_RECOVERY_EXPERIENCE"]
+      },
+      "scales": {
+        "exhaustion": {"items": [
+          {"id": "BURN_EXH_01", "reverse": false, "ru": "К концу обычного дня я чувствую себя полностью истощённым."},
+          {"id": "BURN_EXH_02", "reverse": false, "ru": "Даже после отдыха мне трудно вернуть рабочую энергию."},
+          {"id": "BURN_EXH_03", "reverse": true, "ru": "Утром у меня обычно достаточно сил для предстоящих задач."},
+          {"id": "BURN_EXH_04", "reverse": false, "ru": "Нагрузка последних двух недель ощущалась выше моих возможностей восстановления."}
+        ]},
+        "detachment": {"items": [
+          {"id": "BURN_DET_01", "reverse": false, "ru": "Я стал эмоционально отстраняться от работы или обязанностей."},
+          {"id": "BURN_DET_02", "reverse": false, "ru": "Задачи, которые раньше имели смысл, теперь вызывают безразличие."},
+          {"id": "BURN_DET_03", "reverse": true, "ru": "Я по-прежнему чувствую связь между своими усилиями и результатом."},
+          {"id": "BURN_DET_04", "reverse": false, "ru": "Раздражение на людей или задачи стало возникать быстрее обычного."}
+        ]},
+        "cognitive_wear": {"items": [
+          {"id": "BURN_COG_01", "reverse": false, "ru": "Мне стало труднее удерживать несколько условий задачи."},
+          {"id": "BURN_COG_02", "reverse": false, "ru": "Я чаще допускаю ошибки из-за невнимательности."},
+          {"id": "BURN_COG_03", "reverse": false, "ru": "После переключения мне трудно восстановить ход мысли."},
+          {"id": "BURN_COG_04", "reverse": true, "ru": "В сложной работе я сохраняю обычную ясность мышления."}
+        ]},
+        "recovery_deficit": {"items": [
+          {"id": "BURN_REC_01", "reverse": false, "ru": "После работы мысли о задачах продолжают крутиться в голове."},
+          {"id": "BURN_REC_02", "reverse": false, "ru": "Мне не хватает времени, в котором от меня ничего не требуется."},
+          {"id": "BURN_REC_03", "reverse": true, "ru": "После выходного или полноценной паузы я заметно восстанавливаюсь."},
+          {"id": "BURN_REC_04", "reverse": false, "ru": "Даже свободное время не даёт ощущения переключения."}
+        ]},
+        "demand_control_mismatch": {"items": [
+          {"id": "BURN_DC_01", "reverse": false, "ru": "От меня требуют больше, чем я могу реально контролировать."},
+          {"id": "BURN_DC_02", "reverse": false, "ru": "Приоритеты меняются быстрее, чем я успеваю перестроить работу."},
+          {"id": "BURN_DC_03", "reverse": true, "ru": "У меня достаточно влияния на темп и порядок выполнения задач."},
+          {"id": "BURN_DC_04", "reverse": false, "ru": "Ответственность за результат выше, чем доступные мне ресурсы."}
+        ]},
+        "sleep_load": {"items": [
+          {"id": "BURN_SLEEP_01", "reverse": false, "ru": "Недостаток сна заметно ухудшает мою работу днём."},
+          {"id": "BURN_SLEEP_02", "reverse": false, "ru": "Я просыпаюсь без ощущения восстановления."},
+          {"id": "BURN_SLEEP_03", "reverse": false, "ru": "Рабочие мысли мешают мне заснуть или поддерживать сон."},
+          {"id": "BURN_SLEEP_04", "reverse": true, "ru": "В последние две недели мой сон в основном восстанавливал силы."}
+        ]},
+        "decision_load": {"items": [
+          {"id": "BURN_DEC_01", "reverse": false, "ru": "За день мне приходится принимать слишком много решений."},
+          {"id": "BURN_DEC_02", "reverse": false, "ru": "К вечеру даже небольшие выборы начинают утомлять."},
+          {"id": "BURN_DEC_03", "reverse": false, "ru": "Я продолжаю мысленно пересматривать решения после окончания работы."},
+          {"id": "BURN_DEC_04", "reverse": true, "ru": "Даже при большой нагрузке я сохраняю ясность при выборе между вариантами."}
+        ]},
+        "decision_recovery": {"items": [
+          {"id": "BURN_DREC_01", "reverse": false, "ru": "У меня бывают периоды, когда от меня не требуется принимать решения."},
+          {"id": "BURN_DREC_02", "reverse": false, "ru": "Я могу передать часть решений другим без постоянной перепроверки."},
+          {"id": "BURN_DREC_03", "reverse": false, "ru": "После отдыха способность спокойно выбирать между вариантами восстанавливается."},
+          {"id": "BURN_DREC_04", "reverse": true, "ru": "Даже во время отдыха я остаюсь ответственным за непрерывный поток решений."}
+        ]}
+      }
+    },
+    "ai_work_questionnaire": {
+      "respondent_rule": "Answer about your actual AI use during the last month.",
+      "timeframe_ru": "Отвечайте о реальной работе с ИИ за последние 30 дней. Если вы не использовали ИИ для значимых задач, модуль не интерпретируется.",
+      "scoring": {"min_answer_fraction": 0.75, "missing_policy": "scale_missing_below_threshold"},
+      "validation_criteria": {
+        "task_structuring": ["CRIT_AI_TASK_COMPLETION", "CRIT_PROMPT_STRUCTURE_RATING"],
+        "verification": ["CRIT_AI_ERROR_DETECTION"],
+        "delegation_calibration": ["CRIT_AI_APPROPRIATE_RELIANCE"],
+        "iteration_tolerance": ["CRIT_AI_ITERATION_COUNT", "CRIT_AI_FINAL_QUALITY"],
+        "cognitive_offload": ["CRIT_AI_MEMORY_ERROR_REDUCTION"],
+        "trust_control": ["CRIT_AI_ERROR_DETECTION"],
+        "overtrust_risk": ["CRIT_AI_UNCRITICAL_ACCEPTANCE"],
+        "novelty_exploration": ["CRIT_AI_SOLUTION_DIVERSITY"],
+        "agency_retention": ["CRIT_AI_HUMAN_DECISION_OWNERSHIP"],
+        "verification_role": ["CRIT_AI_ERROR_DETECTION"],
+        "role_switch_flexibility": ["CRIT_AI_GENERATE_VERIFY_SWITCH"],
+        "passive_acceptance_risk": ["CRIT_AI_UNCRITICAL_ACCEPTANCE"]
+      },
+      "scales": {
+        "task_structuring": {"items": [
+          {"id": "AI_STRUCT_01", "reverse": false, "ru": "Перед запросом к ИИ я формулирую конкретную цель."},
+          {"id": "AI_STRUCT_02", "reverse": false, "ru": "Я задаю ограничения и желаемый формат результата."},
+          {"id": "AI_STRUCT_03", "reverse": true, "ru": "Обычно я начинаю диалог без понимания, какой результат мне нужен."},
+          {"id": "AI_STRUCT_04", "reverse": false, "ru": "Сложную задачу я разделяю на последовательные этапы."}
+        ]},
+        "verification": {"items": [
+          {"id": "AI_VERIFY_01", "reverse": false, "ru": "Важные факты из ответа ИИ я проверяю независимо."},
+          {"id": "AI_VERIFY_02", "reverse": false, "ru": "Я прошу ИИ отделять факты от предположений."},
+          {"id": "AI_VERIFY_03", "reverse": true, "ru": "Убедительно написанный ответ обычно не требует дополнительной проверки."},
+          {"id": "AI_VERIFY_04", "reverse": false, "ru": "Перед использованием результата я проверяю исходные условия и ограничения."}
+        ]},
+        "delegation_calibration": {"items": [
+          {"id": "AI_DELEG_01", "reverse": false, "ru": "Я понимаю, какие части задачи можно передать ИИ, а какие должен решить сам."},
+          {"id": "AI_DELEG_02", "reverse": false, "ru": "Я оставляю за собой окончательное решение в значимых вопросах."},
+          {"id": "AI_DELEG_03", "reverse": true, "ru": "Если ИИ справился один раз, я готов дальше передавать ему задачу без контроля."},
+          {"id": "AI_DELEG_04", "reverse": false, "ru": "Степень контроля я меняю в зависимости от цены ошибки."}
+        ]},
+        "iteration_tolerance": {"items": [
+          {"id": "AI_ITER_01", "reverse": false, "ru": "Мне удобно улучшать результат через несколько коротких итераций."},
+          {"id": "AI_ITER_02", "reverse": false, "ru": "Я спокойно уточняю запрос, если первый ответ не подошёл."},
+          {"id": "AI_ITER_03", "reverse": true, "ru": "Если первый ответ слабый, я обычно прекращаю работу с задачей."},
+          {"id": "AI_ITER_04", "reverse": false, "ru": "Я сравниваю несколько вариантов прежде, чем выбрать итоговый."}
+        ]},
+        "cognitive_offload": {"items": [
+          {"id": "AI_OFFLOAD_01", "reverse": false, "ru": "Я использую ИИ, чтобы фиксировать промежуточные решения и не держать всё в памяти."},
+          {"id": "AI_OFFLOAD_02", "reverse": false, "ru": "ИИ помогает мне превращать большой объём информации в рабочую структуру."},
+          {"id": "AI_OFFLOAD_03", "reverse": true, "ru": "После длинного диалога я часто теряю, на каком решении мы остановились."},
+          {"id": "AI_OFFLOAD_04", "reverse": false, "ru": "Я прошу ИИ вести список допущений, решений и незакрытых вопросов."}
+        ]},
+        "trust_control": {"items": [
+          {"id": "AI_TRUST_01", "reverse": false, "ru": "Я замечаю, когда ответ ИИ выходит за пределы имеющихся данных."},
+          {"id": "AI_TRUST_02", "reverse": false, "ru": "Я различаю полезную гипотезу и подтверждённый вывод."},
+          {"id": "AI_TRUST_03", "reverse": true, "ru": "Я склонен принимать точные цифры ИИ как надёжные без проверки источника."},
+          {"id": "AI_TRUST_04", "reverse": false, "ru": "При высокой неопределённости я требую обозначить уровень уверенности."}
+        ]},
+        "overtrust_risk": {"items": [
+          {"id": "AI_OVER_01", "reverse": false, "ru": "Хорошо оформленный ответ вызывает у меня доверие независимо от источников."},
+          {"id": "AI_OVER_02", "reverse": false, "ru": "Я использовал ответ ИИ, не проверяя критически важные детали."},
+          {"id": "AI_OVER_03", "reverse": true, "ru": "Если цена ошибки высока, я обязательно привлекаю независимый источник или специалиста."},
+          {"id": "AI_OVER_04", "reverse": false, "ru": "Мне трудно заметить уверенно сформулированную ошибку ИИ."}
+        ]},
+        "novelty_exploration": {"items": [
+          {"id": "AI_NOVEL_01", "reverse": false, "ru": "Я использую ИИ для поиска альтернатив, которые сам мог не заметить."},
+          {"id": "AI_NOVEL_02", "reverse": false, "ru": "Мне интересно проверять разные способы решения одной задачи."},
+          {"id": "AI_NOVEL_03", "reverse": true, "ru": "Я предпочитаю, чтобы ИИ подтверждал уже выбранный мной подход."},
+          {"id": "AI_NOVEL_04", "reverse": false, "ru": "Я прошу ИИ специально искать слабые места моей идеи."}
+        ]},
+        "agency_retention": {"items": [
+          {"id": "AI_AGENCY_01", "reverse": false, "ru": "После диалога с ИИ я могу ясно объяснить, какое решение принял именно я."},
+          {"id": "AI_AGENCY_02", "reverse": false, "ru": "ИИ предлагает варианты, но окончательный критерий выбора задаю я."},
+          {"id": "AI_AGENCY_03", "reverse": true, "ru": "Если ответ ИИ выглядит убедительно, мне проще принять его как готовое решение."},
+          {"id": "AI_AGENCY_04", "reverse": false, "ru": "Я фиксирую, за какую часть результата отвечаю сам."}
+        ]},
+        "verification_role": {"items": [
+          {"id": "AI_VROLE_01", "reverse": false, "ru": "После получения варианта от ИИ я переключаюсь из режима генерации в режим проверки."},
+          {"id": "AI_VROLE_02", "reverse": false, "ru": "При проверке я ищу не подтверждение, а возможную ошибку или пропущенное условие."},
+          {"id": "AI_VROLE_03", "reverse": true, "ru": "Мне трудно критически оценивать ответ, если он совпадает с моей исходной идеей."},
+          {"id": "AI_VROLE_04", "reverse": false, "ru": "Я могу отдельно оценить факты, рассуждение и практическую применимость ответа."}
+        ]},
+        "role_switch_flexibility": {"items": [
+          {"id": "AI_ROLE_01", "reverse": false, "ru": "Я могу сначала самостоятельно сформировать позицию, а затем сравнить её с вариантом ИИ."},
+          {"id": "AI_ROLE_02", "reverse": false, "ru": "При необходимости я меняю роли: то задаю направление, то оцениваю предложенное."},
+          {"id": "AI_ROLE_03", "reverse": true, "ru": "Во время длинного диалога я перестаю понимать, кто фактически сформировал решение."},
+          {"id": "AI_ROLE_04", "reverse": false, "ru": "Я умею завершить исследование вариантов и перейти к собственному решению."}
+        ]},
+        "passive_acceptance_risk": {"items": [
+          {"id": "AI_PASS_01", "reverse": false, "ru": "Я иногда использую результат ИИ почти без собственной переработки."},
+          {"id": "AI_PASS_02", "reverse": false, "ru": "Большой и подробный ответ снижает моё желание проверять его."},
+          {"id": "AI_PASS_03", "reverse": true, "ru": "Перед использованием ответа я формулирую собственное итоговое решение."},
+          {"id": "AI_PASS_04", "reverse": false, "ru": "Я могу согласиться с ИИ, не замечая, что критерии выбора были заданы не мной."}
+        ]}
+      }
+    },
+    "architecture_questionnaire": {
+      "respondent_rule": "Separate usual processing style from current state. Answer baseline scales about the last 30 days in ordinary conditions; answer state scales about the last 14 days.",
+      "timeframe_ru": "Первые шесть шкал описывают ваш обычный способ обработки информации за последние 30 дней. Последние три — усилия, состояние и среду за последние 14 дней.",
+      "scoring": {"min_answer_fraction": 0.75, "missing_policy": "scale_missing_below_threshold"},
+      "axis_mapping": {
+        "resource": "resource_expression",
+        "switching": "switching_expression",
+        "lock": "lock_expression",
+        "novelty": "novelty_expression",
+        "control": "control_expression",
+        "processing_cost": "processing_cost_expression"
+      },
+      "validation_criteria": {
+        "resource_expression": ["CRIT_SUSTAINED_ACCURACY", "CRIT_RT_STABILITY_REPEAT"],
+        "switching_expression": ["CRIT_TASK_SWITCH_EFFICIENCY"],
+        "lock_expression": ["CRIT_TASK_SET_STABILITY", "CRIT_PERSISTENCE_BEHAVIOR"],
+        "novelty_expression": ["CRIT_EXPLORATION_ADAPTATION_TASK"],
+        "control_expression": ["CRIT_SIMON_INTERFERENCE_CONTROL"],
+        "processing_cost_expression": ["CRIT_COMPLEX_EFFICIENCY", "CRIT_POST_TASK_FATIGUE"],
+        "compensatory_effort": ["CRIT_EFFORT_RATING", "CRIT_DUAL_TASK_COST"],
+        "state_interference": ["CRIT_SLEEP_QUALITY", "CRIT_DAILY_STRESS"],
+        "context_support": ["CRIT_CONTEXT_CONTROL", "CRIT_INTERRUPTION_RATE"]
+      },
+      "scales": {
+        "resource_expression": {
+          "orientation": "higher_more_sustained_resource",
+          "items": [
+            {"id": "ARCH_RES_01", "reverse": false, "ru": "В обычный день я могу долго сохранять рабочую ясность без резкого спада."},
+            {"id": "ARCH_RES_02", "reverse": true, "ru": "После нескольких сложных задач моя умственная продуктивность быстро падает."},
+            {"id": "ARCH_RES_03", "reverse": false, "ru": "После короткой паузы я обычно возвращаюсь к задаче с восстановленным ресурсом."},
+            {"id": "ARCH_RES_04", "reverse": false, "ru": "К концу обычной нагрузки у меня остаётся запас для ещё одной важной задачи."}
+          ]
+        },
+        "switching_expression": {
+          "orientation": "higher_easier_reconfiguration",
+          "items": [
+            {"id": "ARCH_SWITCH_01", "reverse": false, "ru": "Я могу перейти к другой задаче, не теряя надолго ход работы."},
+            {"id": "ARCH_SWITCH_02", "reverse": true, "ru": "После неожиданного изменения правил мне требуется много времени на перестройку."},
+            {"id": "ARCH_SWITCH_03", "reverse": false, "ru": "Вернувшись к прерванной задаче, я быстро восстанавливаю её контекст."},
+            {"id": "ARCH_SWITCH_04", "reverse": false, "ru": "Я могу менять способ решения, когда прежний перестаёт работать."}
+          ]
+        },
+        "lock_expression": {
+          "orientation": "higher_stronger_task_lock",
+          "items": [
+            {"id": "ARCH_LOCK_01", "reverse": false, "ru": "Сосредоточившись, я устойчиво удерживаю выбранную линию действий."},
+            {"id": "ARCH_LOCK_02", "reverse": false, "ru": "Незавершённая задача продолжает удерживать моё внимание даже после переключения."},
+            {"id": "ARCH_LOCK_03", "reverse": true, "ru": "Я легко оставляю начатый способ решения, даже если уже вложил в него много усилий."},
+            {"id": "ARCH_LOCK_04", "reverse": false, "ru": "После принятого решения мне трудно полностью прекратить его перепроверять или дорабатывать."}
+          ]
+        },
+        "novelty_expression": {
+          "orientation": "higher_more_exploration",
+          "items": [
+            {"id": "ARCH_NOV_01", "reverse": false, "ru": "При новой задаче я сначала рассматриваю несколько возможных подходов."},
+            {"id": "ARCH_NOV_02", "reverse": false, "ru": "Неопределённость может вызывать у меня интерес к исследованию вариантов."},
+            {"id": "ARCH_NOV_03", "reverse": true, "ru": "Даже при изменившихся условиях я предпочитаю знакомый и проверенный способ."},
+            {"id": "ARCH_NOV_04", "reverse": false, "ru": "Я замечаю нестандартные возможности до того, как появляется готовая инструкция."}
+          ]
+        },
+        "control_expression": {
+          "orientation": "higher_stronger_interference_control",
+          "items": [
+            {"id": "ARCH_CTRL_01", "reverse": false, "ru": "Во время сложной задачи я удерживаю главную цель, несмотря на отвлекающие сигналы."},
+            {"id": "ARCH_CTRL_02", "reverse": false, "ru": "Я могу остановить первый импульсивный ответ и проверить условия."},
+            {"id": "ARCH_CTRL_03", "reverse": true, "ru": "При конфликтующих подсказках я часто отвечаю раньше, чем успеваю проверить правило."},
+            {"id": "ARCH_CTRL_04", "reverse": false, "ru": "Я способен одновременно помнить ограничение и контролировать его выполнение."}
+          ]
+        },
+        "processing_cost_expression": {
+          "orientation": "higher_greater_processing_cost",
+          "items": [
+            {"id": "ARCH_COST_01", "reverse": false, "ru": "Задачи с несколькими условиями заметно истощают меня, даже если решены правильно."},
+            {"id": "ARCH_COST_02", "reverse": false, "ru": "После интенсивной умственной работы мне требуется отдельное время на восстановление."},
+            {"id": "ARCH_COST_03", "reverse": false, "ru": "Когда сложность и скорость растут одновременно, цена ошибок для меня резко увеличивается."},
+            {"id": "ARCH_COST_04", "reverse": true, "ru": "Я могу долго обрабатывать сложную информацию без ощущения внутренней перегрузки."}
+          ]
+        },
+        "compensatory_effort": {
+          "orientation": "higher_more_effort_to_maintain_performance",
+          "items": [
+            {"id": "ARCH_EFFORT_01", "reverse": false, "ru": "Чтобы сохранять обычное качество работы, мне приходится прикладывать больше усилий, чем это видно со стороны."},
+            {"id": "ARCH_EFFORT_02", "reverse": false, "ru": "Я поддерживаю результат с помощью списков, повторных проверок или жёстких процедур."},
+            {"id": "ARCH_EFFORT_03", "reverse": true, "ru": "Большинство сложных задач выполняются без дополнительного внутреннего напряжения."},
+            {"id": "ARCH_EFFORT_04", "reverse": false, "ru": "Даже хороший результат в последние две недели часто достигался ценой заметного утомления."}
+          ]
+        },
+        "state_interference": {
+          "orientation": "higher_more_current_state_interference",
+          "items": [
+            {"id": "ARCH_STATE_01", "reverse": false, "ru": "В последние две недели недостаток сна или физическое состояние мешали мне думать в обычном темпе."},
+            {"id": "ARCH_STATE_02", "reverse": false, "ru": "Тревога или эмоциональное напряжение занимали часть внимания во время задач."},
+            {"id": "ARCH_STATE_03", "reverse": false, "ru": "Текущая нагрузка ухудшала мою способность переключаться и контролировать ошибки."},
+            {"id": "ARCH_STATE_04", "reverse": true, "ru": "В последние две недели моё состояние позволяло работать на обычном для меня уровне."}
+          ]
+        },
+        "context_support": {
+          "orientation": "higher_more_supportive_context",
+          "items": [
+            {"id": "ARCH_CONTEXT_01", "reverse": false, "ru": "Я могу организовать работу в подходящем для меня темпе."},
+            {"id": "ARCH_CONTEXT_02", "reverse": false, "ru": "У меня есть возможность ограничить лишние прерывания в сложной работе."},
+            {"id": "ARCH_CONTEXT_03", "reverse": false, "ru": "Инструменты и внешние записи помогают не держать все условия в голове."},
+            {"id": "ARCH_CONTEXT_04", "reverse": true, "ru": "От меня часто требуют результата в режиме, который мешает использовать мои сильные стороны."}
+          ]
+        }
+      }
+    }
+  }
+}

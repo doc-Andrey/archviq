@@ -1,0 +1,194 @@
+{
+  "module": "architecture_gap",
+  "version": "0.4-research",
+  "mode": "RESEARCH_ONLY",
+  "validation": {
+    "architecture_questionnaire": "NOT_VALIDATED",
+    "architecture_gap_outputs": "NOT_VALIDATED"
+  },
+  "layers": {
+    "engine43_prediction": {
+      "resource": 62.0,
+      "switching": 41.0,
+      "lock": 73.0,
+      "novelty": 48.0,
+      "control": 67.0,
+      "processing_cost": 58.0
+    },
+    "questionnaire_expression": {
+      "resource": 56.0,
+      "switching": 52.0,
+      "lock": 70.0,
+      "novelty": 61.0,
+      "control": 59.0,
+      "processing_cost": 68.0
+    },
+    "cognitive_measurement": {
+      "resource": 57.5,
+      "switching": 44.99999999999999,
+      "lock": 75.0,
+      "novelty": 52.5,
+      "control": 55.00000000000001,
+      "processing_cost": 50.0
+    }
+  },
+  "axis_comparison": {
+    "resource": {
+      "engine43_prediction": 62.0,
+      "questionnaire_expression": 56.0,
+      "cognitive_measurement": 57.5,
+      "signed_gaps": {
+        "questionnaire_minus_43": -6.0,
+        "cognitive_minus_43": -4.5,
+        "cognitive_minus_questionnaire": 1.5
+      },
+      "absolute_gaps": {
+        "questionnaire_minus_43": 6.0,
+        "cognitive_minus_43": 4.5,
+        "cognitive_minus_questionnaire": 1.5
+      },
+      "mean_pairwise_gap": 4.0,
+      "range_across_layers": 6.0,
+      "alignment": "aligned",
+      "patterns": []
+    },
+    "switching": {
+      "engine43_prediction": 41.0,
+      "questionnaire_expression": 52.0,
+      "cognitive_measurement": 44.99999999999999,
+      "signed_gaps": {
+        "questionnaire_minus_43": 11.0,
+        "cognitive_minus_43": 3.999999999999993,
+        "cognitive_minus_questionnaire": -7.000000000000007
+      },
+      "absolute_gaps": {
+        "questionnaire_minus_43": 11.0,
+        "cognitive_minus_43": 3.999999999999993,
+        "cognitive_minus_questionnaire": 7.000000000000007
+      },
+      "mean_pairwise_gap": 7.333333333333333,
+      "range_across_layers": 11.0,
+      "alignment": "aligned",
+      "patterns": []
+    },
+    "lock": {
+      "engine43_prediction": 73.0,
+      "questionnaire_expression": 70.0,
+      "cognitive_measurement": 75.0,
+      "signed_gaps": {
+        "questionnaire_minus_43": -3.0,
+        "cognitive_minus_43": 2.0,
+        "cognitive_minus_questionnaire": 5.0
+      },
+      "absolute_gaps": {
+        "questionnaire_minus_43": 3.0,
+        "cognitive_minus_43": 2.0,
+        "cognitive_minus_questionnaire": 5.0
+      },
+      "mean_pairwise_gap": 3.3333333333333335,
+      "range_across_layers": 5.0,
+      "alignment": "aligned",
+      "patterns": []
+    },
+    "novelty": {
+      "engine43_prediction": 48.0,
+      "questionnaire_expression": 61.0,
+      "cognitive_measurement": 52.5,
+      "signed_gaps": {
+        "questionnaire_minus_43": 13.0,
+        "cognitive_minus_43": 4.5,
+        "cognitive_minus_questionnaire": -8.5
+      },
+      "absolute_gaps": {
+        "questionnaire_minus_43": 13.0,
+        "cognitive_minus_43": 4.5,
+        "cognitive_minus_questionnaire": 8.5
+      },
+      "mean_pairwise_gap": 8.666666666666666,
+      "range_across_layers": 13.0,
+      "alignment": "aligned",
+      "patterns": []
+    },
+    "control": {
+      "engine43_prediction": 67.0,
+      "questionnaire_expression": 59.0,
+      "cognitive_measurement": 55.00000000000001,
+      "signed_gaps": {
+        "questionnaire_minus_43": -8.0,
+        "cognitive_minus_43": -11.999999999999993,
+        "cognitive_minus_questionnaire": -3.999999999999993
+      },
+      "absolute_gaps": {
+        "questionnaire_minus_43": 8.0,
+        "cognitive_minus_43": 11.999999999999993,
+        "cognitive_minus_questionnaire": 3.999999999999993
+      },
+      "mean_pairwise_gap": 7.999999999999996,
+      "range_across_layers": 11.999999999999993,
+      "alignment": "aligned",
+      "patterns": []
+    },
+    "processing_cost": {
+      "engine43_prediction": 58.0,
+      "questionnaire_expression": 68.0,
+      "cognitive_measurement": 50.0,
+      "signed_gaps": {
+        "questionnaire_minus_43": 10.0,
+        "cognitive_minus_43": -8.0,
+        "cognitive_minus_questionnaire": -18.0
+      },
+      "absolute_gaps": {
+        "questionnaire_minus_43": 10.0,
+        "cognitive_minus_43": 8.0,
+        "cognitive_minus_questionnaire": 18.0
+      },
+      "mean_pairwise_gap": 12.0,
+      "range_across_layers": 18.0,
+      "alignment": "noticeable_gap",
+      "patterns": [
+        "self_report_above_measured"
+      ]
+    }
+  },
+  "context": {
+    "compensatory_effort": 72.0,
+    "state_interference": 64.0,
+    "context_support": 48.0
+  },
+  "gap_patterns": [
+    {
+      "axis": "processing_cost",
+      "pattern": "self_report_above_measured"
+    }
+  ],
+  "tension_patterns": [
+    {
+      "axes": [
+        "resource",
+        "switching",
+        "lock",
+        "novelty",
+        "control",
+        "processing_cost"
+      ],
+      "pattern": "performance_maintained_with_high_compensatory_effort"
+    }
+  ],
+  "coverage": {
+    "engine43_axes": 6,
+    "questionnaire_axes": 6,
+    "cognitive_axes": 6
+  },
+  "global_tension_percent": null,
+  "thresholds_provisional": {
+    "noticeable_gap": 15.0,
+    "large_gap": 30.0
+  },
+  "limitations": [
+    "Engine 43 is a developmental prior, questionnaire scores are self-reported expression, and cognitive scores are task-bound behavior; none is treated as ground truth.",
+    "Gap thresholds are provisional and require prospective calibration.",
+    "A gap is not a deficit or diagnosis. It may reflect context, state, compensation, measurement error or an inaccurate prediction.",
+    "No global tension percentage is produced.",
+    "Raw DDM parameters must be normed in a validation sample before entering 0..100 cognitive architecture axes."
+  ]
+}

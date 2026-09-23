@@ -1,0 +1,58 @@
+{
+  "client_id": "DEMO_001",
+  "architecture": {
+    "resource": 62,
+    "switching": 41,
+    "lock": 73,
+    "novelty": 48,
+    "control": 67,
+    "processing_cost": 58
+  },
+  "architecture_questionnaire": {
+    "resource_expression": 56,
+    "switching_expression": 52,
+    "lock_expression": 70,
+    "novelty_expression": 61,
+    "control_expression": 59,
+    "processing_cost_expression": 68,
+    "compensatory_effort": 72,
+    "state_interference": 64,
+    "context_support": 48
+  },
+  "burnout_questionnaire": {
+    "exhaustion": 55,
+    "detachment": 30,
+    "cognitive_wear": 48,
+    "recovery_deficit": 64,
+    "demand_control_mismatch": 59,
+    "sleep_load": 61,
+    "decision_load": 66,
+    "decision_recovery": 42
+  },
+  "ai_work_questionnaire": {
+    "task_structuring": 70,
+    "verification": 62,
+    "delegation_calibration": 58,
+    "iteration_tolerance": 45,
+    "cognitive_offload": 68,
+    "trust_control": 64,
+    "overtrust_risk": 25,
+    "novelty_exploration": 60,
+    "agency_retention": 72,
+    "verification_role": 63,
+    "role_switch_flexibility": 49,
+    "passive_acceptance_risk": 28
+  },
+  "cognitive": {
+    "REAL_COG_SPEED": 3.4,
+    "REAL_COG_RT_STABILITY": 3.1,
+    "REAL_COG_WORKING_MEMORY": 3.8,
+    "REAL_COG_INTERFERENCE_CONTROL": 3.2,
+    "REAL_COG_COMPLEX_ACCURACY": 4.0,
+    "REAL_COG_COMPLEX_EFFICIENCY": 3.0,
+    "REAL_COG_SUSTAINED_ACCURACY": 3.5,
+    "REAL_COG_SWITCHING_EFFICIENCY": 2.8,
+    "REAL_COG_TASK_SET_STABILITY": 4.0,
+    "REAL_COG_EXPLORATION_ADAPTATION": 3.1
+  }
+}

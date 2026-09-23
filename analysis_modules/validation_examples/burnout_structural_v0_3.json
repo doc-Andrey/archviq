@@ -1,0 +1,140 @@
+{
+  "module": "burnout",
+  "source": "independent_inputs_N_5000",
+  "status": "STRUCTURALLY_DISTINCT",
+  "data_kind": "synthetic",
+  "n_complete": 5000,
+  "n_outputs": 5,
+  "output_names": [
+    "architecture_susceptibility",
+    "current_self_reported_load",
+    "recovery_pressure",
+    "optional_cognitive_strain",
+    "experimental_decision_load"
+  ],
+  "correlation_matrix": {
+    "architecture_susceptibility": {
+      "architecture_susceptibility": 1.0,
+      "current_self_reported_load": 0.0043,
+      "recovery_pressure": 0.0093,
+      "optional_cognitive_strain": 0.0029,
+      "experimental_decision_load": 0.0158
+    },
+    "current_self_reported_load": {
+      "architecture_susceptibility": 0.0043,
+      "current_self_reported_load": 1.0,
+      "recovery_pressure": 0.0075,
+      "optional_cognitive_strain": 0.0336,
+      "experimental_decision_load": 0.0032
+    },
+    "recovery_pressure": {
+      "architecture_susceptibility": 0.0093,
+      "current_self_reported_load": 0.0075,
+      "recovery_pressure": 1.0,
+      "optional_cognitive_strain": 0.0014,
+      "experimental_decision_load": 0.0129
+    },
+    "optional_cognitive_strain": {
+      "architecture_susceptibility": 0.0029,
+      "current_self_reported_load": 0.0336,
+      "recovery_pressure": 0.0014,
+      "optional_cognitive_strain": 1.0,
+      "experimental_decision_load": -0.0115
+    },
+    "experimental_decision_load": {
+      "architecture_susceptibility": 0.0158,
+      "current_self_reported_load": 0.0032,
+      "recovery_pressure": 0.0129,
+      "optional_cognitive_strain": -0.0115,
+      "experimental_decision_load": 1.0
+    }
+  },
+  "top_correlated_pairs": [
+    {
+      "a": "current_self_reported_load",
+      "b": "optional_cognitive_strain",
+      "r": 0.033647140046093864,
+      "abs_r": 0.033647140046093864
+    },
+    {
+      "a": "architecture_susceptibility",
+      "b": "experimental_decision_load",
+      "r": 0.015842510780707135,
+      "abs_r": 0.015842510780707135
+    },
+    {
+      "a": "recovery_pressure",
+      "b": "experimental_decision_load",
+      "r": 0.012869825987757606,
+      "abs_r": 0.012869825987757606
+    },
+    {
+      "a": "optional_cognitive_strain",
+      "b": "experimental_decision_load",
+      "r": -0.011537165213221163,
+      "abs_r": 0.011537165213221163
+    },
+    {
+      "a": "architecture_susceptibility",
+      "b": "recovery_pressure",
+      "r": 0.00930985658661912,
+      "abs_r": 0.00930985658661912
+    },
+    {
+      "a": "current_self_reported_load",
+      "b": "recovery_pressure",
+      "r": 0.0075267527682804465,
+      "abs_r": 0.0075267527682804465
+    },
+    {
+      "a": "architecture_susceptibility",
+      "b": "current_self_reported_load",
+      "r": 0.004334866797946965,
+      "abs_r": 0.004334866797946965
+    },
+    {
+      "a": "current_self_reported_load",
+      "b": "experimental_decision_load",
+      "r": 0.003165983175608727,
+      "abs_r": 0.003165983175608727
+    },
+    {
+      "a": "architecture_susceptibility",
+      "b": "optional_cognitive_strain",
+      "r": 0.002940271168103877,
+      "abs_r": 0.002940271168103877
+    },
+    {
+      "a": "recovery_pressure",
+      "b": "optional_cognitive_strain",
+      "r": 0.001437555800312598,
+      "abs_r": 0.001437555800312598
+    }
+  ],
+  "warning_pairs": [],
+  "pca_explained_variance_pct": [
+    20.72296907061067,
+    20.527783990406164,
+    19.81965195592588,
+    19.671092566652927,
+    19.25850241640436
+  ],
+  "parallel_analysis": {
+    "observed_eigenvalues": [
+      1.0361484535305334,
+      1.0263891995203085,
+      0.9909825977962935,
+      0.9835546283326461,
+      0.9629251208202179
+    ],
+    "null95_eigenvalues": [
+      1.0606208939567126,
+      1.0298444857436622,
+      1.009853362623878,
+      0.9944109310247761,
+      0.9763380569518765
+    ],
+    "retained_components": 0
+  },
+  "interpretation": "Synthetic mode tests formula overlap only; it is not evidence about people."
+}

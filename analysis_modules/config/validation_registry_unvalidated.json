@@ -1,0 +1,17 @@
+{
+  "schema_version": "0.4",
+  "status": "UNVALIDATED_PILOT",
+  "instruments": {
+    "compatibility_questionnaire": {"status": "NOT_VALIDATED"},
+    "burnout_questionnaire": {"status": "NOT_VALIDATED"},
+    "ai_work_questionnaire": {"status": "NOT_VALIDATED"},
+    "architecture_questionnaire": {"status": "NOT_VALIDATED"},
+    "cognitive_battery": {"status": "NOT_VALIDATED"}
+  },
+  "output_models": {
+    "compatibility_outputs": {"status": "NOT_VALIDATED"},
+    "burnout_outputs": {"status": "NOT_VALIDATED"},
+    "ai_work_outputs": {"status": "NOT_VALIDATED"},
+    "architecture_gap_outputs": {"status": "NOT_VALIDATED"}
+  }
+}

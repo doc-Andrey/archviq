@@ -1,0 +1,157 @@
+{
+  "module": "architecture_gap",
+  "source": "independent_inputs_N_5000",
+  "status": "STRUCTURALLY_DISTINCT",
+  "data_kind": "synthetic",
+  "n_complete": 5000,
+  "n_outputs": 6,
+  "output_names": [
+    "resource",
+    "switching",
+    "lock",
+    "novelty",
+    "control",
+    "processing_cost"
+  ],
+  "correlation_matrix": {
+    "resource": {
+      "resource": 1.0,
+      "switching": 0.0041,
+      "lock": -0.0104,
+      "novelty": -0.0213,
+      "control": -0.0156,
+      "processing_cost": -0.0012
+    },
+    "switching": {
+      "resource": 0.0041,
+      "switching": 1.0,
+      "lock": 0.0016,
+      "novelty": -0.0268,
+      "control": -0.0267,
+      "processing_cost": -0.0049
+    },
+    "lock": {
+      "resource": -0.0104,
+      "switching": 0.0016,
+      "lock": 1.0,
+      "novelty": 0.0063,
+      "control": -0.0229,
+      "processing_cost": -0.0072
+    },
+    "novelty": {
+      "resource": -0.0213,
+      "switching": -0.0268,
+      "lock": 0.0063,
+      "novelty": 1.0,
+      "control": 0.0033,
+      "processing_cost": 0.0094
+    },
+    "control": {
+      "resource": -0.0156,
+      "switching": -0.0267,
+      "lock": -0.0229,
+      "novelty": 0.0033,
+      "control": 1.0,
+      "processing_cost": -0.005
+    },
+    "processing_cost": {
+      "resource": -0.0012,
+      "switching": -0.0049,
+      "lock": -0.0072,
+      "novelty": 0.0094,
+      "control": -0.005,
+      "processing_cost": 1.0
+    }
+  },
+  "top_correlated_pairs": [
+    {
+      "a": "switching",
+      "b": "novelty",
+      "r": -0.026820205920465072,
+      "abs_r": 0.026820205920465072
+    },
+    {
+      "a": "switching",
+      "b": "control",
+      "r": -0.02674499857521277,
+      "abs_r": 0.02674499857521277
+    },
+    {
+      "a": "lock",
+      "b": "control",
+      "r": -0.022913669067856177,
+      "abs_r": 0.022913669067856177
+    },
+    {
+      "a": "resource",
+      "b": "novelty",
+      "r": -0.021332147448556597,
+      "abs_r": 0.021332147448556597
+    },
+    {
+      "a": "resource",
+      "b": "control",
+      "r": -0.015604673983623895,
+      "abs_r": 0.015604673983623895
+    },
+    {
+      "a": "resource",
+      "b": "lock",
+      "r": -0.010414574459186376,
+      "abs_r": 0.010414574459186376
+    },
+    {
+      "a": "novelty",
+      "b": "processing_cost",
+      "r": 0.009371324079683935,
+      "abs_r": 0.009371324079683935
+    },
+    {
+      "a": "lock",
+      "b": "processing_cost",
+      "r": -0.007229016620848431,
+      "abs_r": 0.007229016620848431
+    },
+    {
+      "a": "lock",
+      "b": "novelty",
+      "r": 0.006299366497274869,
+      "abs_r": 0.006299366497274869
+    },
+    {
+      "a": "control",
+      "b": "processing_cost",
+      "r": -0.004983683157118219,
+      "abs_r": 0.004983683157118219
+    }
+  ],
+  "warning_pairs": [],
+  "pca_explained_variance_pct": [
+    17.514548026699813,
+    17.06050945564038,
+    16.759244292577048,
+    16.536599381971513,
+    16.233277773701627,
+    15.895821069409626
+  ],
+  "parallel_analysis": {
+    "observed_eigenvalues": [
+      1.0508728816019888,
+      1.0236305673384232,
+      1.0055546575546228,
+      0.9921959629182905,
+      0.9739966664220978,
+      0.9537492641645773
+    ],
+    "null95_eigenvalues": [
+      1.0658357119982587,
+      1.0382162948523996,
+      1.017731303222142,
+      1.0012633837764218,
+      0.9860786049477098,
+      0.9682945791151936
+    ],
+    "retained_components": 0
+  },
+  "interpretation": "Synthetic mode tests formula overlap only; it is not evidence about people."
+}
