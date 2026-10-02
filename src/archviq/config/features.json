@@ -1,0 +1,20 @@
+{
+  "somatic_branch": {
+    "enabled": true,
+    "status": "EXPERIMENTAL",
+    "diagnostic_use": false,
+    "description": "Exploratory regulatory/somatic susceptibility branch. It must not output diagnoses or deterministic disease predictions."
+  },
+  "psychophysiology_branch": {
+    "enabled": true,
+    "status": "EXPERIMENTAL",
+    "diagnostic_use": false,
+    "description": "Exploratory psychophysiological/psychosomatic branch linking processing dynamics, stress, hysteresis and recovery to possible physiological expression."
+  },
+  "silso_context_v2": {
+    "enabled": true,
+    "status": "EXPERIMENTAL_CONTEXT",
+    "changes_cascade_weights": false,
+    "description": "Computed and shown alongside the frozen cascade, but does not alter cascade weights in Baseline A."
+  }
+}
