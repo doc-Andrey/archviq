@@ -1,0 +1,12 @@
+{
+  "person_a": {
+    "client_id": "A",
+    "architecture": {"resource": 77.36, "switching": 20.0, "lock": 87.83, "novelty": 27.47, "control": 84.02, "processing_cost": 25.09},
+    "compatibility_questionnaire": {"responsiveness": 70, "dyadic_coping": 66, "repair": 58, "demand_withdraw_risk": 52, "escalation_risk": 45, "autonomy_coordination": 61, "change_alignment": 55, "decision_initiation": 76, "monitoring_support": 62, "role_switch_flexibility": 54, "control_conflict": 48}
+  },
+  "person_b": {
+    "client_id": "B",
+    "architecture": {"resource": 71.87, "switching": 31.33, "lock": 72.57, "novelty": 33.77, "control": 68.72, "processing_cost": 30.89},
+    "compatibility_questionnaire": {"responsiveness": 64, "dyadic_coping": 60, "repair": 62, "demand_withdraw_risk": 48, "escalation_risk": 40, "autonomy_coordination": 57, "change_alignment": 58, "decision_initiation": 38, "monitoring_support": 67, "role_switch_flexibility": 60, "control_conflict": 42}
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://archviq.com/schemas/profile.schema.json",
+  "title": "ARCHVIQ Profile Output",
+  "type": "object",
+  "required": ["meta", "processing", "evidence_status", "experimental"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["engine_bundle_version", "subject", "dataset"],
+      "properties": {
+        "engine_bundle_version": {"type": "string"},
+        "subject": {"type": "object"},
+        "dataset": {"type": "object"}
+      }
+    },
+    "windows": {"type": "array"},
+    "physical": {"type": "object"},
+    "brain_map": {"type": "object"},
+    "processing": {"type": "object"},
+    "uncertainty": {"type": "object"},
+    "site_cards": {"type": "array"},
+    "evidence_status": {"type": "object"},
+    "experimental": {
+      "type": "object",
+      "required": ["somatic", "psychophysiology"],
+      "properties": {
+        "somatic": {
+          "type": "object",
+          "required": ["status", "diagnostic_use"],
+          "properties": {
+            "status": {"const": "EXPERIMENTAL"},
+            "diagnostic_use": {"const": false},
+            "results": {}
+          }
+        },
+        "psychophysiology": {
+          "type": "object",
+          "required": ["status", "diagnostic_use"],
+          "properties": {
+            "status": {"const": "EXPERIMENTAL"},
+            "diagnostic_use": {"const": false},
+            "results": {}
+          }
+        }
+      }
+    }
+  }
+}

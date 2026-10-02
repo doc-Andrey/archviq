@@ -1,0 +1,140 @@
+{
+  "module": "compatibility",
+  "source": "independent_inputs_N_5000",
+  "status": "STRUCTURALLY_DISTINCT",
+  "data_kind": "synthetic",
+  "n_complete": 5000,
+  "n_outputs": 5,
+  "output_names": [
+    "regulation_under_load",
+    "flexibility_and_repair",
+    "stability_change_balance",
+    "difficult_conversation",
+    "decision_role_coordination"
+  ],
+  "correlation_matrix": {
+    "regulation_under_load": {
+      "regulation_under_load": 1.0,
+      "flexibility_and_repair": -0.0318,
+      "stability_change_balance": 0.0205,
+      "difficult_conversation": 0.0099,
+      "decision_role_coordination": -0.0081
+    },
+    "flexibility_and_repair": {
+      "regulation_under_load": -0.0318,
+      "flexibility_and_repair": 1.0,
+      "stability_change_balance": -0.0069,
+      "difficult_conversation": -0.0165,
+      "decision_role_coordination": 0.0032
+    },
+    "stability_change_balance": {
+      "regulation_under_load": 0.0205,
+      "flexibility_and_repair": -0.0069,
+      "stability_change_balance": 1.0,
+      "difficult_conversation": 0.0022,
+      "decision_role_coordination": 0.0208
+    },
+    "difficult_conversation": {
+      "regulation_under_load": 0.0099,
+      "flexibility_and_repair": -0.0165,
+      "stability_change_balance": 0.0022,
+      "difficult_conversation": 1.0,
+      "decision_role_coordination": -0.0141
+    },
+    "decision_role_coordination": {
+      "regulation_under_load": -0.0081,
+      "flexibility_and_repair": 0.0032,
+      "stability_change_balance": 0.0208,
+      "difficult_conversation": -0.0141,
+      "decision_role_coordination": 1.0
+    }
+  },
+  "top_correlated_pairs": [
+    {
+      "a": "regulation_under_load",
+      "b": "flexibility_and_repair",
+      "r": -0.031788337819403295,
+      "abs_r": 0.031788337819403295
+    },
+    {
+      "a": "stability_change_balance",
+      "b": "decision_role_coordination",
+      "r": 0.020764514065721128,
+      "abs_r": 0.020764514065721128
+    },
+    {
+      "a": "regulation_under_load",
+      "b": "stability_change_balance",
+      "r": 0.020491579355848576,
+      "abs_r": 0.020491579355848576
+    },
+    {
+      "a": "flexibility_and_repair",
+      "b": "difficult_conversation",
+      "r": -0.016484713065594975,
+      "abs_r": 0.016484713065594975
+    },
+    {
+      "a": "difficult_conversation",
+      "b": "decision_role_coordination",
+      "r": -0.014083665239468085,
+      "abs_r": 0.014083665239468085
+    },
+    {
+      "a": "regulation_under_load",
+      "b": "difficult_conversation",
+      "r": 0.009934045545400545,
+      "abs_r": 0.009934045545400545
+    },
+    {
+      "a": "regulation_under_load",
+      "b": "decision_role_coordination",
+      "r": -0.00810466786943256,
+      "abs_r": 0.00810466786943256
+    },
+    {
+      "a": "flexibility_and_repair",
+      "b": "stability_change_balance",
+      "r": -0.0068791267058855455,
+      "abs_r": 0.0068791267058855455
+    },
+    {
+      "a": "flexibility_and_repair",
+      "b": "decision_role_coordination",
+      "r": 0.003227448721859875,
+      "abs_r": 0.003227448721859875
+    },
+    {
+      "a": "stability_change_balance",
+      "b": "difficult_conversation",
+      "r": 0.0022052903899086665,
+      "abs_r": 0.0022052903899086665
+    }
+  ],
+  "warning_pairs": [],
+  "pca_explained_variance_pct": [
+    20.9650612091172,
+    20.49033947158165,
+    19.760290510776525,
+    19.590548265969762,
+    19.193760542554877
+  ],
+  "parallel_analysis": {
+    "observed_eigenvalues": [
+      1.04825306045586,
+      1.0245169735790824,
+      0.9880145255388262,
+      0.979527413298488,
+      0.9596880271277438
+    ],
+    "null95_eigenvalues": [
+      1.0606208939567126,
+      1.0298444857436622,
+      1.009853362623878,
+      0.9944109310247761,
+      0.9763380569518765
+    ],
+    "retained_components": 0
+  },
+  "interpretation": "Synthetic mode tests formula overlap only; it is not evidence about people."
+}

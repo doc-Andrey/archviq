@@ -1,0 +1,14 @@
+{
+  "policy": {
+    "ssn_analytics": "FREE",
+    "cognitive_tests": "PAID",
+    "questionnaires": "PAID",
+    "compatibility": "PAID",
+    "somatic_branch": "FREE_EXPERIMENTAL",
+    "psychophysiology_branch": "FREE_EXPERIMENTAL"
+  },
+  "notes": [
+    "Payment applies to measurements, compatibility and questionnaire-based work, not to the date/SILSO analysis.",
+    "Somatic and psychophysiology/psychosomatic branches are research outputs, not diagnosis."
+  ]
+}

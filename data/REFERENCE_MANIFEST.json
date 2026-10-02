@@ -1,0 +1,26 @@
+{
+  "source": "WDC-SILSO Daily Total Sunspot Number V2.0 + ARCHVIQ frozen derived reference objects",
+  "runtime_network_download": false,
+  "files": [
+    {
+      "file": "SN_d_tot_V2.0.txt",
+      "bytes": 2884580,
+      "sha256": "4b57edafb85f28e78bd83a4a1e5273b1a42661691bc60e7826536945a7c490b8"
+    },
+    {
+      "file": "physical_reference_bank_w5_v01.pkl.gz",
+      "bytes": 4168178,
+      "sha256": "647a0a6e5de02ac36be035ea43a4baa8636a6763b398e3117d790c36a804b954"
+    },
+    {
+      "file": "physical_reference_bank_w7_v01.pkl.gz",
+      "bytes": 4451859,
+      "sha256": "81a1b5a2186fd143f4a464924962a05079d59255624753925ea685acc94e104c"
+    },
+    {
+      "file": "silso_context_reference_v2.pkl.gz",
+      "bytes": 15690771,
+      "sha256": "fc29bee6d834106ebc5df4eefe96465b26f3bc9f0d294b5fdbedcce02e381a9d"
+    }
+  ]
+}

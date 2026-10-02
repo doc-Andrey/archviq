@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ARCHVIQ — тест восприятия движения</title>
+<style>
+  :root {
+    --bg: #0a0f0d;
+    --panel: #0f1613;
+    --ink: #dce8e2;
+    --ink-dim: #7c8f88;
+    --line: #1e2b26;
+    --accent: #49d6a6;
+    --accent-dim: #2c8064;
+    --error: #d8695a;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--ink);
+    font-family: var(--sans);
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .screen {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+  }
+  .screen.active { display: flex; }
+  .doc {
+    max-width: 560px;
+    width: 100%;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+  .kicker {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent-dim);
+    margin: 0 0 20px;
+  }
+  p {
+    line-height: 1.6;
+    color: var(--ink-dim);
+    font-size: 15px;
+  }
+  p strong { color: var(--ink); font-weight: 600; }
+  .field {
+    margin: 18px 0;
+  }
+  .field label {
+    display: block;
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-bottom: 6px;
+  }
+  .field input, .field select {
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 11px 12px;
+    border-radius: 3px;
+    font-size: 15px;
+    font-family: var(--sans);
+  }
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: var(--accent-dim);
+  }
+  .checkline {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 20px 0;
+  }
+  .checkline input { margin-top: 3px; }
+  .checkline label { font-size: 13px; color: var(--ink-dim); line-height: 1.5; }
+  button.primary {
+    background: var(--accent);
+    color: #04140e;
+    border: none;
+    padding: 13px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: var(--sans);
+    margin-top: 8px;
+  }
+  button.primary:disabled { background: var(--line); color: var(--ink-dim); cursor: not-allowed; }
+  button.primary:not(:disabled):hover { background: #5fe8b8; }
+  button.ghost {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-dim);
+    padding: 10px 20px;
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: var(--sans);
+    margin-top: 10px;
+  }
+  .error-msg { color: var(--error); font-size: 13px; margin-top: 6px; display: none; }
+
+  /* Task stage */
+  #stage-screen { padding: 0; }
+  .stage-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 420px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-dim);
+    padding: 0 4px;
+  }
+  canvas#rdmCanvas {
+    background: #050807;
+    border-radius: 50%;
+    touch-action: none;
+    width: min(88vw, 420px);
+    height: min(88vw, 420px);
+  }
+  .resp-buttons {
+    display: flex;
+    gap: 16px;
+  }
+  .resp-buttons button {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    width: 84px;
+    height: 84px;
+    border-radius: 6px;
+    font-size: 26px;
+    cursor: pointer;
+  }
+  .resp-buttons button:active { border-color: var(--accent); }
+  .keyhint {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-dim);
+  }
+  .feedback-tick {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 15px;
+    font-family: var(--mono);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Results */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 22px 0;
+    width: 100%;
+  }
+  .summary-cell {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 14px 16px;
+  }
+  .summary-cell .n {
+    font-family: var(--mono);
+    font-size: 24px;
+    color: var(--accent);
+  }
+  .summary-cell .l {
+    font-size: 12px;
+    color: var(--ink-dim);
+    margin-top: 4px;
+  }
+  .progress-rail {
+    width: 100%;
+    max-width: 420px;
+    height: 3px;
+    background: var(--line);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent-dim);
+    width: 0%;
+  }
+  code.small {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-dim);
+    word-break: break-all;
+  }
+  a.textlink { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- 1. CONSENT / INTRO -->
+<div class="screen active" id="intro-screen">
+  <div class="doc">
+    <p class="kicker">ARCHVIQ / ИССЛЕДОВАНИЕ ВОСПРИЯТИЯ · ~8–10 МИНУТ</p>
+    <h1>Тест восприятия движения</h1>
+    <p>Вы увидите облако движущихся точек. Часть точек движется в едином направлении — влево или вправо, остальные хаотично. Ваша задача — как можно быстрее и точнее определить общее направление.</p>
+    <p>Это часть исследовательского проекта об архитектуре обработки информации. Результаты хранятся под вашим кодом участника, а не под именем (псевдонимизированы). Дата рождения — персональные данные; она хранится отдельно от основной базы и используется только для сопоставления с независимой исследовательской моделью, не для идентификации вас в отчётах.</p>
+    <p><strong>Понадобится</strong> точная дата рождения и 8–10 минут без отвлечений. Для ответа удобнее клавиатура (стрелки ← →), на телефоне — кнопки на экране.</p>
+    <div class="checkline">
+      <input type="checkbox" id="consent-check">
+      <label for="consent-check">Я участвую добровольно, понимаю, что данные обезличены и используются для научного анализа, и могу прекратить участие в любой момент без объяснения причин.</label>
+    </div>
+    <button class="primary" id="intro-continue" disabled>Продолжить</button>
+  </div>
+</div>
+
+<!-- 2. DEMOGRAPHICS -->
+<div class="screen" id="demo-screen">
+  <div class="doc">
+    <p class="kicker">ШАГ 1 ИЗ 3</p>
+    <h1>Немного о вас</h1>
+    <div class="field">
+      <label for="participant-id">Ваш личный код участника</label>
+      <input type="text" id="participant-id" placeholder="например: kit_falcon_84" autocomplete="off">
+      <p style="font-size:12px;margin-top:4px;">Придумайте и запомните — при повторном прохождении введите тот же код, это позволяет сравнить результаты во времени.</p>
+    </div>
+    <div class="field">
+      <label for="dob">Точная дата рождения</label>
+      <input type="date" id="dob">
+      <p class="error-msg" id="dob-error" style="margin-top:4px;">Проверьте дату рождения — введите реальную дату в прошлом.</p>
+    </div>
+    <div class="field">
+      <label for="handed">Ведущая рука</label>
+      <select id="handed">
+        <option value="">— не указано —</option>
+        <option value="right">Правая</option>
+        <option value="left">Левая</option>
+        <option value="ambi">Одинаково владею обеими</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="email">Email (необязательно, для приглашения на повторный тест)</label>
+      <input type="email" id="email" placeholder="you@example.com" autocomplete="off">
+    </div>
+    <p class="error-msg" id="demo-error">Укажите код участника и дату рождения.</p>
+    <button class="primary" id="demo-continue">Продолжить</button>
+  </div>
+</div>
+
+<!-- 3. INSTRUCTIONS -->
+<div class="screen" id="instructions-screen">
+  <div class="doc">
+    <p class="kicker">ШАГ 2 ИЗ 3</p>
+    <h1>Как отвечать</h1>
+    <p>На экране появится круглое облако точек. Смотрите на него и определите, куда в целом смещаются точки:</p>
+    <p style="font-size:15px;color:var(--ink);">
+      ← если движение <strong>влево</strong> &nbsp;&nbsp;|&nbsp;&nbsp; → если движение <strong>вправо</strong>
+    </p>
+    <p>Сначала — 10 тренировочных попыток с подсказкой, они не учитываются в результатах. Затем — 200 основных попыток с короткими паузами. Такой объём нужен для устойчивой оценки параметров принятия решения. Отвечайте, как только почувствуете уверенность — не нужно ждать до конца показа.</p>
+    <p>Иногда движение будет почти не различимо — это нормально, отвечайте на основе первого впечатления.</p>
+    <button class="primary" id="start-practice">Начать тренировку</button>
+  </div>
+</div>
+
+<!-- 4. TASK STAGE (practice + main share this) -->
+<div class="screen" id="stage-screen">
+  <div class="stage-wrap">
+    <div class="hud">
+      <span id="hud-phase">ТРЕНИРОВКА</span>
+      <span id="hud-progress">0 / 8</span>
+    </div>
+    <div style="position:relative;">
+      <canvas id="rdmCanvas" width="420" height="420"></canvas>
+      <div class="feedback-tick" id="feedback-tick"></div>
+    </div>
+    <div class="resp-buttons">
+      <button id="btn-left" aria-label="Влево">←</button>
+      <button id="btn-right" aria-label="Вправо">→</button>
+    </div>
+    <div class="keyhint">клавиатура: ← →</div>
+    <div class="progress-rail"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+</div>
+
+<!-- 5. BETWEEN practice->main -->
+<div class="screen" id="transition-screen">
+  <div class="doc">
+    <p class="kicker">ШАГ 3 ИЗ 3</p>
+    <h1>Тренировка завершена</h1>
+    <p>Точность на тренировке: <strong id="practice-acc">—</strong>. Дальше начнётся основная часть без подсказок — она и идёт в результаты. Готовы?</p>
+    <button class="primary" id="start-main">Начать основную часть</button>
+  </div>
+</div>
+
+<!-- 6. SCHEDULED BREAK -->
+<div class="screen" id="break-screen">
+  <div class="doc">
+    <p class="kicker">КОРОТКАЯ ПАУЗА</p>
+    <h1>Можно немного отдохнуть</h1>
+    <p>Пройдено <strong id="break-progress">—</strong> основных попыток. Продолжайте, когда снова будете готовы смотреть в центр облака.</p>
+    <button class="primary" id="continue-main">Продолжить</button>
+  </div>
+</div>
+
+<!-- 7. RESULTS -->
+<div class="screen" id="results-screen">
+  <div class="doc">
+    <p class="kicker">ГОТОВО</p>
+    <h1>Спасибо за участие</h1>
+    <div class="summary-grid">
+      <div class="summary-cell"><div class="n" id="res-acc">—</div><div class="l">точность, основная часть</div></div>
+      <div class="summary-cell"><div class="n" id="res-rt">—</div><div class="l">медианное время ответа, мс</div></div>
+    </div>
+    <p id="save-status">Отправляем результат…</p>
+    <p style="font-size:12px;">Если автоматическая отправка не сработала, скачайте файл и пришлите его вручную:</p>
+    <button class="ghost" id="download-btn">Скачать CSV</button>
+    <p style="font-size:12px;margin-top:22px;">ID участника: <code class="small" id="res-id"></code></p>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------------------------------------------------------
+  // CONFIGURATION
+  // ---------------------------------------------------------------
+  const TEST_NAME = "RDM";
+  // Where to POST trial rows. Point this at your own backend endpoint;
+  // if it fails (wrong URL, offline, CORS), the CSV download fallback
+  // below still preserves the data -- nothing is lost either way.
+  const SUBMIT_ENDPOINT = "/api/rdm-submit";
+
+  const PRACTICE_TRIALS = 10;
+  const PRACTICE_COHERENCE = 0.55; // easy, for practice only
+  const MAIN_COHERENCE_LEVELS = [0.05, 0.10, 0.20, 0.35, 0.55]; // proportion of dots moving coherently
+  const REPEATS_PER_LEVEL = 40; // 5 levels x 40 = 200 main trials; balanced 20 left / 20 right
+  const MAX_STIMULUS_MS = 4000; // stimulus auto-ends if no response (still logged as a miss)
+  const DOT_COUNT = 140;
+  const DOT_RADIUS = 1.6;
+  const DOT_SPEED_PX_PER_SECOND = 120; // refresh-rate independent
+  const APERTURE_RADIUS = 200; // matches canvas 420x420 with margin
+
+  // ---------------------------------------------------------------
+  // STATE
+  // ---------------------------------------------------------------
+  let sessionId = null;
+  let clientId = null;
+  let dob = null, handed = null, email = null;
+  let trialLog = [];
+  let trialQueue = [];
+  let trialIndexGlobal = 0;
+  let currentPhase = "practice"; // "practice" | "main"
+  let rafHandle = null;
+  let dots = [];
+  let stimulusStartTs = null;
+  let currentTrial = null;
+  let responded = false;
+  let lastFrameTs = null;
+  let trialValid = true;
+  let lastBreakAt = 0;
+
+  const canvas = document.getElementById("rdmCanvas");
+  const ctx = canvas.getContext("2d");
+
+  function uuid() {
+    return "s_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+  }
+
+  function show(id) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  }
+
+  // ---------------------------------------------------------------
+  // SCREEN 1: consent
+  // ---------------------------------------------------------------
+  const consentCheck = document.getElementById("consent-check");
+  const introContinue = document.getElementById("intro-continue");
+  consentCheck.addEventListener("change", () => { introContinue.disabled = !consentCheck.checked; });
+  introContinue.addEventListener("click", () => show("demo-screen"));
+
+  // ---------------------------------------------------------------
+  // SCREEN 2: demographics
+  // ---------------------------------------------------------------
+  document.getElementById("demo-continue").addEventListener("click", () => {
+    const pid = document.getElementById("participant-id").value.trim();
+    const dobVal = document.getElementById("dob").value;
+    const err = document.getElementById("demo-error");
+    const dobErr = document.getElementById("dob-error");
+    dobErr.style.display = "none";
+    if (!pid || !dobVal) {
+      err.style.display = "block";
+      return;
+    }
+    const dobDate = new Date(dobVal + "T00:00:00");
+    const now = new Date();
+    const ageYears = (now - dobDate) / (365.2425 * 24 * 3600 * 1000);
+    if (isNaN(dobDate.getTime()) || dobDate > now || ageYears < 5 || ageYears > 100) {
+      dobErr.style.display = "block";
+      return;
+    }
+    err.style.display = "none";
+    clientId = pid;
+    dob = dobVal;
+    handed = document.getElementById("handed").value || null;
+    email = document.getElementById("email").value.trim() || null;
+    sessionId = uuid();
+    show("instructions-screen");
+  });
+
+  // ---------------------------------------------------------------
+  // SCREEN 3 -> practice
+  // ---------------------------------------------------------------
+  document.getElementById("start-practice").addEventListener("click", () => {
+    currentPhase = "practice";
+    practiceLog = [];
+    trialQueue = buildQueue(PRACTICE_TRIALS, [PRACTICE_COHERENCE]);
+    trialIndexGlobal = 0;
+    show("stage-screen");
+    document.getElementById("hud-phase").textContent = "ТРЕНИРОВКА";
+    runNextTrial();
+  });
+
+  document.getElementById("start-main").addEventListener("click", () => {
+    currentPhase = "main";
+    trialLog = [];
+    lastBreakAt = 0;
+    trialQueue = buildQueue(REPEATS_PER_LEVEL, MAIN_COHERENCE_LEVELS, true);
+    trialIndexGlobal = 0;
+    show("stage-screen");
+    document.getElementById("hud-phase").textContent = "ОСНОВНАЯ ЧАСТЬ";
+    runNextTrial();
+  });
+
+  function buildQueue(repeatsPerLevel, levels, shuffle = true) {
+    const q = [];
+    levels.forEach(coh => {
+      for (let i = 0; i < repeatsPerLevel; i++) {
+        // Exact left/right balance within every coherence level.
+        q.push({ coherence: coh, direction: i < repeatsPerLevel / 2 ? -1 : 1 });
+      }
+    });
+    if (shuffle) {
+      for (let i = q.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [q[i], q[j]] = [q[j], q[i]];
+      }
+    }
+    return q;
+  }
+
+  // ---------------------------------------------------------------
+  // TRIAL ENGINE
+  // ---------------------------------------------------------------
+  function runNextTrial() {
+    if (trialQueue.length === 0) {
+      if (currentPhase === "practice") {
+        const acc = practiceAccuracy();
+        document.getElementById("practice-acc").textContent = Math.round(acc * 100) + "%";
+        show("transition-screen");
+      } else {
+        finishSession();
+      }
+      return;
+    }
+    if (currentPhase === "main" && trialIndexGlobal > 0 &&
+        trialIndexGlobal % 50 === 0 && lastBreakAt !== trialIndexGlobal) {
+      lastBreakAt = trialIndexGlobal;
+      document.getElementById("break-progress").textContent = trialIndexGlobal;
+      show("break-screen");
+      return;
+    }
+    currentTrial = trialQueue.shift();
+    trialIndexGlobal += 1;
+    responded = false;
+    trialValid = !document.hidden;
+    updateHud();
+    initDots(currentTrial.coherence, currentTrial.direction);
+    stimulusStartTs = null;
+    lastFrameTs = null;
+    rafHandle = requestAnimationFrame(tick);
+  }
+
+  function updateHud() {
+    const total = currentPhase === "practice" ? PRACTICE_TRIALS : REPEATS_PER_LEVEL * MAIN_COHERENCE_LEVELS.length;
+    document.getElementById("hud-progress").textContent = trialIndexGlobal + " / " + total;
+    document.getElementById("progress-fill").style.width = (100 * trialIndexGlobal / total) + "%";
+  }
+
+  function initDots(coherence, direction) {
+    dots = [];
+    for (let i = 0; i < DOT_COUNT; i++) {
+      dots.push(randomDotInAperture());
+    }
+    const coherentCount = Math.round(DOT_COUNT * coherence);
+    const indices = Array.from({length: DOT_COUNT}, (_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    dots.forEach(d => { d.coherent = false; });
+    indices.slice(0, coherentCount).forEach(i => { dots[i].coherent = true; });
+  }
+
+  function randomDotInAperture() {
+    const r = APERTURE_RADIUS * Math.sqrt(Math.random());
+    const theta = Math.random() * Math.PI * 2;
+    return {
+      x: APERTURE_RADIUS + r * Math.cos(theta),
+      y: APERTURE_RADIUS + r * Math.sin(theta),
+      angle: Math.random() * Math.PI * 2,
+    };
+  }
+
+  function tick(frameTs) {
+    if (stimulusStartTs === null) {
+      stimulusStartTs = frameTs;
+      lastFrameTs = frameTs;
+    }
+    const elapsed = frameTs - stimulusStartTs;
+    const dtSeconds = Math.min((frameTs - lastFrameTs) / 1000, 0.05);
+    lastFrameTs = frameTs;
+    drawFrame(currentTrial.direction, dtSeconds);
+    if (!responded && elapsed < MAX_STIMULUS_MS) {
+      rafHandle = requestAnimationFrame(tick);
+    } else if (!responded) {
+      // timed out with no response -- log as a miss
+      responded = true;
+      logResponse(null, elapsed);
+    }
+  }
+
+  function drawFrame(direction, dtSeconds) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#050807";
+    ctx.beginPath();
+    ctx.arc(APERTURE_RADIUS, APERTURE_RADIUS, APERTURE_RADIUS, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#7fe8c9";
+    dots.forEach(d => {
+      if (d.coherent) {
+        d.x += direction * DOT_SPEED_PX_PER_SECOND * dtSeconds;
+      } else {
+        d.angle += (Math.random() - 0.5) * 0.6;
+        d.x += Math.cos(d.angle) * DOT_SPEED_PX_PER_SECOND * dtSeconds;
+        d.y += Math.sin(d.angle) * DOT_SPEED_PX_PER_SECOND * dtSeconds;
+      }
+      const dx = d.x - APERTURE_RADIUS, dy = d.y - APERTURE_RADIUS;
+      if (dx * dx + dy * dy > APERTURE_RADIUS * APERTURE_RADIUS) {
+        const fresh = randomDotInAperture();
+        d.x = fresh.x; d.y = fresh.y; d.angle = Math.random() * Math.PI * 2;
+      }
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, DOT_RADIUS, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // fixation point
+    ctx.fillStyle = "#3a4a44";
+    ctx.beginPath();
+    ctx.arc(APERTURE_RADIUS, APERTURE_RADIUS, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function handleResponse(userDirection) {
+    if (responded || !currentTrial || stimulusStartTs === null) return;
+    responded = true;
+    if (rafHandle) cancelAnimationFrame(rafHandle);
+    const rt = performance.now() - stimulusStartTs;
+    logResponse(userDirection, rt);
+  }
+
+  document.getElementById("continue-main").addEventListener("click", () => {
+    show("stage-screen");
+    runNextTrial();
+  });
+
+  function logResponse(userDirection, rtMs) {
+    const correct = userDirection === null ? 0 : (userDirection === currentTrial.direction ? 1 : 0);
+    const row = {
+      CLIENT_ID: clientId,
+      SESSION_ID: sessionId,
+      TEST: TEST_NAME,
+      TRIAL_INDEX: trialIndexGlobal,
+      CONDITION: "coh_" + Math.round(currentTrial.coherence * 100),
+      COHERENCE: currentTrial.coherence,
+      STIM_DIRECTION: currentTrial.direction,
+      RESPONSE_DIRECTION: userDirection === null ? "" : userDirection,
+      CORRECT: correct,
+      TIMEOUT: userDirection === null ? 1 : 0,
+      RT_MS: Math.round(rtMs),
+      TIMESTAMP: new Date().toISOString(),
+      PHASE: currentPhase,
+      DOB: dob,
+      HANDEDNESS: handed || "",
+      TRIAL_VALID: trialValid ? 1 : 0,
+    };
+    if (currentPhase === "main") {
+      trialLog.push(row);
+      saveCheckpoint();
+    } else {
+      practiceLog.push(row);
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#050807";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    flashFeedback(userDirection === null ? "timeout" : (correct ? "ok" : "miss"));
+    // Jittered inter-trial interval reduces temporal anticipation.
+    setTimeout(runNextTrial, 350 + Math.random() * 300);
+  }
+
+  const CHECKPOINT_KEY = "rdm_checkpoint_v1";
+
+  function saveCheckpoint() {
+    try {
+      localStorage.setItem(CHECKPOINT_KEY, JSON.stringify({
+        clientId, sessionId, dob, handed, email, trialLog,
+        savedAt: new Date().toISOString(),
+      }));
+    } catch (e) { /* Local recovery is best-effort. */ }
+  }
+
+  function checkForLeftoverCheckpoint() {
+    let raw;
+    try { raw = localStorage.getItem(CHECKPOINT_KEY); } catch (e) { return; }
+    if (!raw) return;
+    let saved;
+    try { saved = JSON.parse(raw); } catch (e) {
+      try { localStorage.removeItem(CHECKPOINT_KEY); } catch (_) {}
+      return;
+    }
+    if (!saved || !Array.isArray(saved.trialLog) || saved.trialLog.length === 0) {
+      try { localStorage.removeItem(CHECKPOINT_KEY); } catch (_) {}
+      return;
+    }
+    const wantsSend = confirm(
+      "Найдена незавершённая попытка от " + saved.savedAt + " (" + saved.trialLog.length +
+      " записанных проб). Отправить эти данные сейчас, прежде чем начать заново?"
+    );
+    if (wantsSend) {
+      fetch(SUBMIT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          client_id: saved.clientId, session_id: saved.sessionId, dob: saved.dob,
+          handedness: saved.handed, email: saved.email, trials: saved.trialLog,
+          practice_trials: [], recovered_from_checkpoint: true,
+        }),
+      }).catch(() => {});
+    }
+    try { localStorage.removeItem(CHECKPOINT_KEY); } catch (_) {}
+  }
+  checkForLeftoverCheckpoint();
+
+  let practiceLog = [];
+  function practiceAccuracy() {
+    if (practiceLog.length === 0) return 0;
+    return practiceLog.filter(r => r.CORRECT === 1).length / practiceLog.length;
+  }
+
+  function flashFeedback(kind) {
+    const el = document.getElementById("feedback-tick");
+    if (currentPhase !== "practice") { el.style.opacity = 0; return; } // no feedback in main block
+    el.style.color = kind === "ok" ? "var(--accent)" : "var(--error)";
+    el.textContent = kind === "ok" ? "верно" : (kind === "miss" ? "неверно" : "нет ответа");
+    el.style.opacity = 1;
+    setTimeout(() => { el.style.opacity = 0; }, 220);
+  }
+
+  document.getElementById("btn-left").addEventListener("click", () => handleResponse(-1));
+  document.getElementById("btn-right").addEventListener("click", () => handleResponse(1));
+  window.addEventListener("keydown", (e) => {
+    if (e.repeat) return;
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") e.preventDefault();
+    if (e.key === "ArrowLeft") handleResponse(-1);
+    if (e.key === "ArrowRight") handleResponse(1);
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && currentTrial && !responded) trialValid = false;
+  });
+
+  // ---------------------------------------------------------------
+  // FINISH + EXPORT
+  // ---------------------------------------------------------------
+  function finishSession() {
+    const acc = trialLog.filter(r => r.CORRECT === 1).length / Math.max(trialLog.length, 1);
+    const rts = trialLog.filter(r => r.CORRECT === 1).map(r => r.RT_MS).sort((a, b) => a - b);
+    const medianRt = rts.length ? rts[Math.floor(rts.length / 2)] : 0;
+    document.getElementById("res-acc").textContent = Math.round(acc * 100) + "%";
+    document.getElementById("res-rt").textContent = medianRt;
+    document.getElementById("res-id").textContent = clientId + " / " + sessionId;
+    show("results-screen");
+    submitData();
+  }
+
+  function toCsv(rows) {
+    const cols = ["CLIENT_ID","SESSION_ID","TEST","TRIAL_INDEX","CONDITION","COHERENCE","STIM_DIRECTION","RESPONSE_DIRECTION","CORRECT","TIMEOUT","RT_MS","TIMESTAMP","PHASE","DOB","HANDEDNESS","TRIAL_VALID"];
+    const lines = [cols.join(",")];
+    const quote = value => '"' + String(value ?? "").replaceAll('"', '""') + '"';
+    rows.forEach(r => lines.push(cols.map(c => quote(r[c])).join(",")));
+    return lines.join("\n");
+  }
+
+  function submitData() {
+    const payload = {
+      client_id: clientId,
+      session_id: sessionId,
+      dob: dob,
+      handedness: handed,
+      email: email,
+      trials: trialLog,
+      practice_trials: practiceLog,
+    };
+    fetch(SUBMIT_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).then(r => {
+      if (!r.ok) throw new Error("submit failed: " + r.status);
+      document.getElementById("save-status").textContent = "Результат сохранён. Спасибо!";
+      try { localStorage.removeItem(CHECKPOINT_KEY); } catch (e) {}
+    }).catch(() => {
+      document.getElementById("save-status").textContent =
+        "Не удалось отправить автоматически — скачайте файл и пришлите вручную.";
+    });
+  }
+
+  document.getElementById("download-btn").addEventListener("click", () => {
+    const csv = toCsv(practiceLog.concat(trialLog));
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "rdm_" + clientId + "_" + sessionId + ".csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+})();
+</script>
+</body>
+</html>

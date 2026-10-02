@@ -1,0 +1,124 @@
+{
+  "bundle": "baseline-a-2026-10-02",
+  "processing_spec": "v4-3",
+  "silso_dataset_sha256": "4b57edafb85f28e78bd83a4a1e5273b1a42661691bc60e7826536945a7c490b8",
+  "branches": {
+    "somatic": {
+      "status": "EXPERIMENTAL",
+      "enabled": true,
+      "diagnostic_use": false
+    },
+    "psychophysiology": {
+      "status": "EXPERIMENTAL",
+      "enabled": true,
+      "diagnostic_use": false
+    }
+  },
+  "files": [
+    {
+      "path": ".github/workflows/test.yml",
+      "sha256": "0698bbc85b964baa7a1395f6058e18b40cc77326cbabc15e513907060a98f0d6",
+      "bytes": 333
+    },
+    {
+      "path": "README.md",
+      "sha256": "62a193b5eae29ce3c1f3508fa1399c294bc182cd38a462da89ddebc5b66e9d7b",
+      "bytes": 1128
+    },
+    {
+      "path": "data/README.md",
+      "sha256": "404cd891800d9e4982d352b0b8c8633e9b0ddf5360d02c896d076c03a4368ad9",
+      "bytes": 580
+    },
+    {
+      "path": "data/SILSO_ARCHIVE_SHA256.txt",
+      "sha256": "ffade1fe7d2c85f571a2fb415b4694741eac8e76d35a5d9a039b7fccda8eaa2d",
+      "bytes": 84
+    },
+    {
+      "path": "docs/EVIDENCE_LEVELS.md",
+      "sha256": "bf2b520ac682ddc33bcc10dfb6e633ccae5fc1cd39813112960a7ff8a9f51a3c",
+      "bytes": 717
+    },
+    {
+      "path": "docs/EXPERIMENTAL_BRANCHES.md",
+      "sha256": "7dd30a263089e767f3c5421936e7ce1e6ad0653f208faa4114a8a20d1eb60543",
+      "bytes": 1360
+    },
+    {
+      "path": "docs/MODEL_BOUNDARIES.md",
+      "sha256": "04e39aa16082eb4a928a7ad0c137ca38f9faabb3e89d315f582170058ee02c85",
+      "bytes": 679
+    },
+    {
+      "path": "docs/PROCESSING_SPIRAL_V4_3.md",
+      "sha256": "29ceee668d0e2613ceab6ab6fd3dc9153df9a35f02c406e1887fb18f213bae79",
+      "bytes": 5299
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "7c759522537edd52b039a2482fe764f73b54f8fae3ebc91ef1f3d1dc4523df00",
+      "bytes": 373
+    },
+    {
+      "path": "schemas/profile.schema.json",
+      "sha256": "b7b3e71c1106fbc2821ab9aed422b4207d43e54d31198e34f06aad16f294625f",
+      "bytes": 1500
+    },
+    {
+      "path": "src/archviq/__init__.py",
+      "sha256": "e9e130fa944fa3ab2411f1ea2470281a0b847b8ff81de66b5d0059fca2eab2a5",
+      "bytes": 94
+    },
+    {
+      "path": "src/archviq/config/archviq_brain_cyber_config_v0_2_rs4v4.json",
+      "sha256": "ecf67741983100278ca4ba2c3880ea3890b6a34c840624bd95f19811bd75e5c3",
+      "bytes": 24052
+    },
+    {
+      "path": "src/archviq/config/features.json",
+      "sha256": "c683a0ed5fbc8631ba85fde6815a5830a641f2468fb5f363d2bafe36a3537534",
+      "bytes": 787
+    },
+    {
+      "path": "src/archviq/frozen/__init__.py",
+      "sha256": "8aebe7bcd48b64123a110e2b26eea92d59840f2b8280ba8a410f74735a82dd94",
+      "bytes": 84
+    },
+    {
+      "path": "src/archviq/frozen/archviq_brain_cyber_cascade_v0_2_rs4v4.py",
+      "sha256": "b79f32f72f4a3666287f61531ff503e0a81c4f773adf9ea82044ff5a6e0f037f",
+      "bytes": 58650
+    },
+    {
+      "path": "src/archviq/frozen/archviq_personal_interpreter_v0_1.py",
+      "sha256": "ea3b45a5dce44fb36136dbe019db5e332dcd35457b4eba326bbf5fd39a253534",
+      "bytes": 48631
+    },
+    {
+      "path": "src/archviq/frozen/archviq_silso_physical_layer_v0_1_1.py",
+      "sha256": "437692e22d27d19304295931088592d90d8d9e1e774d97c7ac88153ca6ce1f7c",
+      "bytes": 27414
+    },
+    {
+      "path": "src/archviq/frozen/silso_percentile_v2.py",
+      "sha256": "2b1425d5afcd1d8c1e6b2607dff5f492b951a89ba73020335232c579be69361c",
+      "bytes": 23144
+    },
+    {
+      "path": "src/archviq/versions.py",
+      "sha256": "7422869b672d77c986bd99851e4447959f797434b78e5418170d09bead8fa8b5",
+      "bytes": 492
+    },
+    {
+      "path": "tests/test_frozen_hashes.py",
+      "sha256": "392151f06f1098120d31391e5f800872d355cc199bb8e00861c96fdf07d8cf0e",
+      "bytes": 886
+    },
+    {
+      "path": "tools/verify_frozen.py",
+      "sha256": "75bf6d23259619bfa7cb45c60862a44d01252c1d6c66139c27c56d5cfc717cbf",
+      "bytes": 1408
+    }
+  ]
+}

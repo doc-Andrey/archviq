@@ -1,0 +1,794 @@
+{
+  "version": "0.2-rs4v4",
+  "status": "experimental_developmental_calibration_model",
+  "driver_transform": {
+    "percentile_center": 50.0,
+    "percentile_scale": 50.0,
+    "clip": 1.0
+  },
+  "packet_exposure": {
+    "atypicality_weight": 0.7,
+    "abrupt_weight": 0.3
+  },
+  "state_update": {
+    "activation_threshold": 0.03,
+    "reverse_threshold_base": 0.08,
+    "reverse_hysteresis_coupling": 0.085,
+    "reverse_state_penalty": 0.045,
+    "alpha_from_zero": 0.3,
+    "alpha_same_sign": 0.34,
+    "alpha_reverse": 0.22,
+    "retention": 0.994,
+    "state_clip": 2.5,
+    "same_sign_cascade_gain": 0.12,
+    "pressure_retention": 0.94,
+    "pressure_alpha": 0.2
+  },
+  "circuits": [
+    "BRAINSTEM_HOMEOSTATIC",
+    "THALAMUS_TRN",
+    "PULVINAR_COHERENCE",
+    "SUBPLATE_THALAMOCORTICAL",
+    "HIPPOCAMPUS_CONTEXT",
+    "AMYGDALA_INSULA",
+    "SALIENCE_DACC_INSULA",
+    "BASAL_GANGLIA_STN",
+    "PFC_REALITY_CONTROL",
+    "LONG_RANGE_CORTEX",
+    "SLEEP_THALAMOCORTICAL"
+  ],
+  "window_circuit_sensitivity": {
+    "W1": {
+      "BRAINSTEM_HOMEOSTATIC": 0.85,
+      "THALAMUS_TRN": 0.45,
+      "PULVINAR_COHERENCE": 0.1,
+      "SUBPLATE_THALAMOCORTICAL": 0.15,
+      "HIPPOCAMPUS_CONTEXT": 0.35,
+      "AMYGDALA_INSULA": 0.55,
+      "SALIENCE_DACC_INSULA": 0.15,
+      "BASAL_GANGLIA_STN": 0.3,
+      "PFC_REALITY_CONTROL": 0.05,
+      "LONG_RANGE_CORTEX": 0.05,
+      "SLEEP_THALAMOCORTICAL": 0.0
+    },
+    "W2": {
+      "BRAINSTEM_HOMEOSTATIC": 0.55,
+      "THALAMUS_TRN": 0.7,
+      "PULVINAR_COHERENCE": 0.25,
+      "SUBPLATE_THALAMOCORTICAL": 0.85,
+      "HIPPOCAMPUS_CONTEXT": 0.55,
+      "AMYGDALA_INSULA": 0.5,
+      "SALIENCE_DACC_INSULA": 0.3,
+      "BASAL_GANGLIA_STN": 0.45,
+      "PFC_REALITY_CONTROL": 0.15,
+      "LONG_RANGE_CORTEX": 0.2,
+      "SLEEP_THALAMOCORTICAL": 0.05
+    },
+    "W3": {
+      "BRAINSTEM_HOMEOSTATIC": 0.4,
+      "THALAMUS_TRN": 0.8,
+      "PULVINAR_COHERENCE": 0.65,
+      "SUBPLATE_THALAMOCORTICAL": 0.95,
+      "HIPPOCAMPUS_CONTEXT": 0.65,
+      "AMYGDALA_INSULA": 0.6,
+      "SALIENCE_DACC_INSULA": 0.55,
+      "BASAL_GANGLIA_STN": 0.55,
+      "PFC_REALITY_CONTROL": 0.35,
+      "LONG_RANGE_CORTEX": 0.6,
+      "SLEEP_THALAMOCORTICAL": 0.15
+    },
+    "F1": {
+      "BRAINSTEM_HOMEOSTATIC": 0.25,
+      "THALAMUS_TRN": 0.95,
+      "PULVINAR_COHERENCE": 0.8,
+      "SUBPLATE_THALAMOCORTICAL": 1.0,
+      "HIPPOCAMPUS_CONTEXT": 0.65,
+      "AMYGDALA_INSULA": 0.65,
+      "SALIENCE_DACC_INSULA": 0.7,
+      "BASAL_GANGLIA_STN": 0.8,
+      "PFC_REALITY_CONTROL": 0.65,
+      "LONG_RANGE_CORTEX": 0.75,
+      "SLEEP_THALAMOCORTICAL": 0.45
+    },
+    "F2": {
+      "BRAINSTEM_HOMEOSTATIC": 0.2,
+      "THALAMUS_TRN": 1.0,
+      "PULVINAR_COHERENCE": 0.9,
+      "SUBPLATE_THALAMOCORTICAL": 0.85,
+      "HIPPOCAMPUS_CONTEXT": 0.65,
+      "AMYGDALA_INSULA": 0.7,
+      "SALIENCE_DACC_INSULA": 0.8,
+      "BASAL_GANGLIA_STN": 1.0,
+      "PFC_REALITY_CONTROL": 0.8,
+      "LONG_RANGE_CORTEX": 0.9,
+      "SLEEP_THALAMOCORTICAL": 0.6
+    },
+    "F3": {
+      "BRAINSTEM_HOMEOSTATIC": 0.15,
+      "THALAMUS_TRN": 0.9,
+      "PULVINAR_COHERENCE": 0.85,
+      "SUBPLATE_THALAMOCORTICAL": 0.5,
+      "HIPPOCAMPUS_CONTEXT": 0.85,
+      "AMYGDALA_INSULA": 0.8,
+      "SALIENCE_DACC_INSULA": 0.95,
+      "BASAL_GANGLIA_STN": 0.9,
+      "PFC_REALITY_CONTROL": 1.0,
+      "LONG_RANGE_CORTEX": 1.0,
+      "SLEEP_THALAMOCORTICAL": 0.9
+    }
+  },
+  "window_parameter_sensitivity": {
+    "W1": {
+      "GAIN": 1.0,
+      "NOISE_SENSITIVITY": 0.85,
+      "RECOVERY_BASELINE": 0.55,
+      "THETA_W": 0.3,
+      "THETA_C": 0.15,
+      "TAU_INTEGRATION": 0.25,
+      "PERSISTENCE": 0.2,
+      "HOLD_STABILITY": 0.15
+    },
+    "W2": {
+      "GAIN": 0.35,
+      "NOISE_SENSITIVITY": 0.55,
+      "RECOVERY_BASELINE": 0.35,
+      "THETA_W": 1.0,
+      "THETA_C": 1.0,
+      "TAU_INTEGRATION": 0.9,
+      "THETA_NU_TIME": 0.25,
+      "THETA_NU_CROSS": 0.2,
+      "THETA_NU_PROVENANCE": 0.2,
+      "M_C": 0.35,
+      "COMPRESSION_STRENGTH": 0.25,
+      "HYSTERESIS_W": 0.45
+    },
+    "W3": {
+      "THETA_W": 0.35,
+      "THETA_C": 0.45,
+      "TAU_INTEGRATION": 0.65,
+      "THETA_NU_TIME": 1.0,
+      "THETA_NU_CROSS": 1.0,
+      "THETA_NU_PROVENANCE": 0.85,
+      "M_C": 0.85,
+      "COMPRESSION_STRENGTH": 1.0,
+      "D_C": 0.25,
+      "PERSISTENCE": 0.35,
+      "HOLD_STABILITY": 0.3,
+      "HYSTERESIS_W": 0.35,
+      "HYSTERESIS_NU": 0.75,
+      "REALITY_CALIBRATION": 0.35
+    },
+    "F1": {
+      "TAU_INTEGRATION": 0.35,
+      "THETA_NU_CROSS": 0.35,
+      "COMPRESSION_STRENGTH": 0.5,
+      "D_C": 1.0,
+      "PERSISTENCE": 1.0,
+      "HOLD_STABILITY": 1.0,
+      "THETA_D": 0.35,
+      "SWITCH_THRESHOLD": 0.55,
+      "HYSTERESIS_D": 0.8,
+      "HYSTERESIS_NU": 0.3,
+      "RECOVERY_BASELINE": 0.35
+    },
+    "F2": {
+      "D_C": 0.6,
+      "PERSISTENCE": 0.65,
+      "HOLD_STABILITY": 0.65,
+      "THETA_D": 1.0,
+      "THETA_A": 0.85,
+      "SWITCH_THRESHOLD": 1.0,
+      "UPDATE_MAGNITUDE": 1.0,
+      "THETA_U": 0.45,
+      "HYSTERESIS_D": 0.75,
+      "HYSTERESIS_U": 0.45,
+      "K_ASYMMETRY": 0.35,
+      "REALITY_CALIBRATION": 0.5,
+      "U_ROUTING_CAPACITY": 0.45,
+      "GAMMA_CAPACITY": 0.35
+    },
+    "F3": {
+      "RECOVERY_BASELINE": 1.0,
+      "THETA_D": 0.55,
+      "THETA_A": 0.65,
+      "SWITCH_THRESHOLD": 0.7,
+      "UPDATE_MAGNITUDE": 0.8,
+      "THETA_U": 1.0,
+      "HYSTERESIS_W": 0.8,
+      "HYSTERESIS_NU": 0.9,
+      "HYSTERESIS_D": 0.8,
+      "HYSTERESIS_U": 1.0,
+      "K_ASYMMETRY": 0.8,
+      "SPAWN_THRESHOLD": 0.95,
+      "REALITY_CALIBRATION": 1.0,
+      "U_ROUTING_CAPACITY": 1.0,
+      "GAMMA_CAPACITY": 1.0,
+      "ANCHOR_STABILITY": 1.0,
+      "MEMORY_DUAL_TIMESCALE_CAPACITY": 0.95,
+      "COMPRESSION_STRENGTH": 0.7,
+      "THETA_NU_PROVENANCE": 0.55
+    }
+  },
+  "parameter_definitions": {
+    "GAIN": {
+      "label": "general signal gain / excitability calibration",
+      "mode": "directional",
+      "family": "BASE",
+      "positive_meaning": "higher gain / stronger response to perturbation",
+      "negative_meaning": "lower gain / weaker response to perturbation"
+    },
+    "NOISE_SENSITIVITY": {
+      "label": "sensitivity to noisy/irregular input",
+      "mode": "pressure_only",
+      "family": "BASE",
+      "positive_meaning": "direction not frozen in v0.2",
+      "negative_meaning": "direction not frozen in v0.2"
+    },
+    "RECOVERY_BASELINE": {
+      "label": "baseline return/recovery tendency",
+      "mode": "directional",
+      "family": "RECOVERY",
+      "positive_meaning": "faster return after perturbation",
+      "negative_meaning": "slower return / prolonged carry-over"
+    },
+    "THETA_W": {
+      "label": "admission threshold theta_W",
+      "mode": "directional",
+      "family": "W",
+      "runtime_baseline": 0.5,
+      "positive_meaning": "higher admission threshold",
+      "negative_meaning": "lower admission threshold"
+    },
+    "THETA_C": {
+      "label": "threshold for request of Reality checking theta_C",
+      "mode": "directional",
+      "family": "W",
+      "runtime_baseline": 0.75,
+      "positive_meaning": "more evidence/coherence before Reality request",
+      "negative_meaning": "earlier Reality request"
+    },
+    "TAU_INTEGRATION": {
+      "label": "temporal integration constant",
+      "mode": "directional",
+      "family": "W",
+      "positive_meaning": "longer temporal integration / longer accumulation",
+      "negative_meaning": "shorter temporal integration / faster turnover"
+    },
+    "THETA_NU_TIME": {
+      "label": "temporal naturalness/regularity threshold component of nu",
+      "mode": "pressure_only",
+      "family": "NU",
+      "runtime_baseline": 0.6,
+      "positive_meaning": "direction not frozen in v0.2",
+      "negative_meaning": "direction not frozen in v0.2"
+    },
+    "THETA_NU_CROSS": {
+      "label": "cross-source common-cause/independence threshold component of nu",
+      "mode": "pressure_only",
+      "family": "NU",
+      "runtime_baseline": 0.6,
+      "positive_meaning": "direction not frozen in v0.2",
+      "negative_meaning": "direction not frozen in v0.2"
+    },
+    "THETA_NU_PROVENANCE": {
+      "label": "provenance/self-generated evidence threshold component of nu",
+      "mode": "pressure_only",
+      "family": "NU",
+      "runtime_baseline": 0.6,
+      "positive_meaning": "direction not frozen in v0.2",
+      "negative_meaning": "direction not frozen in v0.2"
+    },
+    "M_C": {
+      "label": "minimum independent-source requirement M_C",
+      "mode": "pressure_only",
+      "family": "NU",
+      "runtime_baseline": 2,
+      "positive_meaning": "direction not frozen in v0.2",
+      "negative_meaning": "direction not frozen in v0.2"
+    },
+    "COMPRESSION_STRENGTH": {
+      "label": "degree of recurrent dimensional compression while retaining provenance",
+      "mode": "directional",
+      "family": "NU",
+      "positive_meaning": "stronger compression / higher abstraction tendency",
+      "negative_meaning": "weaker compression / more detail retained per level"
+    },
+    "D_C": {
+      "label": "consecutive-PASS consolidation threshold D_C",
+      "mode": "directional",
+      "family": "D",
+      "runtime_baseline": 10,
+      "positive_meaning": "more persistence required before consolidation",
+      "negative_meaning": "less persistence required before consolidation"
+    },
+    "PERSISTENCE": {
+      "label": "state persistence / HOLD tendency",
+      "mode": "directional",
+      "family": "D",
+      "positive_meaning": "stronger state persistence",
+      "negative_meaning": "greater lability / weaker hold"
+    },
+    "HOLD_STABILITY": {
+      "label": "stability of an already selected processing state",
+      "mode": "directional",
+      "family": "D",
+      "positive_meaning": "more stable HOLD state",
+      "negative_meaning": "easier spontaneous state turnover"
+    },
+    "THETA_D": {
+      "label": "decision threshold",
+      "mode": "directional",
+      "family": "D",
+      "positive_meaning": "more accumulated evidence required to commit decision",
+      "negative_meaning": "less evidence required to commit decision"
+    },
+    "THETA_A": {
+      "label": "action threshold",
+      "mode": "pressure_only",
+      "family": "D",
+      "positive_meaning": "direction not frozen in v0.2",
+      "negative_meaning": "direction not frozen in v0.2"
+    },
+    "SWITCH_THRESHOLD": {
+      "label": "threshold for switching active state/configuration",
+      "mode": "directional",
+      "family": "D",
+      "positive_meaning": "higher switch threshold",
+      "negative_meaning": "lower switch threshold / easier switching"
+    },
+    "UPDATE_MAGNITUDE": {
+      "label": "size of post-threshold update",
+      "mode": "directional",
+      "family": "U",
+      "positive_meaning": "larger update once change occurs",
+      "negative_meaning": "smaller incremental update"
+    },
+    "THETA_U": {
+      "label": "model-update threshold",
+      "mode": "directional",
+      "family": "U",
+      "positive_meaning": "more contradiction required before changing model",
+      "negative_meaning": "model changes after less contradiction"
+    },
+    "HYSTERESIS_W": {
+      "label": "history-dependence width for admission/gating",
+      "mode": "directional",
+      "family": "W",
+      "positive_meaning": "wider admission hysteresis band",
+      "negative_meaning": "narrower admission hysteresis band"
+    },
+    "HYSTERESIS_NU": {
+      "label": "history-dependence width for nu/common-cause checks",
+      "mode": "directional",
+      "family": "NU",
+      "positive_meaning": "wider nu hysteresis band",
+      "negative_meaning": "narrower nu hysteresis band"
+    },
+    "HYSTERESIS_D": {
+      "label": "history-dependence width for HOLD/decision/switch",
+      "mode": "directional",
+      "family": "D",
+      "positive_meaning": "wider HOLD/switch hysteresis band",
+      "negative_meaning": "narrower HOLD/switch hysteresis band"
+    },
+    "HYSTERESIS_U": {
+      "label": "history-dependence width for model update",
+      "mode": "directional",
+      "family": "U",
+      "positive_meaning": "wider model-update hysteresis band",
+      "negative_meaning": "narrower model-update hysteresis band"
+    },
+    "K_ASYMMETRY": {
+      "label": "K_down/K_up trust-update asymmetry calibration",
+      "mode": "pressure_only",
+      "family": "TRUST",
+      "positive_meaning": "direction not frozen in v0.2",
+      "negative_meaning": "direction not frozen in v0.2"
+    },
+    "SPAWN_THRESHOLD": {
+      "label": "sensitivity/threshold of latent-model spawn",
+      "mode": "pressure_only",
+      "family": "U",
+      "positive_meaning": "direction not frozen in v0.2",
+      "negative_meaning": "direction not frozen in v0.2"
+    },
+    "REALITY_CALIBRATION": {
+      "label": "developmental calibration pressure on Reality-monitoring machinery",
+      "mode": "pressure_only",
+      "family": "REALITY",
+      "positive_meaning": "pressure only; no high/low interpretation",
+      "negative_meaning": "pressure only; no high/low interpretation"
+    },
+    "U_ROUTING_CAPACITY": {
+      "label": "capacity of error-target routing operator U",
+      "mode": "pressure_only",
+      "family": "U",
+      "positive_meaning": "pressure only; no high/low interpretation",
+      "negative_meaning": "pressure only; no high/low interpretation"
+    },
+    "GAMMA_CAPACITY": {
+      "label": "offline sleep recalibration capacity Gamma",
+      "mode": "pressure_only",
+      "family": "GAMMA",
+      "positive_meaning": "pressure only; no high/low interpretation",
+      "negative_meaning": "pressure only; no high/low interpretation"
+    },
+    "ANCHOR_STABILITY": {
+      "label": "stability of offline-promoted anchors",
+      "mode": "directional",
+      "family": "U",
+      "positive_meaning": "more stable anchors once established",
+      "negative_meaning": "anchors more readily revised"
+    },
+    "MEMORY_DUAL_TIMESCALE_CAPACITY": {
+      "label": "capacity for fast Q_use and slow S_trace memory dynamics",
+      "mode": "pressure_only",
+      "family": "GAMMA",
+      "positive_meaning": "pressure only; no high/low interpretation",
+      "negative_meaning": "pressure only; no high/low interpretation"
+    }
+  },
+  "parameter_circuit_map": {
+    "GAIN": {
+      "BRAINSTEM_HOMEOSTATIC": 0.3,
+      "THALAMUS_TRN": 0.25,
+      "AMYGDALA_INSULA": 0.2,
+      "SALIENCE_DACC_INSULA": 0.15,
+      "PFC_REALITY_CONTROL": 0.1
+    },
+    "NOISE_SENSITIVITY": {
+      "THALAMUS_TRN": 0.25,
+      "PULVINAR_COHERENCE": 0.25,
+      "SUBPLATE_THALAMOCORTICAL": 0.2,
+      "SALIENCE_DACC_INSULA": 0.15,
+      "PFC_REALITY_CONTROL": 0.15
+    },
+    "RECOVERY_BASELINE": {
+      "BRAINSTEM_HOMEOSTATIC": 0.2,
+      "SALIENCE_DACC_INSULA": 0.25,
+      "PFC_REALITY_CONTROL": 0.25,
+      "THALAMUS_TRN": 0.15,
+      "HIPPOCAMPUS_CONTEXT": 0.15
+    },
+    "THETA_W": {
+      "THALAMUS_TRN": 0.55,
+      "SUBPLATE_THALAMOCORTICAL": 0.2,
+      "PFC_REALITY_CONTROL": 0.1,
+      "BASAL_GANGLIA_STN": 0.1,
+      "SALIENCE_DACC_INSULA": 0.05
+    },
+    "THETA_C": {
+      "THALAMUS_TRN": 0.35,
+      "PULVINAR_COHERENCE": 0.2,
+      "SUBPLATE_THALAMOCORTICAL": 0.2,
+      "PFC_REALITY_CONTROL": 0.15,
+      "SALIENCE_DACC_INSULA": 0.1
+    },
+    "TAU_INTEGRATION": {
+      "SUBPLATE_THALAMOCORTICAL": 0.3,
+      "THALAMUS_TRN": 0.2,
+      "LONG_RANGE_CORTEX": 0.25,
+      "HIPPOCAMPUS_CONTEXT": 0.15,
+      "PFC_REALITY_CONTROL": 0.1
+    },
+    "THETA_NU_TIME": {
+      "PULVINAR_COHERENCE": 0.25,
+      "SUBPLATE_THALAMOCORTICAL": 0.2,
+      "LONG_RANGE_CORTEX": 0.2,
+      "HIPPOCAMPUS_CONTEXT": 0.15,
+      "PFC_REALITY_CONTROL": 0.1,
+      "THALAMUS_TRN": 0.1
+    },
+    "THETA_NU_CROSS": {
+      "PULVINAR_COHERENCE": 0.4,
+      "LONG_RANGE_CORTEX": 0.25,
+      "SUBPLATE_THALAMOCORTICAL": 0.15,
+      "PFC_REALITY_CONTROL": 0.1,
+      "HIPPOCAMPUS_CONTEXT": 0.1
+    },
+    "THETA_NU_PROVENANCE": {
+      "HIPPOCAMPUS_CONTEXT": 0.25,
+      "PFC_REALITY_CONTROL": 0.25,
+      "LONG_RANGE_CORTEX": 0.2,
+      "SALIENCE_DACC_INSULA": 0.15,
+      "THALAMUS_TRN": 0.15
+    },
+    "M_C": {
+      "PULVINAR_COHERENCE": 0.3,
+      "LONG_RANGE_CORTEX": 0.25,
+      "PFC_REALITY_CONTROL": 0.2,
+      "SUBPLATE_THALAMOCORTICAL": 0.15,
+      "HIPPOCAMPUS_CONTEXT": 0.1
+    },
+    "COMPRESSION_STRENGTH": {
+      "PFC_REALITY_CONTROL": 0.3,
+      "LONG_RANGE_CORTEX": 0.3,
+      "HIPPOCAMPUS_CONTEXT": 0.2,
+      "THALAMUS_TRN": 0.1,
+      "SALIENCE_DACC_INSULA": 0.1
+    },
+    "D_C": {
+      "PFC_REALITY_CONTROL": 0.25,
+      "BASAL_GANGLIA_STN": 0.25,
+      "THALAMUS_TRN": 0.2,
+      "LONG_RANGE_CORTEX": 0.15,
+      "SALIENCE_DACC_INSULA": 0.15
+    },
+    "PERSISTENCE": {
+      "BASAL_GANGLIA_STN": 0.3,
+      "THALAMUS_TRN": 0.2,
+      "PFC_REALITY_CONTROL": 0.2,
+      "LONG_RANGE_CORTEX": 0.15,
+      "SALIENCE_DACC_INSULA": 0.15
+    },
+    "HOLD_STABILITY": {
+      "BASAL_GANGLIA_STN": 0.35,
+      "THALAMUS_TRN": 0.2,
+      "PFC_REALITY_CONTROL": 0.2,
+      "SALIENCE_DACC_INSULA": 0.15,
+      "LONG_RANGE_CORTEX": 0.1
+    },
+    "THETA_D": {
+      "BASAL_GANGLIA_STN": 0.4,
+      "PFC_REALITY_CONTROL": 0.25,
+      "THALAMUS_TRN": 0.2,
+      "SALIENCE_DACC_INSULA": 0.15
+    },
+    "THETA_A": {
+      "BASAL_GANGLIA_STN": 0.55,
+      "BRAINSTEM_HOMEOSTATIC": 0.15,
+      "PFC_REALITY_CONTROL": 0.15,
+      "SALIENCE_DACC_INSULA": 0.15
+    },
+    "SWITCH_THRESHOLD": {
+      "BASAL_GANGLIA_STN": 0.35,
+      "THALAMUS_TRN": 0.3,
+      "PFC_REALITY_CONTROL": 0.2,
+      "SALIENCE_DACC_INSULA": 0.15
+    },
+    "UPDATE_MAGNITUDE": {
+      "PFC_REALITY_CONTROL": 0.3,
+      "SALIENCE_DACC_INSULA": 0.25,
+      "HIPPOCAMPUS_CONTEXT": 0.2,
+      "BASAL_GANGLIA_STN": 0.15,
+      "LONG_RANGE_CORTEX": 0.1
+    },
+    "THETA_U": {
+      "PFC_REALITY_CONTROL": 0.4,
+      "SALIENCE_DACC_INSULA": 0.25,
+      "HIPPOCAMPUS_CONTEXT": 0.2,
+      "BASAL_GANGLIA_STN": 0.15
+    },
+    "HYSTERESIS_W": {
+      "THALAMUS_TRN": 0.35,
+      "PFC_REALITY_CONTROL": 0.2,
+      "BASAL_GANGLIA_STN": 0.15,
+      "HIPPOCAMPUS_CONTEXT": 0.15,
+      "SALIENCE_DACC_INSULA": 0.15
+    },
+    "HYSTERESIS_NU": {
+      "PULVINAR_COHERENCE": 0.3,
+      "LONG_RANGE_CORTEX": 0.25,
+      "HIPPOCAMPUS_CONTEXT": 0.15,
+      "PFC_REALITY_CONTROL": 0.15,
+      "THALAMUS_TRN": 0.15
+    },
+    "HYSTERESIS_D": {
+      "BASAL_GANGLIA_STN": 0.3,
+      "PFC_REALITY_CONTROL": 0.25,
+      "THALAMUS_TRN": 0.2,
+      "HIPPOCAMPUS_CONTEXT": 0.15,
+      "SALIENCE_DACC_INSULA": 0.1
+    },
+    "HYSTERESIS_U": {
+      "PFC_REALITY_CONTROL": 0.3,
+      "HIPPOCAMPUS_CONTEXT": 0.25,
+      "SALIENCE_DACC_INSULA": 0.2,
+      "BASAL_GANGLIA_STN": 0.15,
+      "LONG_RANGE_CORTEX": 0.1
+    },
+    "K_ASYMMETRY": {
+      "SALIENCE_DACC_INSULA": 0.3,
+      "PFC_REALITY_CONTROL": 0.25,
+      "HIPPOCAMPUS_CONTEXT": 0.2,
+      "THALAMUS_TRN": 0.15,
+      "LONG_RANGE_CORTEX": 0.1
+    },
+    "SPAWN_THRESHOLD": {
+      "PFC_REALITY_CONTROL": 0.3,
+      "HIPPOCAMPUS_CONTEXT": 0.25,
+      "SALIENCE_DACC_INSULA": 0.2,
+      "LONG_RANGE_CORTEX": 0.15,
+      "BASAL_GANGLIA_STN": 0.1
+    },
+    "REALITY_CALIBRATION": {
+      "PFC_REALITY_CONTROL": 0.45,
+      "HIPPOCAMPUS_CONTEXT": 0.2,
+      "LONG_RANGE_CORTEX": 0.15,
+      "SALIENCE_DACC_INSULA": 0.1,
+      "THALAMUS_TRN": 0.1
+    },
+    "U_ROUTING_CAPACITY": {
+      "SALIENCE_DACC_INSULA": 0.4,
+      "PFC_REALITY_CONTROL": 0.35,
+      "BASAL_GANGLIA_STN": 0.15,
+      "HIPPOCAMPUS_CONTEXT": 0.1
+    },
+    "GAMMA_CAPACITY": {
+      "SLEEP_THALAMOCORTICAL": 0.45,
+      "THALAMUS_TRN": 0.2,
+      "HIPPOCAMPUS_CONTEXT": 0.2,
+      "PFC_REALITY_CONTROL": 0.15
+    },
+    "ANCHOR_STABILITY": {
+      "HIPPOCAMPUS_CONTEXT": 0.35,
+      "PFC_REALITY_CONTROL": 0.3,
+      "LONG_RANGE_CORTEX": 0.2,
+      "BASAL_GANGLIA_STN": 0.15
+    },
+    "MEMORY_DUAL_TIMESCALE_CAPACITY": {
+      "HIPPOCAMPUS_CONTEXT": 0.35,
+      "SLEEP_THALAMOCORTICAL": 0.25,
+      "PFC_REALITY_CONTROL": 0.2,
+      "THALAMUS_TRN": 0.1,
+      "LONG_RANGE_CORTEX": 0.1
+    }
+  },
+  "parameter_driver_weights": {
+    "GAIN": {
+      "load": 0.45,
+      "abrupt": 0.35,
+      "energy": 0.2
+    },
+    "RECOVERY_BASELINE": {
+      "burst_to_quiet": 0.55,
+      "quiet_after_burst": 0.25,
+      "repeated_burst": -0.35,
+      "load": -0.1
+    },
+    "THETA_W": {
+      "quiet_to_burst": 0.35,
+      "persistence": 0.3,
+      "directionality": 0.15,
+      "reversal": -0.25
+    },
+    "THETA_C": {
+      "quiet_to_burst": 0.25,
+      "persistence": 0.25,
+      "directionality": 0.15,
+      "reversal": -0.25,
+      "abrupt": 0.1
+    },
+    "TAU_INTEGRATION": {
+      "persistence": 0.5,
+      "directionality": 0.2,
+      "reversal": -0.35,
+      "quiet": 0.1
+    },
+    "COMPRESSION_STRENGTH": {
+      "persistence": 0.3,
+      "directionality": 0.25,
+      "reversal": -0.25,
+      "quiet": 0.1
+    },
+    "D_C": {
+      "persistence": 0.4,
+      "sustained_hold": 0.25,
+      "quiet_to_burst": 0.2,
+      "reversal": -0.3
+    },
+    "PERSISTENCE": {
+      "persistence": 0.65,
+      "directionality": 0.2,
+      "reversal": -0.4
+    },
+    "HOLD_STABILITY": {
+      "persistence": 0.55,
+      "sustained_hold": 0.25,
+      "reversal": -0.35,
+      "quiet_to_burst": 0.15
+    },
+    "THETA_D": {
+      "quiet_to_burst": 0.3,
+      "persistence": 0.25,
+      "directionality": 0.1,
+      "reversal": -0.25,
+      "abrupt": 0.1
+    },
+    "SWITCH_THRESHOLD": {
+      "quiet_to_burst": 0.45,
+      "persistence": 0.3,
+      "directionality": 0.1,
+      "reversal": -0.35
+    },
+    "UPDATE_MAGNITUDE": {
+      "abrupt": 0.45,
+      "load": 0.25,
+      "energy": 0.2,
+      "quiet_to_burst": 0.25
+    },
+    "THETA_U": {
+      "persistence": 0.3,
+      "quiet_to_burst": 0.25,
+      "directionality": 0.1,
+      "reversal": -0.25,
+      "abrupt": 0.15
+    },
+    "HYSTERESIS_W": {
+      "persistence": 0.3,
+      "quiet_to_burst": 0.25,
+      "reversal_to_persistent": 0.2,
+      "persistent_to_reversal": 0.1,
+      "repeated_reversal": -0.2
+    },
+    "HYSTERESIS_NU": {
+      "persistence": 0.2,
+      "directionality": 0.15,
+      "reversal_to_persistent": 0.25,
+      "persistent_to_reversal": 0.15,
+      "repeated_reversal": -0.25
+    },
+    "HYSTERESIS_D": {
+      "persistence": 0.3,
+      "quiet_to_burst": 0.25,
+      "reversal_to_persistent": 0.25,
+      "persistent_to_reversal": 0.15,
+      "repeated_reversal": -0.2
+    },
+    "HYSTERESIS_U": {
+      "persistence": 0.25,
+      "quiet_to_burst": 0.25,
+      "abrupt": 0.2,
+      "reversal_to_persistent": 0.2,
+      "repeated_reversal": -0.15
+    },
+    "ANCHOR_STABILITY": {
+      "persistence": 0.35,
+      "burst_to_quiet": 0.2,
+      "directionality": 0.15,
+      "reversal": -0.25,
+      "sustained_hold": 0.2
+    }
+  },
+  "parameter_hysteresis_link": {
+    "GAIN": null,
+    "RECOVERY_BASELINE": null,
+    "THETA_W": "HYSTERESIS_W",
+    "THETA_C": "HYSTERESIS_W",
+    "TAU_INTEGRATION": "HYSTERESIS_W",
+    "COMPRESSION_STRENGTH": "HYSTERESIS_NU",
+    "D_C": "HYSTERESIS_D",
+    "PERSISTENCE": "HYSTERESIS_D",
+    "HOLD_STABILITY": "HYSTERESIS_D",
+    "THETA_D": "HYSTERESIS_D",
+    "SWITCH_THRESHOLD": "HYSTERESIS_D",
+    "UPDATE_MAGNITUDE": "HYSTERESIS_U",
+    "THETA_U": "HYSTERESIS_U",
+    "HYSTERESIS_W": null,
+    "HYSTERESIS_NU": null,
+    "HYSTERESIS_D": null,
+    "HYSTERESIS_U": null,
+    "ANCHOR_STABILITY": "HYSTERESIS_U"
+  },
+  "runtime_baselines": {
+    "N_W": 5,
+    "THETA_W": 0.5,
+    "N_C": 15,
+    "M_C": 2,
+    "THETA_C": 0.75,
+    "THETA_NU": 0.6,
+    "D_C": 10,
+    "SPAWN_WINDOW": 16,
+    "SPAWN_THETA_MISMATCH": 0.3,
+    "SPAWN_THETA_R": 0.9,
+    "SPAWN_THETA_NU": 0.7
+  },
+  "invariants": {
+    "I1": "Reality confirmation must be independent: an item cannot be confirmed by data generated by itself; a memory cannot be confirmed by a derivative of itself.",
+    "I2": "Levels cannot be skipped; level 4 (anchor) is reachable only offline through Gamma from level 3.",
+    "I3": "Historical source weight cannot override Reality FAIL.",
+    "I4": "Compression preserves provenance/source trace.",
+    "I5": "Distrust suppresses source influence; it does not invert the source signal.",
+    "I6": "w_min > 0: a suppressed source remains recoverable if later reliable."
+  }
+}
